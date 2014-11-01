@@ -2,12 +2,11 @@ package appathon.history.models;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Timer;
 
 public class GameManager {
 	private QuestionGenerator questionGenerator;
-	private Timer timer;
 	private ArrayList<Question> questions;
+	private ArrayList<User> users;
 	private HashMap<Country, ArrayList<Question>> countryToQuestionsMap;
 	private HashMap<Country, User> countryToUser;
 	private int currentQuestionIndex;
@@ -15,6 +14,21 @@ public class GameManager {
 	public GameManager() {
 		super();
 		currentQuestionIndex = 0;
+		User user = new User("CG500", false, 1);
+		users.add(user);
+		questions = questionGenerator.getQuestions(10);
+		
+		for(Question question : questions){
+			Country country = new Country(question.country.answer);
+			if(countryToQuestionsMap.containsKey(country)){
+				countryToQuestionsMap.get(country).add(question);
+			}
+			else{
+				ArrayList<Question> newList= new ArrayList<Question>();
+				newList.add(question);
+				countryToQuestionsMap.put(country, newList);
+			}
+		}
 	}
 
 	public QuestionGenerator getQuestionGenerator() {
@@ -25,20 +39,20 @@ public class GameManager {
 		this.questionGenerator = questionGenerator;
 	}
 	
-	public Timer getTimer() {
-		return timer;
-	}
-	
-	public void setTimer(Timer timer) {
-		this.timer = timer;
-	}
-	
 	public ArrayList<Question> getQuestions() {
 		return questions;
 	}
 
 	public void setQuestions(ArrayList<Question> questions) {
 		this.questions = questions;
+	}
+	
+	public ArrayList<User> getUsers() {
+		return users;
+	}
+
+	public void setUsers(ArrayList<User> users) {
+		this.users = users;
 	}
 	
 	public HashMap<Country, ArrayList<Question>> getCountryToQuestionsMap() {
@@ -58,25 +72,31 @@ public class GameManager {
 		this.countryToUser = countryToUser;
 	}
 	
-	public int getCurrentQuestion() {
+	public int getCurrentQuestionIndex() {
 		return currentQuestionIndex;
 	}
 	
-	public boolean checkAnswers(ArrayList<User> users){
+	public boolean checkAnswers(){
 		
 		int count = 0;
 		for(int i = 0; i < users.size(); i++){
-			users.get(i).isQuestionSubmitted();
-			count++;
+			if(users.get(i).isQuestionSubmitted()){
+				count++;
+				if(users.get(i).getSelectedAnswer() == questions.get(this.currentQuestionIndex).correctAnswer){
+					return true;
+				}
+			}
 		}
 		if(count == users.size()){
 			return true;
 		}
+		else{
+			return false;
+		}
 		
-		return false;
 	}
 	
-	public void RestartUsers(ArrayList<User> users){
+	public void RestartUsers(){
 		for(int i = 0; i < users.size(); ++i){
 			users.get(i).restart();
 		}
@@ -85,9 +105,22 @@ public class GameManager {
 	public Question NextQuestion(){
 		if(currentQuestionIndex < questions.size()){
 			currentQuestionIndex++;
+			RestartUsers();
 			return questions.get(currentQuestionIndex);
 		}
 		return null;
+	}
+	
+	public boolean updateUser(String userName, String selectedAnswer){
+
+		for(User user : users){
+			if(user.getName() == userName){
+				user.setSelectedAnswer(selectedAnswer);
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 }

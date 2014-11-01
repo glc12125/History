@@ -5,6 +5,12 @@ public class Country {
 	private String name;
 	private int defense;
 	
+	public Country(String name) {
+		super();
+		this.name = name;
+		this.defense = 0;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -25,7 +31,6 @@ public class Country {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + defense;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
@@ -39,8 +44,6 @@ public class Country {
 		if (getClass() != obj.getClass())
 			return false;
 		Country other = (Country) obj;
-		if (defense != other.defense)
-			return false;
 		if (name == null) {
 			if (other.name != null)
 				return false;
