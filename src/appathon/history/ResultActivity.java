@@ -16,6 +16,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import appathon.history.models.Answer;
 import appathon.history.models.Question;
 import appathon.history.models.User;
@@ -85,8 +86,9 @@ public class ResultActivity extends Activity
 		mPopupWindow.setTouchable(true);
 		mPopupWindow.setOutsideTouchable(false);
 
-		ListView answerListView = ((ListView) mPopupWindow.getContentView()
-				.findViewById(R.id.answerListView));
+		TextView questionTextView = ((TextView) mPopupWindow.getContentView()
+				.findViewById(R.id.questionTextView));
+		questionTextView.setText(question.question);
 
 		ListView answerListView = ((ListView) mPopupWindow.getContentView()
 				.findViewById(R.id.answerListView));
@@ -102,7 +104,7 @@ public class ResultActivity extends Activity
 				// Toast.makeText(getApplicationContext(),
 				// "You have chosen the pen: " + " " + pen,
 				// Toast.LENGTH_LONG).show();
-				 mPopupWindow.dismiss();
+				mPopupWindow.dismiss();
 			}
 		});
 
