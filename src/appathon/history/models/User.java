@@ -39,6 +39,10 @@ public class User implements Comparable<User>
 		return name;
 	}
 
+	public int getSmallAvatar() {
+		return this.small_avatar;
+	}
+	
 	public void setName(String name)
 	{
 		this.name = name;

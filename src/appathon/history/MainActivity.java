@@ -71,7 +71,7 @@ public class MainActivity extends Activity
 			// TODO Auto-generated method stub
 			questionView.setText(lg.getCountryName(context, arg0.latitude,
 					arg0.longitude));
-			drawMarker(arg0, R.drawable.avatar_chao_gao);
+			drawMarker(arg0, R.drawable.avatar_gao_chao_small);
 		}
 	}
 	
@@ -143,7 +143,7 @@ public class MainActivity extends Activity
 	public Marker drawMarker(LatLng ll, User user) {
 		return worldMap.addMarker(new MarkerOptions()
         .position(ll)
-        .icon(BitmapDescriptorFactory.fromResource(user.getAvatar())));
+        .icon(BitmapDescriptorFactory.fromResource(user.getSmallAvatar())));
 	}
 	
 	public void drawMarkers(String[] countryNames) {
