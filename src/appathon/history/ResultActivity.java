@@ -7,12 +7,10 @@ import java.util.List;
 import java.util.Map;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
@@ -79,17 +77,21 @@ public class ResultActivity extends Activity
 		ArrayList<Answer> options = generateFakeOptions();
 		Question question = generateFakeQuestion(options);
 
-		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		final View layout = inflater.inflate(
-				R.layout.activity_main_popup_question,
-				(ViewGroup) findViewById(R.id.activity_result));
-		final PopupWindow pw = new PopupWindow(layout, 400, 500, true);
-		pw.showAtLocation(findViewById(R.id.activity_result),
-				Gravity.CENTER, 0, 0);
+		View popupView = getLayoutInflater().inflate(
+				R.layout.activity_main_popup_question, null);
 
-		ListView listView = (ListView) findViewById(R.id.answerListView);
+		final PopupWindow mPopupWindow = new PopupWindow(popupView,
+				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, true);
+		mPopupWindow.setTouchable(true);
+		mPopupWindow.setOutsideTouchable(false);
 
-		listView.setOnItemClickListener(new OnItemClickListener()
+		ListView answerListView = ((ListView) mPopupWindow.getContentView()
+				.findViewById(R.id.answerListView));
+
+		ListView answerListView = ((ListView) mPopupWindow.getContentView()
+				.findViewById(R.id.answerListView));
+
+		answerListView.setOnItemClickListener(new OnItemClickListener()
 		{
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View view,
@@ -100,7 +102,7 @@ public class ResultActivity extends Activity
 				// Toast.makeText(getApplicationContext(),
 				// "You have chosen the pen: " + " " + pen,
 				// Toast.LENGTH_LONG).show();
-				pw.dismiss();
+				 mPopupWindow.dismiss();
 			}
 		});
 
@@ -110,7 +112,9 @@ public class ResultActivity extends Activity
 				new String[] { "option_string" },
 				new int[] { R.id.option_string });
 
-		listView.setAdapter(adapter);
+		answerListView.setAdapter(adapter);
+		mPopupWindow.showAtLocation(findViewById(R.id.activity_result),
+				Gravity.CENTER, 0, 0);
 	}
 
 	private List<Map<String, Object>> convertOptionsToMap(
