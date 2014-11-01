@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import appathon.history.models.Answer;
 import appathon.history.models.Question;
+import appathon.history.models.QuestionGenerator;
 import appathon.history.models.User;
 
 public class ResultActivity extends Activity
@@ -76,8 +77,7 @@ public class ResultActivity extends Activity
 
 	public void popupTest(View v)
 	{
-		ArrayList<Answer> options = generateFakeOptions();
-		final Question question = generateFakeQuestion(options);
+		final Question question = generateFakeQuestion();
 
 		View popupView = getLayoutInflater().inflate(
 				R.layout.activity_main_popup_question, null);
@@ -121,7 +121,7 @@ public class ResultActivity extends Activity
 		});
 
 		SimpleAdapter adapter = new SimpleAdapter(this,
-				convertOptionsToMap(options),
+				convertOptionsToMap(question.options),
 				R.layout.activity_main_popup_question_list_item,
 				new String[] { "option_string" },
 				new int[] { R.id.option_string });
@@ -146,24 +146,10 @@ public class ResultActivity extends Activity
 		return optionList;
 	}
 
-	private ArrayList<Answer> generateFakeOptions()
+	private Question generateFakeQuestion()
 	{
-		ArrayList<Answer> options = new ArrayList<Answer>();
-		options.add(new Answer("wrong answer 1"));
-		options.add(new Answer("wrong answer 2"));
-		options.add(new Answer("wrong answer 3"));
-		options.add(new Answer("correct answer"));
-
-		return options;
-	}
-
-	private Question generateFakeQuestion(ArrayList<Answer> options)
-	{
-
-		String question = "What is your mother's family name?";
-		String correctAnswer = "correct answer";
-
-		return new Question(question, null, options, correctAnswer);
+		QuestionGenerator qg = new QuestionGenerator(this.getApplicationContext());
+		return qg.getQuestions(1).get(0);
 	}
 
 	private ArrayList<User> generateFakeUsers()

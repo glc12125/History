@@ -11,12 +11,19 @@ public class Question {
 	public Answer country = null;
 	
 	public Question(String question, String imgUrl, ArrayList<Answer> options,
-			String correctAnswer) {
+			String correctAnswer, String country, String kind) {
 		super();
 		this.question = question;
 		this.imgUrl = imgUrl;
 		this.options = options;
 		this.correctAnswer = correctAnswer;
+		this.country = new Answer(country, true);
+		this.kind = kind;
+	}
+
+	@Override
+	public String toString() {
+		return "[" + country + "] " + question;
 	}
 	
 }
