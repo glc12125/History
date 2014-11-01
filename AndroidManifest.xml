@@ -23,7 +23,7 @@
         android:theme="@style/AppTheme" >
         
         <activity
-            android:name=".MainActivity"
+            android:name=".ResultActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -33,7 +33,7 @@
         
         <activity
             android:label="@string/app_name"
-            android:name=".ResultActivity" >
+            android:name=".MainActivity" >
         </activity>
         
         <meta-data
