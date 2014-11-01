@@ -14,6 +14,8 @@ public class User implements Comparable<User>
 
 	private boolean questionSubmitted;
 
+	private int small_avatar;
+	
 	private String selectedAnswer;
 
 	public User()
@@ -21,7 +23,7 @@ public class User implements Comparable<User>
 		super();
 	}
 
-	public User(String name, boolean isAI, int avatar)
+	public User(String name, boolean isAI, int avatar, int small_avatar)
 	{
 		super();
 		this.name = name;
@@ -29,6 +31,7 @@ public class User implements Comparable<User>
 		this.score = 0;
 		this.avatar = avatar;
 		this.questionSubmitted = false;
+		this.small_avatar = small_avatar;
 	}
 
 	public String getName()

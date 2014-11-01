@@ -3,6 +3,8 @@ package appathon.history.models;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import appathon.history.R;
+
 public class GameManager
 {
 	private QuestionGenerator questionGenerator;
@@ -16,7 +18,7 @@ public class GameManager
 	{
 		super();
 		currentQuestionIndex = 0;
-		User user = new User("CG500", false, 1);
+		User user = new User("CG500", false, R.drawable.avatar_chao_gao, R.drawable.avatar_gao_chao_small);
 		users.add(user);
 		questions = questionGenerator.getQuestions(10);
 
