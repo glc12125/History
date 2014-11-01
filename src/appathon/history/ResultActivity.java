@@ -24,18 +24,6 @@ public class ResultActivity extends Activity
 		Bundle bundle = this.getIntent().getExtras();
 		ArrayList<User> users = null;
 
-		// for debug -- Start
-		users = new ArrayList<User>();
-		users.add(new User());
-		users.add(new User());
-		users.add(new User());
-		users.add(new User());
-		users.get(0).setName("Chao Gao");
-		users.get(1).setName("Meng Zhang");
-		users.get(2).setName("Liangchuan Gu");
-		users.get(3).setName("Yimai Fang");
-		// for debug -- End
-
 		if (bundle != null)
 		{
 			users = (ArrayList<User>) bundle.getSerializable("userMap");
@@ -43,7 +31,9 @@ public class ResultActivity extends Activity
 
 		if (users == null)
 		{
-			return;
+			// for debug -- Start
+			users = generateFakeUsers();
+			// for debug -- End
 		}
 
 		// Sorting based on scores
@@ -56,6 +46,23 @@ public class ResultActivity extends Activity
 
 		ListView listView = (ListView) findViewById(R.id.rankingListView);
 		listView.setAdapter(adapter);
+	}
+
+	private ArrayList<User> generateFakeUsers()
+	{
+		ArrayList<User> users = null;
+
+		users = new ArrayList<User>();
+		users.add(new User());
+		users.add(new User());
+		users.add(new User());
+		users.add(new User());
+		users.get(0).setName("Chao Gao");
+		users.get(1).setName("Meng Zhang");
+		users.get(2).setName("Liangchuan Gu");
+		users.get(3).setName("Yimai Fang");
+
+		return users;
 	}
 
 	private List<Map<String, Object>> getData(ArrayList<User> users)
