@@ -17,10 +17,12 @@ import appathon.history.models.GameManager;
 import appathon.history.models.Question;
 import appathon.history.models.User;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -33,10 +35,10 @@ public class MainActivity extends Activity
 	LocationGetter lg;
 	Context context;
 	GameManager manager;
-	
+
 	HashMap<String, Marker> marker_map; // Store countries and marker pair, it is used for Game
 	HashMap<Marker, HashMap<String, String>> marker_text_map = new HashMap<Marker, HashMap<String, String>>(); //Store the question/answer pair for each country
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -44,15 +46,15 @@ public class MainActivity extends Activity
 		setContentView(R.layout.activity_main);
 		worldMap = ((MapFragment) getFragmentManager().findFragmentById(
 				R.id.map)).getMap();
-		
+
 		Bundle bundle = this.getIntent().getExtras();
 		lg = new LocationGetter();
 		context = this.getApplicationContext();
-//		if (bundle == null)
-//		{
-//			worldMap.setOnMapClickListener(new clickMapWhilePlayingListener());
-//		}
-		
+		//		if (bundle == null)
+		//		{
+		//			worldMap.setOnMapClickListener(new clickMapWhilePlayingListener());
+		//		}
+
 		questionView = (TextView) this.findViewById(R.id.question_view);
 		timerView = (TextView) this.findViewById(R.id.timer_view);
 		marker_map = new HashMap<String, Marker>();
@@ -74,7 +76,17 @@ public class MainActivity extends Activity
 			drawMarker(arg0, R.drawable.avatar_gao_chao_small);
 		}
 	}
-	
+
+
+	public void moveCameraToCountry(String country) {
+		LatLng ll = lg.getLocationFromAddress(context, country);
+		CameraPosition cameraPosition = new CameraPosition.Builder()
+		.target(ll)      // Sets the center of the map to country
+		.zoom(17)                   // Sets the zoom
+		.build();                   // Creates a CameraPosition from the builder
+		worldMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+	}
+
 	public void displayAllAnswers(ArrayList<Question> q_list) {
 		if(marker_map == null) {
 			marker_map = new HashMap<String, Marker>();
@@ -101,7 +113,7 @@ public class MainActivity extends Activity
 			marker.setSnippet(generateQASnipper(marker_text_map.get(marker)));
 		}
 	}
-	
+
 	private String generateQASnipper(HashMap<String, String> map) {
 		StringBuffer sb = new StringBuffer();
 		for(String question: map.keySet()) {
@@ -114,45 +126,45 @@ public class MainActivity extends Activity
 		}
 		return sb.toString();
 	}
-	
-	
+
+
 	public void removeMarker(String countryName) {
 		if(marker_map.containsKey(countryName)) {
 			Marker marker = marker_map.remove(countryName);
 			marker.remove();
 		}
 	}
-	
+
 	public Marker drawMarker(String countryName) {
 		LatLng ll = lg.getLocationFromAddress(context, countryName);
 		return drawMarker(ll);
 	}
-	
+
 	public Marker drawMarker(LatLng ll, int avatar_id) {
 		return worldMap.addMarker(new MarkerOptions()
-        .position(ll)
-        .icon(BitmapDescriptorFactory.fromResource(avatar_id)));
+		.position(ll)
+		.icon(BitmapDescriptorFactory.fromResource(avatar_id)));
 	}
-	
+
 	public Marker drawMarker(LatLng ll){
 		return worldMap.addMarker(new MarkerOptions()
-        .position(ll)
-        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+		.position(ll)
+		.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
 	}
 
 	public Marker drawMarker(LatLng ll, User user) {
 		return worldMap.addMarker(new MarkerOptions()
-        .position(ll)
-        .icon(BitmapDescriptorFactory.fromResource(user.getSmallAvatar())));
+		.position(ll)
+		.icon(BitmapDescriptorFactory.fromResource(user.getSmallAvatar())));
 	}
-	
+
 	public void drawMarkers(String[] countryNames) {
 		for(String cn: countryNames) {
 			LatLng ll = lg.getLocationFromAddress(context, cn);
 			drawMarker(ll);
 		}
 	}
-	
+
 	public void showResult(ArrayList<User> userMap)
 	{
 		Intent intent = new Intent();
@@ -189,14 +201,14 @@ public class MainActivity extends Activity
 					"%02d:%02d:%02d",
 					TimeUnit.MILLISECONDS.toHours(millis),
 					TimeUnit.MILLISECONDS.toMinutes(millis)
-							- TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS
-									.toHours(millis)),
-					TimeUnit.MILLISECONDS.toSeconds(millis)
+					- TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS
+							.toHours(millis)),
+							TimeUnit.MILLISECONDS.toSeconds(millis)
 							- TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS
 									.toMinutes(millis)));
 			System.out.println(hms);
 			timerView.setText(hms);
-			
+
 			if(manager.checkAnswers()){
 				Question q = manager.NextQuestion();
 				this.cancel();
