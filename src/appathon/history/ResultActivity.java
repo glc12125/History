@@ -57,7 +57,9 @@ public class ResultActivity extends Activity
 		users.add(new User());
 		users.add(new User());
 		users.add(new User());
+		users.get(0).setAvatar(R.drawable.avatar_chao_gao);
 		users.get(0).setName("Chao Gao");
+		users.get(0).setAvatar(R.drawable.avatar_chao_gao);
 		users.get(1).setName("Meng Zhang");
 		users.get(2).setName("Liangchuan Gu");
 		users.get(3).setName("Yimai Fang");

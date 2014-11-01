@@ -1,5 +1,7 @@
 package appathon.history.models;
 
+import android.R.integer;
+
 public class User implements Comparable<User>
 {
 	private String name;
@@ -8,7 +10,7 @@ public class User implements Comparable<User>
 
 	private int score;
 
-	private String avatar;
+	private int avatar;
 
 	private boolean questionSubmitted;
 
@@ -42,12 +44,12 @@ public class User implements Comparable<User>
 		this.score = score;
 	}
 
-	public String getAvatar()
+	public int getAvatar()
 	{
 		return avatar;
 	}
 
-	public void setAvatar(String avatar)
+	public void setAvatar(int avatar)
 	{
 		this.avatar = avatar;
 	}
