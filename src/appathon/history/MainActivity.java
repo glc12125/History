@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.widget.TextView;
+import appathon.history.models.GameManager;
 import appathon.history.models.Question;
 import appathon.history.models.User;
 
@@ -31,6 +32,7 @@ public class MainActivity extends Activity
 	TextView timerView;
 	LocationGetter lg;
 	Context context;
+	GameManager manager;
 	
 	HashMap<String, Marker> marker_map; // Store countries and marker pair, it is used for Game
 	HashMap<Marker, HashMap<String, String>> marker_text_map = new HashMap<Marker, HashMap<String, String>>(); //Store the question/answer pair for each country
@@ -55,6 +57,9 @@ public class MainActivity extends Activity
 		timerView = (TextView) this.findViewById(R.id.timer_view);
 		marker_map = new HashMap<String, Marker>();
 		marker_text_map = new HashMap<Marker, HashMap<String, String>>(); //Store the question/answer pair for each country
+		manager = new GameManager();
+		CounterClass counter = new CounterClass(10000, 1000);
+		counter.start();
 	}
 
 	public class clickMapWhilePlayingListener implements OnMapClickListener
@@ -191,6 +196,12 @@ public class MainActivity extends Activity
 									.toMinutes(millis)));
 			System.out.println(hms);
 			timerView.setText(hms);
+			
+			if(manager.checkAnswers()){
+				Question q = manager.NextQuestion();
+				this.cancel();
+				this.start();
+			}
 		}
 	}
 }
