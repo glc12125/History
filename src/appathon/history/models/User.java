@@ -1,6 +1,6 @@
 package appathon.history.models;
 
-public class User
+public class User implements Comparable<User>
 {
 	private String name;
 
@@ -32,14 +32,14 @@ public class User
 		this.isAI = isAI;
 	}
 
-	public int getCountryNum()
+	public int getScores()
 	{
-		return countryNum;
+		return scores;
 	}
 
-	public void setCountryNum(int countryNum)
+	public void setScores(int scores)
 	{
-		this.countryNum = countryNum;
+		this.scores = scores;
 	}
 
 	public String getAvatar()
