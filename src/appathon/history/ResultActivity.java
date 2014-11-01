@@ -74,7 +74,7 @@ public class ResultActivity extends Activity
 		return userList;
 	}
 
-	private void popupTest()
+	public void popupTest(View v)
 	{
 		ArrayList<Answer> options = generateFakeOptions();
 		Question question = generateFakeQuestion(options);
@@ -82,9 +82,9 @@ public class ResultActivity extends Activity
 		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		final View layout = inflater.inflate(
 				R.layout.activity_main_popup_question,
-				(ViewGroup) findViewById(R.id.popup_question_window));
+				(ViewGroup) findViewById(R.id.activity_result));
 		final PopupWindow pw = new PopupWindow(layout, 400, 500, true);
-		pw.showAtLocation(findViewById(R.id.popup_question_window),
+		pw.showAtLocation(findViewById(R.id.activity_result),
 				Gravity.CENTER, 0, 0);
 
 		ListView listView = (ListView) findViewById(R.id.answerListView);
@@ -95,15 +95,20 @@ public class ResultActivity extends Activity
 			public void onItemClick(AdapterView<?> arg0, View view,
 					int position, long id)
 			{
+				// Object o = list1.getItemAtPosition(position);
+				// String pen = o.toString();
+				// Toast.makeText(getApplicationContext(),
+				// "You have chosen the pen: " + " " + pen,
+				// Toast.LENGTH_LONG).show();
 				pw.dismiss();
 			}
 		});
 
 		SimpleAdapter adapter = new SimpleAdapter(this,
 				convertOptionsToMap(options),
-				R.layout.activity_result_list_item,
+				R.layout.activity_main_popup_question_list_item,
 				new String[] { "option_string" },
-				new int[] { R.id.option_string});
+				new int[] { R.id.option_string });
 
 		listView.setAdapter(adapter);
 	}
