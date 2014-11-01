@@ -88,4 +88,9 @@ public class ResultActivity extends Activity
 
 		return usersList;
 	}
+
+	private void popupTest()
+	{
+		
+	}
 }

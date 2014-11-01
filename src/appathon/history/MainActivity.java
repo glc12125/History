@@ -21,19 +21,19 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class MainActivity extends Activity
 {
-
-
 	GoogleMap worldMap;
 	TextView questionView;
 	TextView timerView;
 	LocationGetter lg;
 	Context context;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		worldMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
+		worldMap = ((MapFragment) getFragmentManager().findFragmentById(
+				R.id.map)).getMap();
 		questionView = (TextView) this.findViewById(R.id.question_view);
 		timerView = (TextView) this.findViewById(R.id.timer_view);
 		worldMap.setOnMapClickListener(new clickMapWhilePlayingListener());
@@ -42,12 +42,15 @@ public class MainActivity extends Activity
 		questionView.setText("hehe");
 	}
 
-	public class clickMapWhilePlayingListener implements OnMapClickListener {
+	public class clickMapWhilePlayingListener implements OnMapClickListener
+	{
 
 		@Override
-		public void onMapClick(LatLng arg0) {
+		public void onMapClick(LatLng arg0)
+		{
 			// TODO Auto-generated method stub
-			questionView.setText(lg.getCountryName(context, arg0.latitude, arg0.longitude));
+			questionView.setText(lg.getCountryName(context, arg0.latitude,
+					arg0.longitude));
 		}
 	}
 
@@ -64,25 +67,37 @@ public class MainActivity extends Activity
 		// Redirect to next screen
 		startActivity(intent);
 	}
-	
-	public class CounterClass extends CountDownTimer 
-	{ 
-		public CounterClass(long millisInFuture, long countDownInterval) 
-		{ 
-			super(millisInFuture, countDownInterval); 
-		} 
-		
-		@Override public void onFinish() 
-		{ 
-			timerView.setText("Completed."); 
-		} 
-		@SuppressLint("NewApi") 
-		@TargetApi(Build.VERSION_CODES.GINGERBREAD) 
-		@Override public void onTick(long millisUntilFinished) 
-		{ 
-			long millis = millisUntilFinished; String hms = String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(millis), TimeUnit.MILLISECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)), TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis))); 
-			System.out.println(hms); 
-			timerView.setText(hms); 
-		} 
+
+	public class CounterClass extends CountDownTimer
+	{
+		public CounterClass(long millisInFuture, long countDownInterval)
+		{
+			super(millisInFuture, countDownInterval);
+		}
+
+		@Override
+		public void onFinish()
+		{
+			timerView.setText("Completed.");
+		}
+
+		@SuppressLint("NewApi")
+		@TargetApi(Build.VERSION_CODES.GINGERBREAD)
+		@Override
+		public void onTick(long millisUntilFinished)
+		{
+			long millis = millisUntilFinished;
+			String hms = String.format(
+					"%02d:%02d:%02d",
+					TimeUnit.MILLISECONDS.toHours(millis),
+					TimeUnit.MILLISECONDS.toMinutes(millis)
+							- TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS
+									.toHours(millis)),
+					TimeUnit.MILLISECONDS.toSeconds(millis)
+							- TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS
+									.toMinutes(millis)));
+			System.out.println(hms);
+			timerView.setText(hms);
+		}
 	}
 }
