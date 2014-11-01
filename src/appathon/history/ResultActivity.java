@@ -37,7 +37,7 @@ public class ResultActivity extends Activity
 		}
 
 		// Sorting based on scores
-		Collections.sort(users);
+		Collections.sort(users, Collections.reverseOrder());
 
 		SimpleAdapter adapter = new SimpleAdapter(this, getData(users),
 				R.layout.activity_result_list_item, new String[] { "avatar",
