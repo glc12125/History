@@ -17,6 +17,7 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 import appathon.history.models.Answer;
 import appathon.history.models.Question;
 import appathon.history.models.User;
@@ -76,7 +77,7 @@ public class ResultActivity extends Activity
 	public void popupTest(View v)
 	{
 		ArrayList<Answer> options = generateFakeOptions();
-		Question question = generateFakeQuestion(options);
+		final Question question = generateFakeQuestion(options);
 
 		View popupView = getLayoutInflater().inflate(
 				R.layout.activity_main_popup_question, null);
@@ -96,14 +97,25 @@ public class ResultActivity extends Activity
 		answerListView.setOnItemClickListener(new OnItemClickListener()
 		{
 			@Override
-			public void onItemClick(AdapterView<?> arg0, View view,
+			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id)
 			{
-				// Object o = list1.getItemAtPosition(position);
-				// String pen = o.toString();
-				// Toast.makeText(getApplicationContext(),
-				// "You have chosen the pen: " + " " + pen,
-				// Toast.LENGTH_LONG).show();
+				ListView answerListView = (ListView) parent;
+
+				HashMap<String, String> map = (HashMap<String, String>) answerListView
+						.getItemAtPosition(position);
+				String yourAnswer = map.get("option_string");
+
+				if (question.correctAnswer.equals(yourAnswer))
+				{
+					Toast.makeText(getApplicationContext(), "Correct answer!!",
+							Toast.LENGTH_SHORT).show();
+				} else
+				{
+					Toast.makeText(getApplicationContext(), "Wrong answer!!",
+							Toast.LENGTH_SHORT).show();
+				}
+
 				mPopupWindow.dismiss();
 			}
 		});
