@@ -6,7 +6,7 @@ public class User implements Comparable<User>
 
 	private boolean isAI;
 
-	private int scores;
+	private int score;
 
 	private String avatar;
 
@@ -32,14 +32,14 @@ public class User implements Comparable<User>
 		this.isAI = isAI;
 	}
 
-	public int getScores()
+	public int getScore()
 	{
-		return scores;
+		return score;
 	}
 
-	public void setScores(int scores)
+	public void setScore(int score)
 	{
-		this.scores = scores;
+		this.score = score;
 	}
 
 	public String getAvatar()
@@ -67,6 +67,7 @@ public class User implements Comparable<User>
 		if (isAI)
 		{
 			// randomly return answer
+			return null;
 		} else
 		{
 			return selectedAnswer;
@@ -83,7 +84,7 @@ public class User implements Comparable<User>
 	{
 		if (aUser instanceof User)
 		{
-			return (scores - aUser.scores);
+			return (score - aUser.score);
 		}
 
 		throw new ClassCastException("Cannot compare User with "
@@ -93,7 +94,7 @@ public class User implements Comparable<User>
 	@Override
 	public String toString()
 	{
-		return name + "         total scores:" + scores;
+		return name + "         total scores:" + score;
 	}
 
 }
