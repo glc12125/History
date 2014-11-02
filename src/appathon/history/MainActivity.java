@@ -130,7 +130,7 @@ public class MainActivity extends Activity
 		}
 	}
 
-	public void moveCameraToCountry(String country)
+	public void moveCameraToCountry(String country, float zoomLevel)
 	{
 		LatLng ll = lg.getLocationFromAddress(context, country, 7.5);
 		CameraPosition cameraPosition = new CameraPosition.Builder().target(ll) // Sets
@@ -141,17 +141,12 @@ public class MainActivity extends Activity
 																				// map
 																				// to
 																				// country
-				.zoom(3) // Sets the zoom
+				.zoom(zoomLevel) // Sets the zoom
 				.build(); // Creates a CameraPosition from the builder
 		worldMap.moveCamera(CameraUpdateFactory
 				.newCameraPosition(cameraPosition));
 		// worldMap.animateCamera(CameraUpdateFactory
 		// .newCameraPosition(cameraPosition));
-	}
-
-	public void moveCameraToAllWorld()
-	{
-		worldMap.moveCamera(CameraUpdateFactory.zoomTo(1));
 	}
 
 	public void displayAllAnswers(ArrayList<Question> q_list)
@@ -344,9 +339,9 @@ public class MainActivity extends Activity
 	private void showQuestion(final Question question)
 	{
 		if (question.kind == "ChooseCountry")
-			moveCameraToAllWorld();
+			moveCameraToCountry(question.country.answer, (float) 1.5);
 		else
-			moveCameraToCountry(question.country.answer);
+			moveCameraToCountry(question.country.answer, (float) 3.5);
 
 		if (mPopupWindow.isShowing())
 		{
