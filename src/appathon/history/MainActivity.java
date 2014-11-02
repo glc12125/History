@@ -133,7 +133,7 @@ public class MainActivity extends Activity
 
 	public void moveCameraToCountry(String country)
 	{
-		LatLng ll = lg.getLocationFromAddress(context, country);
+		LatLng ll = lg.getLocationFromAddress(context, country, 7.5);
 		CameraPosition cameraPosition = new CameraPosition.Builder().target(ll) // Sets
 																				// the
 																				// center
@@ -355,7 +355,7 @@ public class MainActivity extends Activity
 		}
 
 		mPopupWindow
-				.showAtLocation(findViewById(R.id.map), Gravity.TOP, 0, 208);
+				.showAtLocation(findViewById(R.id.map), Gravity.TOP, 0, 218);
 
 		TextView questionTextView = ((TextView) mPopupWindow.getContentView()
 				.findViewById(R.id.questionTextView));

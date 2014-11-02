@@ -32,7 +32,11 @@ public class LocationGetter
 		return null;
 	}
 
-	public LatLng getLocationFromAddress(Context context, String strAddress)
+	public LatLng getLocationFromAddress(Context context, String strAddress){
+		return getLocationFromAddress(context, strAddress, 0.0);
+	}
+	
+	public LatLng getLocationFromAddress(Context context, String strAddress, double latDiff)
 	{
 		Geocoder coder = new Geocoder(context, Locale.getDefault());
 		List<Address> address;
@@ -48,7 +52,7 @@ public class LocationGetter
 			}
 			Address location = address.get(0);
 
-			ll = new LatLng(location.getLatitude(),location.getLongitude() );
+			ll = new LatLng(location.getLatitude() + latDiff,location.getLongitude() );
 		} catch (IOException e)
 		{
 		}
