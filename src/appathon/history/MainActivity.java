@@ -14,6 +14,8 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.Message;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
@@ -42,11 +44,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class MainActivity extends Activity
 {
 	GoogleMap worldMap;
-	TextView questionView;
-	TextView timerView;
 	LocationGetter lg;
 	Context context;
 	GameManager manager;
+	PopupWindow mPopupWindow;
 
 	HashMap<String, Marker> marker_map; // Store countries and marker pair, it
 										// is used for Game
@@ -57,6 +58,21 @@ public class MainActivity extends Activity
 																												// for
 																												// each
 																												// country
+
+	private Handler popupHandler = new Handler()
+	{
+		@Override
+		public void handleMessage(Message msg)
+		{
+			switch (msg.what)
+			{
+			case 0:
+				showQuestion(manager.NextQuestion());
+				break;
+			}
+		}
+
+	};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -83,8 +99,18 @@ public class MainActivity extends Activity
 																			// each
 																			// country
 		manager = new GameManager(context);
-		showQuestion(manager.NextQuestion());
-		CounterClass counter = new CounterClass(10000, 1000);
+
+		View popupView = getLayoutInflater().inflate(
+				R.layout.activity_main_popup_question, null);
+
+		mPopupWindow = new PopupWindow(popupView, LayoutParams.MATCH_PARENT,
+				LayoutParams.WRAP_CONTENT, true);
+		mPopupWindow.setTouchable(true);
+		mPopupWindow.setOutsideTouchable(false);
+
+		popupHandler.sendEmptyMessageDelayed(0, 500);
+
+		CounterClass counter = new CounterClass(3000, 1000);
 		counter.start();
 	}
 
@@ -94,9 +120,6 @@ public class MainActivity extends Activity
 		@Override
 		public void onMapClick(LatLng arg0)
 		{
-			// TODO Auto-generated method stub
-			questionView.setText(lg.getCountryName(context, arg0.latitude,
-					arg0.longitude));
 			drawMarker(arg0, R.drawable.avatar_gao_chao_small);
 		}
 	}
@@ -236,7 +259,10 @@ public class MainActivity extends Activity
 		@Override
 		public void onFinish()
 		{
-			timerView.setText("Completed.");
+			manager.checkAnswers();
+			showQuestion(manager.NextQuestion());
+			this.cancel();
+			this.start();
 		}
 
 		@SuppressLint("NewApi")
@@ -255,7 +281,6 @@ public class MainActivity extends Activity
 							- TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS
 									.toMinutes(millis)));
 			System.out.println(hms);
-			timerView.setText(hms);
 
 			if (manager.checkAnswers())
 			{
@@ -268,16 +293,13 @@ public class MainActivity extends Activity
 
 	private void showQuestion(final Question question)
 	{
-		View popupView = getLayoutInflater().inflate(
-				R.layout.activity_main_popup_question, null);
+		if (mPopupWindow.isShowing())
+		{
+			mPopupWindow.dismiss();
+		}
 
-		final PopupWindow mPopupWindow = new PopupWindow(popupView,
-				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, true);
-		mPopupWindow.setTouchable(true);
-		mPopupWindow.setOutsideTouchable(false);
-	
-		mPopupWindow.showAtLocation(findViewById(R.id.map),
-				Gravity.CENTER, 0, 0);
+		mPopupWindow.showAtLocation(findViewById(R.id.map), Gravity.CENTER, 0,
+				0);
 
 		TextView questionTextView = ((TextView) mPopupWindow.getContentView()
 				.findViewById(R.id.questionTextView));
@@ -298,6 +320,8 @@ public class MainActivity extends Activity
 						.getItemAtPosition(position);
 				String yourAnswer = map.get("option_string");
 
+				manager.updateUser("Chao Gao", yourAnswer);
+				
 				if (question.correctAnswer.equals(yourAnswer))
 				{
 					Toast.makeText(getApplicationContext(), "Correct answer!!",
@@ -319,7 +343,6 @@ public class MainActivity extends Activity
 				new int[] { R.id.option_string });
 
 		answerListView.setAdapter(adapter);
-
 	}
 
 	private List<Map<String, Object>> convertOptionsToMap(

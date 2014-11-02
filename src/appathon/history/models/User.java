@@ -15,7 +15,7 @@ public class User implements Comparable<User>
 	private boolean questionSubmitted;
 
 	private int small_avatar;
-	
+
 	private String selectedAnswer;
 
 	public User()
@@ -39,10 +39,11 @@ public class User implements Comparable<User>
 		return name;
 	}
 
-	public int getSmallAvatar() {
+	public int getSmallAvatar()
+	{
 		return this.small_avatar;
 	}
-	
+
 	public void setName(String name)
 	{
 		this.name = name;
@@ -112,7 +113,13 @@ public class User implements Comparable<User>
 
 	public void restart()
 	{
-		questionSubmitted = false;
+		if (isAI)
+		{
+			questionSubmitted = true;
+		} else
+		{
+			questionSubmitted = false;
+		}
 	}
 
 	@Override

@@ -24,10 +24,10 @@ public class GameManager
 		currentQuestionIndex = 0;
 
 		users = new ArrayList<User>();
-		users.add(new User("Chao Gao", false, R.drawable.avatar_chao_gao,
-				R.drawable.avatar_gao_chao_small));
 		users.add(new User("Meng ZHang", true, R.drawable.avatar_meng_zhang,
 				R.drawable.avatar_meng_zhang_small));
+		users.add(new User("Chao Gao", false, R.drawable.avatar_chao_gao,
+				R.drawable.avatar_gao_chao_small));
 		users.add(new User("Liangchuan Gu", true,
 				R.drawable.avatar_liangchuan_gu,
 				R.drawable.avatar_liang_chuan_small));
@@ -51,6 +51,8 @@ public class GameManager
 				countryToQuestionsMap.put(country, newList);
 			}
 		}
+
+		countryToUser = new HashMap<Country, User>();
 	}
 
 	public QuestionGenerator getQuestionGenerator()
@@ -112,19 +114,33 @@ public class GameManager
 	public boolean checkAnswers()
 	{
 		int count = 0;
+		Question currentQuestion = questions.get(this.currentQuestionIndex);
+
 		for (int i = 0; i < users.size(); i++)
 		{
-			if (users.get(i).isQuestionSubmitted())
+			User user = users.get(i);
+
+			if (user.isQuestionSubmitted())
 			{
 				count++;
-				if (users
-						.get(i)
-						.getSelectedAnswer()
-						.equals(questions.get(this.currentQuestionIndex).correctAnswer))
+				String selectedAnswer = null;
+
+				if (user.isAI())
 				{
+					selectedAnswer = currentQuestion.options.get(i).answer;
+				} else
+				{
+					selectedAnswer = user.getSelectedAnswer();
+				}
+
+				if (selectedAnswer.equals(currentQuestion.correctAnswer))
+				{
+					updatecountryToUser(currentQuestion.country.answer,
+							users.get(i));
 					return true;
 				}
 			}
+
 		}
 
 		if (count == users.size())
@@ -133,6 +149,31 @@ public class GameManager
 		} else
 		{
 			return false;
+		}
+
+	}
+
+	private void updatecountryToUser(String countryName, User user)
+	{
+		for (Country country : countryToQuestionsMap.keySet())
+		{
+			if (country.getName().equals(countryName))
+			{
+				if (countryToUser.containsKey(country))
+				{
+					country.setDefense(country.getDefense() - 1);
+					if (country.getDefense() == 0)
+					{
+						country.setDefense(1);
+						countryToUser.put(country, user);
+					}
+				} else
+				{
+					country.setDefense(1);
+					countryToUser.put(country, user);
+				}
+
+			}
 		}
 
 	}
@@ -147,11 +188,8 @@ public class GameManager
 
 	public Question NextQuestion()
 	{
-		if (currentQuestionIndex < questions.size())
-		{
-			currentQuestionIndex++;
-
-		} else
+		currentQuestionIndex++;
+		if (currentQuestionIndex >= questions.size())
 		{
 			currentQuestionIndex = 0;
 		}
