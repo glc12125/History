@@ -85,4 +85,16 @@ public class ResultActivity extends Activity
 
 		return users;
 	}
+
+	private displayall name()
+	{// 数据是使用Intent返回
+		Intent intent = new Intent();
+		// 把返回数据存入Intent
+		intent.putExtra("result", "My name is linjiqin");
+		// 设置返回数据
+		OtherActivity.this.setResult(RESULT_OK, intent);
+		// 关闭Activity
+		OtherActivity.this.finish();
+
+	}
 }

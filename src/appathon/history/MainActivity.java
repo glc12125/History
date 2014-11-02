@@ -34,6 +34,7 @@ import appathon.history.models.User;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
@@ -135,10 +136,12 @@ public class MainActivity extends Activity
 																				// map
 																				// to
 																				// country
-				.zoom(17) // Sets the zoom
+				.zoom(3) // Sets the zoom
 				.build(); // Creates a CameraPosition from the builder
-		worldMap.animateCamera(CameraUpdateFactory
+		worldMap.moveCamera(CameraUpdateFactory
 				.newCameraPosition(cameraPosition));
+		// worldMap.animateCamera(CameraUpdateFactory
+		// .newCameraPosition(cameraPosition));
 	}
 
 	public void displayAllAnswers(ArrayList<Question> q_list)
@@ -176,6 +179,23 @@ public class MainActivity extends Activity
 		{
 			marker.setSnippet(generateQASnipper(marker_text_map.get(marker)));
 		}
+
+		worldMap.setOnMarkerClickListener(new OnMarkerClickListener()
+		{
+			@Override
+			public boolean onMarkerClick(Marker arg0)
+			{
+				// TODO Auto-generated method stub
+				if (arg0.isInfoWindowShown())
+				{
+					arg0.hideInfoWindow();
+				} else
+				{
+					arg0.showInfoWindow();
+				}
+				return true;
+			}
+		});
 	}
 
 	private String generateQASnipper(HashMap<String, String> map)
@@ -245,7 +265,14 @@ public class MainActivity extends Activity
 		// Pass information to the next screen
 		intent.setClass(getApplicationContext(), ResultActivity.class);
 		// Redirect to next screen
-		startActivity(intent);
+		startActivityForResult(intent, 0);
+
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
+		displayAllAnswers(manager.getQuestions());
 	}
 
 	public class CounterClass extends CountDownTimer
@@ -292,6 +319,8 @@ public class MainActivity extends Activity
 
 	private void showQuestion(final Question question)
 	{
+		moveCameraToCountry(question.country.answer);
+
 		if (mPopupWindow.isShowing())
 		{
 			mPopupWindow.dismiss();

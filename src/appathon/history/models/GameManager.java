@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
+import org.apache.http.conn.ManagedClientConnection;
+
+import android.R.bool;
 import android.content.Context;
 import appathon.history.R;
 
@@ -18,10 +21,13 @@ public class GameManager
 	private int currentQuestionIndex;
 	private Context context;
 
+	public boolean isFinished;
+
 	public GameManager(Context context)
 	{
 		super();
 		this.context = context;
+		isFinished = false;
 
 		currentQuestionIndex = 0;
 
@@ -217,6 +223,8 @@ public class GameManager
 
 	public void calculateUserScores()
 	{
+		isFinished = true;
+
 		Iterator entries = countryToUser.entrySet().iterator();
 		while (entries.hasNext())
 		{
