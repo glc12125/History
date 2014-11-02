@@ -343,6 +343,15 @@ public class MainActivity extends Activity
 		else
 			moveCameraToCountry(question.country.answer, (float) 3.5);
 
+		try
+		{
+			Thread.sleep(1000);
+		} catch (InterruptedException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		if (mPopupWindow.isShowing())
 		{
 			mPopupWindow.dismiss();
