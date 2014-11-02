@@ -9,6 +9,7 @@ import org.apache.http.conn.ManagedClientConnection;
 
 import android.R.bool;
 import android.content.Context;
+import android.widget.Toast;
 import appathon.history.MainActivity;
 import appathon.history.R;
 
@@ -35,11 +36,11 @@ public class GameManager
 		users = new ArrayList<User>();
 		users.add(new User("Meng ZHang", true, R.drawable.avatar_meng_zhang,
 				R.drawable.avatar_meng_zhang_small));
-		users.add(new User("Chao Gao", false, R.drawable.avatar_chao_gao,
-				R.drawable.avatar_gao_chao_small));
-		users.add(new User("Liangchuan Gu", true,
+		users.add(new User("Chao Gao", true, R.drawable.avatar_chao_gao,
+				R.drawable.avatar_chao_gao_small));
+		users.add(new User("Liangchuan Gu", false,
 				R.drawable.avatar_liangchuan_gu,
-				R.drawable.avatar_liang_chuan_small));
+				R.drawable.avatar_liangchuan_gu_small));
 		users.add(new User("Yimai Fang", true, R.drawable.avatar_yimai_fang,
 				R.drawable.avatar_yi_mai_small));
 
@@ -178,7 +179,8 @@ public class GameManager
 						countryToUser.put(country, user);
 						MainActivity.drawMarker(MainActivity.lg
 								.getLocationFromAddress(context,
-										country.getName()), user);
+										country.getName()), user
+								.getSmallAvatar());
 					}
 				} else
 				{
@@ -186,7 +188,7 @@ public class GameManager
 					countryToUser.put(country, user);
 					MainActivity.drawMarker(
 							MainActivity.lg.getLocationFromAddress(context,
-									country.getName()), user);
+									country.getName()), user.getSmallAvatar());
 				}
 				break;
 			}
@@ -216,12 +218,23 @@ public class GameManager
 
 	public boolean updateUser(String userName, String selectedAnswer)
 	{
-
+		Question currentQuestion = questions.get(this.currentQuestionIndex);
 		for (User user : users)
 		{
 			if (user.getName().equals(userName))
 			{
 				user.setSelectedAnswer(selectedAnswer);
+				user.setQuestionSubmitted(true);
+
+				if (currentQuestion.correctAnswer.equals(selectedAnswer))
+				{
+					Toast.makeText(context, "Correct!!", Toast.LENGTH_SHORT)
+							.show();
+				} else
+				{
+					Toast.makeText(context, "Wrong!!", Toast.LENGTH_SHORT)
+							.show();
+				}
 				return true;
 			}
 		}
@@ -233,14 +246,16 @@ public class GameManager
 	{
 		isFinished = true;
 
-		Iterator entries = countryToUser.entrySet().iterator();
-		while (entries.hasNext())
+		for (Country country : countryToQuestionsMap.keySet())
 		{
-			Entry thisEntry = (Entry) entries.next();
-			Country country = (Country) thisEntry.getKey();
-			User user = (User) thisEntry.getValue();
-			user.setScore(user.getScore() + country.getDefense());
+			if (countryToUser.containsKey(country))
+			{
+				User user = countryToUser.get(country);
+				user.setScore(user.getScore() + country.getDefense());
+			}
+
 		}
+
 	}
 
 }

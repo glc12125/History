@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
@@ -36,6 +37,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -112,7 +114,7 @@ public class MainActivity extends Activity
 
 		popupHandler.sendEmptyMessageDelayed(0, 500);
 
-		counter = new CounterClass(3000, 1000);
+		counter = new CounterClass(5000, 1000);
 		counter.start();
 	}
 
@@ -122,7 +124,7 @@ public class MainActivity extends Activity
 		@Override
 		public void onMapClick(LatLng arg0)
 		{
-			drawMarker(arg0, R.drawable.avatar_gao_chao_small);
+			drawMarker(arg0, R.drawable.avatar_chao_gao_small);
 		}
 	}
 
@@ -231,8 +233,19 @@ public class MainActivity extends Activity
 
 	public static Marker drawMarker(LatLng ll, int avatar_id)
 	{
-		return worldMap.addMarker(new MarkerOptions().position(ll).icon(
-				BitmapDescriptorFactory.fromResource(avatar_id)));
+		if (worldMap == null)
+		{
+			Log.e("aaaaaaaaaa", "world map is null");
+		}
+		MarkerOptions marker = new MarkerOptions().position(ll).icon(
+				BitmapDescriptorFactory.fromResource(avatar_id));
+		
+		if (marker == null)
+		{
+			Log.e("aaaaaaaaaa", "marker is null");
+		}
+		
+		return worldMap.addMarker(marker);
 	}
 
 	public Marker drawMarker(LatLng ll)
@@ -242,7 +255,7 @@ public class MainActivity extends Activity
 						.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
 	}
 
-	public static Marker drawMarker(LatLng ll, User user)
+	public Marker drawMarker(LatLng ll, User user)
 	{
 		return worldMap.addMarker(new MarkerOptions().position(ll).icon(
 				BitmapDescriptorFactory.fromResource(user.getSmallAvatar())));
@@ -349,17 +362,7 @@ public class MainActivity extends Activity
 						.getItemAtPosition(position);
 				String yourAnswer = map.get("option_string");
 
-				manager.updateUser("Chao Gao", yourAnswer);
-
-				if (question.correctAnswer.equals(yourAnswer))
-				{
-					Toast.makeText(getApplicationContext(), "Correct answer!!",
-							Toast.LENGTH_SHORT).show();
-				} else
-				{
-					Toast.makeText(getApplicationContext(), "Wrong answer!!",
-							Toast.LENGTH_SHORT).show();
-				}
+				manager.updateUser("Liangchuan Gu", yourAnswer);
 
 				mPopupWindow.dismiss();
 			}
