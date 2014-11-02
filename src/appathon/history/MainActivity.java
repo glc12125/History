@@ -1,6 +1,5 @@
 package appathon.history;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,15 +9,14 @@ import java.util.concurrent.TimeUnit;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.media.MediaPlayer;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
 import android.view.Gravity;
@@ -75,15 +73,10 @@ public class MainActivity extends Activity
 			switch (msg.what)
 			{
 			case 0:
-				Intent svc = new Intent(getApplicationContext(),
-						backgroundAudioService.class);
-				startService(svc);
-
 				showQuestion(manager.NextQuestion());
 				break;
 			}
 		}
-
 	};
 
 	@Override
@@ -91,6 +84,7 @@ public class MainActivity extends Activity
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+
 		worldMap = ((MapFragment) getFragmentManager().findFragmentById(
 				R.id.map)).getMap();
 
@@ -410,53 +404,4 @@ public class MainActivity extends Activity
 
 		return optionList;
 	}
-
-	public class backgroundAudioService extends Service
-	{
-		MediaPlayer media;
-
-		@Override
-		public IBinder onBind(Intent intent)
-		{
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public void onCreate()
-		{
-			// TODO Auto-generated method stub
-			super.onCreate();
-		}
-
-		@Override
-		public int onStartCommand(Intent intent, int flags, int startId)
-		{
-			media = MediaPlayer.create(this, R.raw.background_audio);
-			try
-			{
-				media.prepare();
-			} catch (IllegalStateException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			media.start();
-			// TODO Auto-generated method stub
-			return super.onStartCommand(intent, flags, startId);
-		}
-
-		@Override
-		public void onDestroy()
-		{
-			// TODO Auto-generated method stub
-			media.release();
-			super.onDestroy();
-		}
-	}
-
 }

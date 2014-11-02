@@ -246,21 +246,21 @@ public class GameManager
 		return false;
 	}
 
-	private void playSoundWrong()
-	{
-		MediaPlayer mediaPlayer = MediaPlayer.create(context,
-				R.raw.sound_wrong);
-		mediaPlayer.start(); // no need to call prepare(); create() does that
-								// for you
-	}
-
 	private void playSoundCorrect()
 	{
 		MediaPlayer mediaPlayer = MediaPlayer.create(context,
 				R.raw.sound_correct);
 		mediaPlayer.start(); // no need to call prepare(); create() does that
-								// for you
+		// for you
 
+	}
+
+	private void playSoundWrong()
+	{
+		MediaPlayer mediaPlayer = MediaPlayer
+				.create(context, R.raw.sound_wrong);
+		mediaPlayer.start(); // no need to call prepare(); create() does that
+								// for you
 	}
 
 	public void calculateUserScores()
