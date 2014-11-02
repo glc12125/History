@@ -170,6 +170,7 @@ public class MainActivity extends Activity
 				if (!marker_map.containsKey(q.country.answer))
 				{
 					Marker marker = drawMarker(ll);
+					marker.setTitle(q.country.answer);
 					marker_map.put(q.country.answer, marker);
 					HashMap<String, String> textMap = new HashMap<String, String>();
 					textMap.put(q.question, q.country.answer);
@@ -192,14 +193,7 @@ public class MainActivity extends Activity
 			@Override
 			public boolean onMarkerClick(Marker arg0)
 			{
-				// TODO Auto-generated method stub
-				if (arg0.isInfoWindowShown())
-				{
-					arg0.hideInfoWindow();
-				} else
-				{
-					arg0.showInfoWindow();
-				}
+				arg0.showInfoWindow();
 				return true;
 			}
 		});
@@ -249,7 +243,12 @@ public class MainActivity extends Activity
 			Log.e("aaaaaaaaaa", "marker is null");
 		}
 
-		return worldMap.addMarker(marker);
+		Marker temp_marker = worldMap.addMarker(marker);
+		CameraPosition cameraPosition = new CameraPosition.Builder().target(ll).build() ;
+		worldMap.moveCamera(CameraUpdateFactory
+				.newCameraPosition(cameraPosition));
+		
+		return temp_marker;
 	}
 
 	public Marker drawMarker(LatLng ll)
@@ -291,6 +290,7 @@ public class MainActivity extends Activity
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
+		mPopupWindow.dismiss();
 		displayAllAnswers(manager.getQuestions());
 	}
 
@@ -346,14 +346,14 @@ public class MainActivity extends Activity
 		else
 			moveCameraToCountry(question.country.answer, (float) 3.5);
 
-		try
-		{
-			Thread.sleep(1000);
-		} catch (InterruptedException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		try
+//		{
+//			Thread.sleep(1000);
+//		} catch (InterruptedException e)
+//		{
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		
 		if (mPopupWindow.isShowing())
 		{
