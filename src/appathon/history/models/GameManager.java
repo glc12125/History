@@ -18,9 +18,19 @@ public class GameManager
 	{
 		super();
 		currentQuestionIndex = 0;
-		User user = new User("CG500", false, R.drawable.avatar_chao_gao, R.drawable.avatar_gao_chao_small);
-		users.add(user);
-		questions = questionGenerator.getQuestions(10);
+
+		users = new ArrayList<User>();
+		users.add(new User("Chao Gao", false, R.drawable.avatar_chao_gao,
+				R.drawable.avatar_gao_chao_small));
+		users.add(new User("Meng ZHang", true, R.drawable.avatar_meng_zhang,
+				R.drawable.avatar_meng_zhang_small));
+		users.add(new User("Liangchuan Gu", true,
+				R.drawable.avatar_liangchuan_gu,
+				R.drawable.avatar_liang_chuan_small));
+		users.add(new User("Yimai Fang", true, R.drawable.avatar_yimai_fang,
+				R.drawable.avatar_yi_mai_small));
+
+		questions = questionGenerator.getQuestions(100);
 
 		for (Question question : questions)
 		{
@@ -139,7 +149,7 @@ public class GameManager
 		{
 			currentQuestionIndex = 0;
 		}
-		
+
 		RestartUsers();
 		return questions.get(currentQuestionIndex);
 	}

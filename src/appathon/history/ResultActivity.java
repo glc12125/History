@@ -25,7 +25,6 @@ import appathon.history.models.User;
 
 public class ResultActivity extends Activity
 {
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -75,80 +74,10 @@ public class ResultActivity extends Activity
 		return userList;
 	}
 
-	public void popupTest(View v)
-	{
-		final Question question = generateFakeQuestion();
-
-		View popupView = getLayoutInflater().inflate(
-				R.layout.activity_main_popup_question, null);
-
-		final PopupWindow mPopupWindow = new PopupWindow(popupView,
-				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, true);
-		mPopupWindow.setTouchable(true);
-		mPopupWindow.setOutsideTouchable(false);
-
-		TextView questionTextView = ((TextView) mPopupWindow.getContentView()
-				.findViewById(R.id.questionTextView));
-		questionTextView.setText(question.question);
-
-		ListView answerListView = ((ListView) mPopupWindow.getContentView()
-				.findViewById(R.id.answerListView));
-
-		answerListView.setOnItemClickListener(new OnItemClickListener()
-		{
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id)
-			{
-				ListView answerListView = (ListView) parent;
-
-				HashMap<String, String> map = (HashMap<String, String>) answerListView
-						.getItemAtPosition(position);
-				String yourAnswer = map.get("option_string");
-
-				if (question.correctAnswer.equals(yourAnswer))
-				{
-					Toast.makeText(getApplicationContext(), "Correct answer!!",
-							Toast.LENGTH_SHORT).show();
-				} else
-				{
-					Toast.makeText(getApplicationContext(), "Wrong answer!!",
-							Toast.LENGTH_SHORT).show();
-				}
-
-				mPopupWindow.dismiss();
-			}
-		});
-
-		SimpleAdapter adapter = new SimpleAdapter(this,
-				convertOptionsToMap(question.options),
-				R.layout.activity_main_popup_question_list_item,
-				new String[] { "option_string" },
-				new int[] { R.id.option_string });
-
-		answerListView.setAdapter(adapter);
-		mPopupWindow.showAtLocation(findViewById(R.id.activity_result),
-				Gravity.CENTER, 0, 0);
-	}
-
-	private List<Map<String, Object>> convertOptionsToMap(
-			ArrayList<Answer> options)
-	{
-		List<Map<String, Object>> optionList = new ArrayList<Map<String, Object>>();
-
-		for (Answer option : options)
-		{
-			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("option_string", option.answer);
-			optionList.add(map);
-		}
-
-		return optionList;
-	}
-
 	private Question generateFakeQuestion()
 	{
-		QuestionGenerator qg = new QuestionGenerator(this.getApplicationContext());
+		QuestionGenerator qg = new QuestionGenerator(
+				this.getApplicationContext());
 		return qg.getQuestions(1).get(0);
 	}
 
