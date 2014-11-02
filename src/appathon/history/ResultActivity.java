@@ -31,20 +31,7 @@ public class ResultActivity extends Activity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_result);
 
-		Bundle bundle = this.getIntent().getExtras();
-		ArrayList<User> users = null;
-
-		if (bundle != null)
-		{
-			users = (ArrayList<User>) bundle.getSerializable("userMap");
-		}
-
-		if (users == null)
-		{
-			// for debug -- Start
-			users = generateFakeUsers();
-			// for debug -- End
-		}
+		ArrayList<User> users = MainActivity.manager.getUsers();
 
 		// Sorting based on scores
 		Collections.sort(users, Collections.reverseOrder());

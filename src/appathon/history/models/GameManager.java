@@ -2,6 +2,8 @@ package appathon.history.models;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
 
 import android.content.Context;
 import appathon.history.R;
@@ -211,6 +213,18 @@ public class GameManager
 		}
 
 		return false;
+	}
+
+	public void calculateUserScores()
+	{
+		Iterator entries = countryToUser.entrySet().iterator();
+		while (entries.hasNext())
+		{
+			Entry thisEntry = (Entry) entries.next();
+			Country country = (Country) thisEntry.getKey();
+			User user = (User) thisEntry.getValue();
+			user.setScore(user.getScore() + country.getDefense());
+		}
 	}
 
 }

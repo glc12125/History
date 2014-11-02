@@ -46,9 +46,9 @@ public class MainActivity extends Activity
 	GoogleMap worldMap;
 	LocationGetter lg;
 	Context context;
-	GameManager manager;
+	public static GameManager manager;
 	PopupWindow mPopupWindow;
-
+	CounterClass counter;
 	HashMap<String, Marker> marker_map; // Store countries and marker pair, it
 										// is used for Game
 	HashMap<Marker, HashMap<String, String>> marker_text_map = new HashMap<Marker, HashMap<String, String>>(); // Store
@@ -110,7 +110,7 @@ public class MainActivity extends Activity
 
 		popupHandler.sendEmptyMessageDelayed(0, 500);
 
-		CounterClass counter = new CounterClass(3000, 1000);
+		counter = new CounterClass(3000, 1000);
 		counter.start();
 	}
 
@@ -236,15 +236,14 @@ public class MainActivity extends Activity
 		}
 	}
 
-	public void showResult(ArrayList<User> userMap)
+	public void showRanking(View v)
 	{
+		counter.cancel();
+
+		manager.calculateUserScores();
 		Intent intent = new Intent();
 		// Pass information to the next screen
 		intent.setClass(getApplicationContext(), ResultActivity.class);
-		Bundle bundle = new Bundle();
-		bundle.putSerializable("userMap", userMap);
-		intent.putExtras(bundle);
-
 		// Redirect to next screen
 		startActivity(intent);
 	}
@@ -321,7 +320,7 @@ public class MainActivity extends Activity
 				String yourAnswer = map.get("option_string");
 
 				manager.updateUser("Chao Gao", yourAnswer);
-				
+
 				if (question.correctAnswer.equals(yourAnswer))
 				{
 					Toast.makeText(getApplicationContext(), "Correct answer!!",
