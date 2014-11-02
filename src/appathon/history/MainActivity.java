@@ -146,11 +146,10 @@ public class MainActivity extends Activity
 		// worldMap.animateCamera(CameraUpdateFactory
 		// .newCameraPosition(cameraPosition));
 	}
-	
-	public void moveCameraToAllWorld(){
-		CameraPosition cameraPosition = new CameraPosition.Builder().zoom(1).build();
-		worldMap.moveCamera(CameraUpdateFactory
-				.newCameraPosition(cameraPosition));
+
+	public void moveCameraToAllWorld()
+	{
+		worldMap.moveCamera(CameraUpdateFactory.zoomTo(1));
 	}
 
 	public void displayAllAnswers(ArrayList<Question> q_list)
@@ -245,12 +244,12 @@ public class MainActivity extends Activity
 		}
 		MarkerOptions marker = new MarkerOptions().position(ll).icon(
 				BitmapDescriptorFactory.fromResource(avatar_id));
-		
+
 		if (marker == null)
 		{
 			Log.e("aaaaaaaaaa", "marker is null");
 		}
-		
+
 		return worldMap.addMarker(marker);
 	}
 
@@ -339,7 +338,7 @@ public class MainActivity extends Activity
 
 	private void showQuestion(final Question question)
 	{
-		if(question.kind == "ChooseCountry")
+		if (question.kind == "ChooseCountry")
 			moveCameraToAllWorld();
 		else
 			moveCameraToCountry(question.country.answer);
@@ -349,8 +348,7 @@ public class MainActivity extends Activity
 			mPopupWindow.dismiss();
 		}
 
-		mPopupWindow.showAtLocation(findViewById(R.id.map), Gravity.TOP, 0,
-				10);
+		mPopupWindow.showAtLocation(findViewById(R.id.map), Gravity.TOP, 0, 10);
 
 		TextView questionTextView = ((TextView) mPopupWindow.getContentView()
 				.findViewById(R.id.questionTextView));

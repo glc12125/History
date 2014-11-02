@@ -36,11 +36,11 @@ public class GameManager
 		users = new ArrayList<User>();
 		users.add(new User("Meng ZHang", true, R.drawable.avatar_meng_zhang,
 				R.drawable.avatar_meng_zhang_small));
-		users.add(new User("Chao Gao", true, R.drawable.avatar_chao_gao,
-				R.drawable.avatar_chao_gao_small));
+//		users.add(new User("Chao Gao", true, R.drawable.avatar_chao_gao,
+//				R.drawable.avatar_chao_gao_small));
 		users.add(new User("Liangchuan Gu", false,
 				R.drawable.avatar_liangchuan_gu,
-				R.drawable.avatar_liangchuan_gu_small));
+				R.drawable.avatar_liang_chuan_small));
 		users.add(new User("Yimai Fang", true, R.drawable.avatar_yimai_fang,
 				R.drawable.avatar_yi_mai_small));
 
