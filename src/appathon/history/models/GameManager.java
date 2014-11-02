@@ -188,7 +188,7 @@ public class GameManager
 							MainActivity.lg.getLocationFromAddress(context,
 									country.getName()), user);
 				}
-
+				break;
 			}
 		}
 
