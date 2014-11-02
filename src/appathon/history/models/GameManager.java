@@ -2,13 +2,9 @@ package appathon.history.models;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map.Entry;
 
-import org.apache.http.conn.ManagedClientConnection;
-
-import android.R.bool;
 import android.content.Context;
+import android.media.MediaPlayer;
 import android.widget.Toast;
 import appathon.history.MainActivity;
 import appathon.history.R;
@@ -38,10 +34,10 @@ public class GameManager
 				R.drawable.avatar_meng_zhang_small));
 		users.add(new User("Chao Gao", true, R.drawable.avatar_chao_gao,
 				R.drawable.avatar_chao_gao_small));
-		users.add(new User("Liangchuan Gu", false,
+		users.add(new User("Liangchuan Gu", true,
 				R.drawable.avatar_liangchuan_gu,
 				R.drawable.avatar_liang_chuan_small));
-		users.add(new User("Yimai Fang", true, R.drawable.avatar_yimai_fang,
+		users.add(new User("Yimai Fang", false, R.drawable.avatar_yimai_fang,
 				R.drawable.avatar_yi_mai_small));
 
 		questionGenerator = new QuestionGenerator(this.context);
@@ -145,8 +141,14 @@ public class GameManager
 
 				if (selectedAnswer.equals(currentQuestion.correctAnswer))
 				{
-					updatecountryToUser(currentQuestion.country.answer,
-							users.get(i));
+					if (user.getName().equals(MainActivity.userName))
+					{
+						playSoundCorrect();
+					} else
+					{
+						playSoundWrong();
+					}
+					updatecountryToUser(currentQuestion.country.answer, user);
 					return true;
 				}
 			}
@@ -228,10 +230,12 @@ public class GameManager
 
 				if (currentQuestion.correctAnswer.equals(selectedAnswer))
 				{
+					playSoundCorrect();
 					Toast.makeText(context, "Correct!!", Toast.LENGTH_SHORT)
 							.show();
 				} else
 				{
+					playSoundWrong();
 					Toast.makeText(context, "Wrong!!", Toast.LENGTH_SHORT)
 							.show();
 				}
@@ -240,6 +244,23 @@ public class GameManager
 		}
 
 		return false;
+	}
+
+	private void playSoundWrong()
+	{
+		MediaPlayer mediaPlayer = MediaPlayer.create(context,
+				R.raw.sound_wrong);
+		mediaPlayer.start(); // no need to call prepare(); create() does that
+								// for you
+	}
+
+	private void playSoundCorrect()
+	{
+		MediaPlayer mediaPlayer = MediaPlayer.create(context,
+				R.raw.sound_correct);
+		mediaPlayer.start(); // no need to call prepare(); create() does that
+								// for you
+
 	}
 
 	public void calculateUserScores()
