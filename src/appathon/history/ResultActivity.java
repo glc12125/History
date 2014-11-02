@@ -7,20 +7,11 @@ import java.util.List;
 import java.util.Map;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup.LayoutParams;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-import android.widget.PopupWindow;
 import android.widget.SimpleAdapter;
-import android.widget.TextView;
-import android.widget.Toast;
-import appathon.history.models.Answer;
-import appathon.history.models.Question;
-import appathon.history.models.QuestionGenerator;
 import appathon.history.models.User;
 
 public class ResultActivity extends Activity
@@ -86,15 +77,10 @@ public class ResultActivity extends Activity
 		return users;
 	}
 
-	private displayall name()
-	{// 数据是使用Intent返回
+	public void displayAllAnswers(View v)
+	{
 		Intent intent = new Intent();
-		// 把返回数据存入Intent
-		intent.putExtra("result", "My name is linjiqin");
-		// 设置返回数据
-		OtherActivity.this.setResult(RESULT_OK, intent);
-		// 关闭Activity
-		OtherActivity.this.finish();
-
+		this.setResult(RESULT_OK, intent);
+		this.finish();
 	}
 }
