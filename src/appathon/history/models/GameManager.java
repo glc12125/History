@@ -3,6 +3,7 @@ package appathon.history.models;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import android.content.Context;
 import appathon.history.R;
 
 public class GameManager
@@ -13,10 +14,13 @@ public class GameManager
 	private HashMap<Country, ArrayList<Question>> countryToQuestionsMap;
 	private HashMap<Country, User> countryToUser;
 	private int currentQuestionIndex;
+	private Context context;
 
-	public GameManager()
+	public GameManager(Context context)
 	{
 		super();
+		this.context = context;
+
 		currentQuestionIndex = 0;
 
 		users = new ArrayList<User>();
@@ -30,8 +34,10 @@ public class GameManager
 		users.add(new User("Yimai Fang", true, R.drawable.avatar_yimai_fang,
 				R.drawable.avatar_yi_mai_small));
 
+		questionGenerator = new QuestionGenerator(this.context);
 		questions = questionGenerator.getQuestions(100);
 
+		countryToQuestionsMap = new HashMap<Country, ArrayList<Question>>();
 		for (Question question : questions)
 		{
 			Country country = new Country(question.country.answer);

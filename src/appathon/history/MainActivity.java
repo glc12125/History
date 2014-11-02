@@ -74,8 +74,6 @@ public class MainActivity extends Activity
 		// worldMap.setOnMapClickListener(new clickMapWhilePlayingListener());
 		// }
 
-		questionView = (TextView) this.findViewById(R.id.question_view);
-		timerView = (TextView) this.findViewById(R.id.timer_view);
 		marker_map = new HashMap<String, Marker>();
 		marker_text_map = new HashMap<Marker, HashMap<String, String>>(); // Store
 																			// the
@@ -84,7 +82,7 @@ public class MainActivity extends Activity
 																			// for
 																			// each
 																			// country
-		manager = new GameManager();
+		manager = new GameManager(context);
 		showQuestion(manager.NextQuestion());
 		CounterClass counter = new CounterClass(10000, 1000);
 		counter.start();
@@ -277,6 +275,9 @@ public class MainActivity extends Activity
 				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, true);
 		mPopupWindow.setTouchable(true);
 		mPopupWindow.setOutsideTouchable(false);
+	
+		mPopupWindow.showAtLocation(findViewById(R.id.map),
+				Gravity.CENTER, 0, 0);
 
 		TextView questionTextView = ((TextView) mPopupWindow.getContentView()
 				.findViewById(R.id.questionTextView));
@@ -318,8 +319,7 @@ public class MainActivity extends Activity
 				new int[] { R.id.option_string });
 
 		answerListView.setAdapter(adapter);
-		mPopupWindow.showAtLocation(findViewById(R.id.activity_result),
-				Gravity.CENTER, 0, 0);
+
 	}
 
 	private List<Map<String, Object>> convertOptionsToMap(

@@ -74,13 +74,6 @@ public class ResultActivity extends Activity
 		return userList;
 	}
 
-	private Question generateFakeQuestion()
-	{
-		QuestionGenerator qg = new QuestionGenerator(
-				this.getApplicationContext());
-		return qg.getQuestions(1).get(0);
-	}
-
 	private ArrayList<User> generateFakeUsers()
 	{
 		ArrayList<User> users = null;
