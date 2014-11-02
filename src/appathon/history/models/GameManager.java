@@ -9,6 +9,7 @@ import org.apache.http.conn.ManagedClientConnection;
 
 import android.R.bool;
 import android.content.Context;
+import appathon.history.MainActivity;
 import appathon.history.R;
 
 public class GameManager
@@ -172,13 +173,20 @@ public class GameManager
 					country.setDefense(country.getDefense() - 1);
 					if (country.getDefense() == 0)
 					{
+						MainActivity.removeMarker(country.getName());
 						country.setDefense(1);
 						countryToUser.put(country, user);
+						MainActivity.drawMarker(MainActivity.lg
+								.getLocationFromAddress(context,
+										country.getName()), user);
 					}
 				} else
 				{
 					country.setDefense(1);
 					countryToUser.put(country, user);
+					MainActivity.drawMarker(
+							MainActivity.lg.getLocationFromAddress(context,
+									country.getName()), user);
 				}
 
 			}

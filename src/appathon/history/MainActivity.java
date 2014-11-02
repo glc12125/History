@@ -44,14 +44,15 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MainActivity extends Activity
 {
-	GoogleMap worldMap;
-	LocationGetter lg;
+	static GoogleMap worldMap;
+	public static LocationGetter lg;
 	Context context;
 	public static GameManager manager;
 	PopupWindow mPopupWindow;
 	CounterClass counter;
-	HashMap<String, Marker> marker_map; // Store countries and marker pair, it
-										// is used for Game
+	static HashMap<String, Marker> marker_map; // Store countries and marker
+												// pair, it
+	// is used for Game
 	HashMap<Marker, HashMap<String, String>> marker_text_map = new HashMap<Marker, HashMap<String, String>>(); // Store
 																												// the
 																												// question/answer
@@ -213,7 +214,7 @@ public class MainActivity extends Activity
 		return sb.toString();
 	}
 
-	public void removeMarker(String countryName)
+	public static void removeMarker(String countryName)
 	{
 		if (marker_map.containsKey(countryName))
 		{
@@ -228,7 +229,7 @@ public class MainActivity extends Activity
 		return drawMarker(ll);
 	}
 
-	public Marker drawMarker(LatLng ll, int avatar_id)
+	public static Marker drawMarker(LatLng ll, int avatar_id)
 	{
 		return worldMap.addMarker(new MarkerOptions().position(ll).icon(
 				BitmapDescriptorFactory.fromResource(avatar_id)));
@@ -241,7 +242,7 @@ public class MainActivity extends Activity
 						.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
 	}
 
-	public Marker drawMarker(LatLng ll, User user)
+	public static Marker drawMarker(LatLng ll, User user)
 	{
 		return worldMap.addMarker(new MarkerOptions().position(ll).icon(
 				BitmapDescriptorFactory.fromResource(user.getSmallAvatar())));
