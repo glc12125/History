@@ -6,8 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import android.R.integer;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +19,7 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
@@ -26,7 +29,6 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 import appathon.history.models.Answer;
 import appathon.history.models.GameManager;
 import appathon.history.models.Question;
@@ -37,7 +39,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -46,6 +47,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MainActivity extends Activity
 {
+	private int roundTime = 5000;
+
 	static GoogleMap worldMap;
 	public static LocationGetter lg;
 	Context context;
@@ -114,7 +117,7 @@ public class MainActivity extends Activity
 
 		popupHandler.sendEmptyMessageDelayed(0, 500);
 
-		counter = new CounterClass(5000, 1000);
+		counter = new CounterClass(roundTime, 1000);
 		counter.start();
 	}
 
@@ -327,11 +330,14 @@ public class MainActivity extends Activity
 									.toMinutes(millis)));
 			System.out.println(hms);
 
-			if (manager.checkAnswers())
+			if ((roundTime - millisUntilFinished) > 1000)
 			{
-				showQuestion(manager.NextQuestion());
-				this.cancel();
-				this.start();
+				if (manager.checkAnswers())
+				{
+					showQuestion(manager.NextQuestion());
+					this.cancel();
+					this.start();
+				}
 			}
 		}
 	}
@@ -348,7 +354,8 @@ public class MainActivity extends Activity
 			mPopupWindow.dismiss();
 		}
 
-		mPopupWindow.showAtLocation(findViewById(R.id.map), Gravity.TOP, 0, 10);
+		mPopupWindow
+				.showAtLocation(findViewById(R.id.map), Gravity.TOP, 0, 208);
 
 		TextView questionTextView = ((TextView) mPopupWindow.getContentView()
 				.findViewById(R.id.questionTextView));
