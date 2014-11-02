@@ -11,8 +11,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.media.AudioManager;
-import android.media.SoundPool;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -58,7 +57,7 @@ public class MainActivity extends Activity
 												// pair, it
 	// is used for Game
 	HashMap<Marker, HashMap<String, String>> marker_text_map = new HashMap<Marker, HashMap<String, String>>(); // Store
-																												// the
+	MediaPlayer player;																											// the
 																												// question/answer
 																												// pair
 																												// for
@@ -84,7 +83,10 @@ public class MainActivity extends Activity
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
+		player = MediaPlayer.create(this, R.raw.background_audio);
+        player.setLooping(true); // Set looping
+        player.setVolume(100,100);
+        player.start();
 		worldMap = ((MapFragment) getFragmentManager().findFragmentById(
 				R.id.map)).getMap();
 
@@ -275,6 +277,7 @@ public class MainActivity extends Activity
 	public void showRanking(View v)
 	{
 		counter.cancel();
+		player.stop();
 
 		manager.calculateUserScores();
 		Intent intent = new Intent();
