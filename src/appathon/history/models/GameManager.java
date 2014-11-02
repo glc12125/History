@@ -249,10 +249,9 @@ public class GameManager
 	private void playSoundWrong()
 	{
 		MediaPlayer mediaPlayer = MediaPlayer.create(context,
-				R.raw.sound_correct);
+				R.raw.sound_wrong);
 		mediaPlayer.start(); // no need to call prepare(); create() does that
 								// for you
-
 	}
 
 	private void playSoundCorrect()
