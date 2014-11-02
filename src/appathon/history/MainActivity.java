@@ -144,6 +144,12 @@ public class MainActivity extends Activity
 		// worldMap.animateCamera(CameraUpdateFactory
 		// .newCameraPosition(cameraPosition));
 	}
+	
+	public void moveCameraToAllWorld(){
+		CameraPosition cameraPosition = new CameraPosition.Builder().zoom(1).build();
+		worldMap.moveCamera(CameraUpdateFactory
+				.newCameraPosition(cameraPosition));
+	}
 
 	public void displayAllAnswers(ArrayList<Question> q_list)
 	{
@@ -320,15 +326,18 @@ public class MainActivity extends Activity
 
 	private void showQuestion(final Question question)
 	{
-		moveCameraToCountry(question.country.answer);
+		if(question.kind == "ChooseCountry")
+			moveCameraToAllWorld();
+		else
+			moveCameraToCountry(question.country.answer);
 
 		if (mPopupWindow.isShowing())
 		{
 			mPopupWindow.dismiss();
 		}
 
-		mPopupWindow.showAtLocation(findViewById(R.id.map), Gravity.CENTER, 0,
-				0);
+		mPopupWindow.showAtLocation(findViewById(R.id.map), Gravity.TOP, 0,
+				10);
 
 		TextView questionTextView = ((TextView) mPopupWindow.getContentView()
 				.findViewById(R.id.questionTextView));
