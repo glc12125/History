@@ -6,10 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import android.R.integer;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -19,7 +17,6 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
@@ -48,7 +45,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class MainActivity extends Activity
 {
 	private int roundTime = 5000;
-
+	public static String userName= "Yimai Fang";
 	static GoogleMap worldMap;
 	public static LocationGetter lg;
 	Context context;
@@ -376,7 +373,7 @@ public class MainActivity extends Activity
 						.getItemAtPosition(position);
 				String yourAnswer = map.get("option_string");
 
-				manager.updateUser("Liangchuan Gu", yourAnswer);
+				manager.updateUser(userName, yourAnswer);
 
 				mPopupWindow.dismiss();
 			}
