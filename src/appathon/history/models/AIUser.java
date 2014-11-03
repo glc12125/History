@@ -2,7 +2,7 @@ package appathon.history.models;
 
 import java.util.Random;
 
-import appathon.qa.Question;
+import appathon.history.models.qa.Question;
 
 public class AIUser extends User {
 

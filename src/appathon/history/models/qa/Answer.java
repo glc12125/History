@@ -1,4 +1,4 @@
-package appathon.qa;
+package appathon.history.models.qa;
 
 public class Answer
 {

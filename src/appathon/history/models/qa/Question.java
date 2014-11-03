@@ -1,4 +1,4 @@
-package appathon.qa;
+package appathon.history.models.qa;
 import java.util.ArrayList;
 
 import appathon.history.models.Country;

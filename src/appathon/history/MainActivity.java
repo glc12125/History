@@ -29,8 +29,8 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import appathon.history.models.GameManager;
 import appathon.history.models.User;
-import appathon.qa.Answer;
-import appathon.qa.Question;
+import appathon.history.models.qa.Answer;
+import appathon.history.models.qa.Question;
 import appathon.util.LocationGetter;
 
 import com.google.android.gms.maps.CameraUpdateFactory;

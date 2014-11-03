@@ -8,8 +8,8 @@ import android.media.MediaPlayer;
 import android.widget.Toast;
 import appathon.history.MainActivity;
 import appathon.history.R;
-import appathon.qa.Question;
-import appathon.qa.QuestionGenerator;
+import appathon.history.models.qa.Question;
+import appathon.history.models.qa.QuestionGenerator;
 
 public class GameManager
 {

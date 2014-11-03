@@ -3,7 +3,7 @@ package appathon.history.models;
 import java.util.ArrayList;
 
 import appathon.history.R;
-import appathon.qa.Question;
+import appathon.history.models.qa.Question;
 
 public class User implements Comparable<User>
 {
