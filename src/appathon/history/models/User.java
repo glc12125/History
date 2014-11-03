@@ -8,22 +8,15 @@ import appathon.qa.Question;
 public class User implements Comparable<User>
 {
 	private String name;
-
 	private boolean isAI;
-
 	private int score;
-
 	private int avatar;
-
 	private boolean questionSubmitted;
-
 	private int small_avatar;
-
 	private String selectedAnswer;
 
 	public User(String name, boolean isAI, int avatar, int small_avatar)
 	{
-		super();
 		this.name = name;
 		this.isAI = isAI;
 		this.score = 0;
