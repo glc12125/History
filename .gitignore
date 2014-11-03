@@ -27,4 +27,6 @@ proguard/
 *.log
 AndroidManifest.xml
 
+*.DS_Store
+
 
