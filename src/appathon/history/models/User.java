@@ -65,11 +65,6 @@ public class User implements Comparable<User>
 		return avatar;
 	}
 
-	public void setAvatar(int avatar)
-	{
-		this.avatar = avatar;
-	}
-
 	public boolean isQuestionSubmitted()
 	{
 		return questionSubmitted;
@@ -91,6 +86,7 @@ public class User implements Comparable<User>
 	}
 
 	public String sendResult(Question question, String selectedAnswer)
+	// Make an answer to one question
 	{
 		if (isAI)
 		{
