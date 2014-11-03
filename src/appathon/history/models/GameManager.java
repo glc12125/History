@@ -29,37 +29,13 @@ public class GameManager
 		this.context = context;
 		isFinished = false;
 
-		currentQuestionIndex = 0;
-
-		users = new ArrayList<User>();
-		users.add(new User("Meng Zhang", true, R.drawable.avatar_meng_zhang,
-				R.drawable.avatar_meng_zhang_small));
-		users.add(new User("Chao Gao", true, R.drawable.avatar_chao_gao,
-				R.drawable.avatar_chao_gao_small));
-		users.add(new User("Liangchuan Gu", true,
-				R.drawable.avatar_liangchuan_gu,
-				R.drawable.avatar_liang_chuan_small));
-		users.add(new User("Yimai Fang", false, R.drawable.avatar_yimai_fang,
-				R.drawable.avatar_yi_mai_small));
-
+		users = initailizeUsers();
+		
 		questionGenerator = new QuestionGenerator(this.context);
 		questions = questionGenerator.getQuestions(100);
-
-		countryToQuestionMap = new HashMap<Country, ArrayList<Question>>();
-		for (Question question : questions)
-		{
-			Country country = question.correspondingCountry;
-			if (countryToQuestionMap.containsKey(country))
-			{
-				countryToQuestionMap.get(country).add(question);
-			} else
-			{
-				ArrayList<Question> newList = new ArrayList<Question>();
-				newList.add(question);
-				countryToQuestionMap.put(country, newList);
-			}
-		}
-
+		currentQuestionIndex = 0;
+		
+		countryToQuestionMap = initailizeCountryToQuestionMap();
 		countryToUserMap = new HashMap<Country, User>();
 	}
 
@@ -68,19 +44,9 @@ public class GameManager
 		return questionGenerator;
 	}
 
-	public void setQuestionGenerator(QuestionGenerator questionGenerator)
-	{
-		this.questionGenerator = questionGenerator;
-	}
-
 	public ArrayList<Question> getQuestions()
 	{
 		return questions;
-	}
-
-	public void setQuestions(ArrayList<Question> questions)
-	{
-		this.questions = questions;
 	}
 
 	public ArrayList<User> getUsers()
@@ -88,30 +54,14 @@ public class GameManager
 		return users;
 	}
 
-	public void setUsers(ArrayList<User> users)
-	{
-		this.users = users;
-	}
-
 	public HashMap<Country, ArrayList<Question>> getCountryToQuestionsMap()
 	{
 		return countryToQuestionMap;
 	}
 
-	public void setCountryToQuestionsMap(
-			HashMap<Country, ArrayList<Question>> countryToQuestionsMap)
-	{
-		this.countryToQuestionMap = countryToQuestionsMap;
-	}
-
 	public HashMap<Country, User> getCountryToUser()
 	{
 		return countryToUserMap;
-	}
-
-	public void setCountryToUser(HashMap<Country, User> countryToUser)
-	{
-		this.countryToUserMap = countryToUser;
 	}
 
 	public int getCurrentQuestionIndex()
@@ -275,6 +225,42 @@ public class GameManager
 
 		}
 
+	}
+	
+	private ArrayList<User> initailizeUsers() {
+		ArrayList<User> users = new ArrayList<User>();
+		users.add(new User("Meng Zhang", true, R.drawable.avatar_meng_zhang,
+				R.drawable.avatar_meng_zhang_small));
+		users.add(new User("Chao Gao", true, R.drawable.avatar_chao_gao,
+				R.drawable.avatar_chao_gao_small));
+		users.add(new User("Liangchuan Gu", true,
+				R.drawable.avatar_liangchuan_gu,
+				R.drawable.avatar_liang_chuan_small));
+		users.add(new User("Yimai Fang", false, R.drawable.avatar_yimai_fang,
+				R.drawable.avatar_yi_mai_small));
+		return users;
+	}
+	
+	private HashMap<Country, ArrayList<Question>> initailizeCountryToQuestionMap() {
+		if(questions == null) {
+			throw new NullPointerException();
+		}
+		
+		HashMap<Country, ArrayList<Question>> countryToQuestionMap = new HashMap<Country, ArrayList<Question>>();
+		for (Question question : questions)
+		{
+			Country country = question.correspondingCountry;
+			if (countryToQuestionMap.containsKey(country))
+			{
+				countryToQuestionMap.get(country).add(question);
+			} else
+			{
+				ArrayList<Question> newList = new ArrayList<Question>();
+				newList.add(question);
+				countryToQuestionMap.put(country, newList);
+			}
+		}
+		return countryToQuestionMap;
 	}
 
 }
