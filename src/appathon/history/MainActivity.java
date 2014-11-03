@@ -31,6 +31,7 @@ import appathon.history.models.Answer;
 import appathon.history.models.GameManager;
 import appathon.history.models.Question;
 import appathon.history.models.User;
+import appathon.util.LocationGetter;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
