@@ -148,7 +148,7 @@ public class GameManager
 					{
 						playSoundWrong();
 					}
-					updatecountryToUser(currentQuestion.country.answer, user);
+					updateCountryToUser(currentQuestion.country.answer, user);
 					return true;
 				}
 			}
@@ -165,37 +165,33 @@ public class GameManager
 
 	}
 
-	private void updatecountryToUser(String countryName, User user)
+	private void updateCountryToUser(String countryName, User user)
 	{
-		for (Country country : countryToQuestionsMap.keySet())
-		{
-			if (country.getName().equals(countryName))
+		Country target_country = new Country(countryName);
+		if(countryToQuestionsMap.containsKey(target_country)) {
+			Country country = target_country;
+			if (countryToUser.containsKey(country))
 			{
-				if (countryToUser.containsKey(country))
+				country.setDefense(country.getDefense() - 1);
+				if (country.getDefense() == 0)
 				{
-					country.setDefense(country.getDefense() - 1);
-					if (country.getDefense() == 0)
-					{
-						MainActivity.removeMarker(country.getName());
-						country.setDefense(1);
-						countryToUser.put(country, user);
-						MainActivity.drawMarker(MainActivity.lg
-								.getLocationFromAddress(context,
-										country.getName()), user
-								.getSmallAvatar());
-					}
-				} else
-				{
+					MainActivity.removeMarker(country.getName());
 					country.setDefense(1);
 					countryToUser.put(country, user);
-					MainActivity.drawMarker(
-							MainActivity.lg.getLocationFromAddress(context,
-									country.getName()), user.getSmallAvatar());
+					MainActivity.drawMarker(MainActivity.lg
+							.getLocationFromAddress(context,
+									country.getName()), user
+							.getSmallAvatar());
 				}
-				break;
+			} else
+			{
+				country.setDefense(1);
+				countryToUser.put(country, user);
+				MainActivity.drawMarker(
+						MainActivity.lg.getLocationFromAddress(context,
+								country.getName()), user.getSmallAvatar());
 			}
 		}
-
 	}
 
 	public void RestartUsers()
