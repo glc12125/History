@@ -1,6 +1,7 @@
 package appathon.history.models;
 
 import android.R.integer;
+import appathon.qa.Question;
 
 public class User implements Comparable<User>
 {

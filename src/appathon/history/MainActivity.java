@@ -27,10 +27,10 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
-import appathon.history.models.Answer;
 import appathon.history.models.GameManager;
-import appathon.history.models.Question;
 import appathon.history.models.User;
+import appathon.qa.Answer;
+import appathon.qa.Question;
 import appathon.util.LocationGetter;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -164,23 +164,23 @@ public class MainActivity extends Activity
 		}
 		for (Question q : q_list)
 		{
-			if (q.country != null)
+			if (q.correspondingCountry != null)
 			{
 				LatLng ll = lg
-						.getLocationFromAddress(context, q.country.answer);
-				if (!marker_map.containsKey(q.country.answer))
+						.getLocationFromAddress(context, q.correspondingCountry.answer);
+				if (!marker_map.containsKey(q.correspondingCountry.answer))
 				{
 					Marker marker = drawMarker(ll);
-					marker.setTitle(q.country.answer);
-					marker_map.put(q.country.answer, marker);
+					marker.setTitle(q.correspondingCountry.answer);
+					marker_map.put(q.correspondingCountry.answer, marker);
 					HashMap<String, String> textMap = new HashMap<String, String>();
-					textMap.put(q.question, q.country.answer);
+					textMap.put(q.question, q.correspondingCountry.answer);
 					marker_text_map.put(marker, textMap);
 				} else
 				{
-					Marker marker = marker_map.get(q.country.answer);
+					Marker marker = marker_map.get(q.correspondingCountry.answer);
 					marker_text_map.get(marker).put(q.question,
-							q.country.answer);
+							q.correspondingCountry.answer);
 				}
 			}
 		}
@@ -343,9 +343,9 @@ public class MainActivity extends Activity
 	private void showQuestion(final Question question)
 	{
 		if (question.kind == "ChooseCountry")
-			moveCameraToCountry(question.country.answer, (float) 1.5);
+			moveCameraToCountry(question.correspondingCountry.answer, (float) 1.5);
 		else
-			moveCameraToCountry(question.country.answer, (float) 3.5);
+			moveCameraToCountry(question.correspondingCountry.answer, (float) 3.5);
 
 //		try
 //		{

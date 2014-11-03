@@ -1,4 +1,4 @@
-package appathon.history.models;
+package appathon.qa;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;

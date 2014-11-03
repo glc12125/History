@@ -8,6 +8,8 @@ import android.media.MediaPlayer;
 import android.widget.Toast;
 import appathon.history.MainActivity;
 import appathon.history.R;
+import appathon.qa.Question;
+import appathon.qa.QuestionGenerator;
 
 public class GameManager
 {
@@ -46,7 +48,7 @@ public class GameManager
 		countryToQuestionsMap = new HashMap<Country, ArrayList<Question>>();
 		for (Question question : questions)
 		{
-			Country country = new Country(question.country.answer);
+			Country country = new Country(question.correspondingCountry.answer);
 			if (countryToQuestionsMap.containsKey(country))
 			{
 				countryToQuestionsMap.get(country).add(question);
@@ -148,7 +150,7 @@ public class GameManager
 					{
 						playSoundWrong();
 					}
-					updateCountryToUser(currentQuestion.country.answer, user);
+					updatecountryToUser(currentQuestion.correspondingCountry.answer, user);
 					return true;
 				}
 			}
@@ -165,7 +167,7 @@ public class GameManager
 
 	}
 
-	private void updateCountryToUser(String countryName, User user)
+	private void updatecountryToUser(String countryName, User user)
 	{
 		Country target_country = new Country(countryName);
 		if(countryToQuestionsMap.containsKey(target_country)) {
