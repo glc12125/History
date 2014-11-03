@@ -166,21 +166,22 @@ public class MainActivity extends Activity
 		{
 			if (q.correspondingCountry != null)
 			{
+				String countryName = q.correspondingCountry.getName();
 				LatLng ll = lg
-						.getLocationFromAddress(context, q.correspondingCountry.answer);
-				if (!marker_map.containsKey(q.correspondingCountry.answer))
+						.getLocationFromAddress(context, countryName);
+				if (!marker_map.containsKey(countryName))
 				{
 					Marker marker = drawMarker(ll);
-					marker.setTitle(q.correspondingCountry.answer);
-					marker_map.put(q.correspondingCountry.answer, marker);
+					marker.setTitle(countryName);
+					marker_map.put(countryName, marker);
 					HashMap<String, String> textMap = new HashMap<String, String>();
-					textMap.put(q.question, q.correspondingCountry.answer);
+					textMap.put(q.question, countryName);
 					marker_text_map.put(marker, textMap);
 				} else
 				{
-					Marker marker = marker_map.get(q.correspondingCountry.answer);
+					Marker marker = marker_map.get(countryName);
 					marker_text_map.get(marker).put(q.question,
-							q.correspondingCountry.answer);
+							countryName);
 				}
 			}
 		}
@@ -343,9 +344,9 @@ public class MainActivity extends Activity
 	private void showQuestion(final Question question)
 	{
 		if (question.kind == "ChooseCountry")
-			moveCameraToCountry(question.correspondingCountry.answer, (float) 1.5);
+			moveCameraToCountry(question.correspondingCountry.getName(), (float) 1.5);
 		else
-			moveCameraToCountry(question.correspondingCountry.answer, (float) 3.5);
+			moveCameraToCountry(question.correspondingCountry.getName(), (float) 3.5);
 
 //		try
 //		{

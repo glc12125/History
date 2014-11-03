@@ -1,6 +1,8 @@
 package appathon.qa;
 import java.util.ArrayList;
 
+import appathon.history.models.Country;
+
 public class Question {
 	
 	public String kind;  // ChooseCountry, ChooseCity, ChooseOption
@@ -8,7 +10,7 @@ public class Question {
 	public String imgUrl;
 	public ArrayList<Answer> options;
 	public String correctAnswer;
-	public Answer correspondingCountry;
+	public Country correspondingCountry;
 	
 	public Question(String question, String imgUrl, ArrayList<Answer> options,
 			String correctAnswer, String countryName, String kind) {
@@ -17,7 +19,7 @@ public class Question {
 		this.imgUrl = imgUrl;
 		this.options = options;
 		this.correctAnswer = correctAnswer;
-		this.correspondingCountry = new Answer(countryName, true);
+		this.correspondingCountry = new Country(countryName);
 		this.kind = kind;
 	}
 

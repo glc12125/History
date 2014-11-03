@@ -32,7 +32,7 @@ public class GameManager
 		currentQuestionIndex = 0;
 
 		users = new ArrayList<User>();
-		users.add(new User("Meng ZHang", true, R.drawable.avatar_meng_zhang,
+		users.add(new User("Meng Zhang", true, R.drawable.avatar_meng_zhang,
 				R.drawable.avatar_meng_zhang_small));
 		users.add(new User("Chao Gao", true, R.drawable.avatar_chao_gao,
 				R.drawable.avatar_chao_gao_small));
@@ -48,7 +48,7 @@ public class GameManager
 		countryToQuestionsMap = new HashMap<Country, ArrayList<Question>>();
 		for (Question question : questions)
 		{
-			Country country = new Country(question.correspondingCountry.answer);
+			Country country = question.correspondingCountry;
 			if (countryToQuestionsMap.containsKey(country))
 			{
 				countryToQuestionsMap.get(country).add(question);
@@ -131,7 +131,7 @@ public class GameManager
 			if (user.isQuestionSubmitted())
 			{
 				count++;
-				String selectedAnswer = null;
+				String selectedAnswer;
 
 				if (user.isAI())
 				{
@@ -150,7 +150,7 @@ public class GameManager
 					{
 						playSoundWrong();
 					}
-					updatecountryToUser(currentQuestion.correspondingCountry.answer, user);
+					updatecountryToUser(currentQuestion.correspondingCountry.getName(), user);
 					return true;
 				}
 			}
