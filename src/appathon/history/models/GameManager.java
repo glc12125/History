@@ -16,8 +16,8 @@ public class GameManager
 	private QuestionGenerator questionGenerator;
 	private ArrayList<Question> questions;
 	private ArrayList<User> users;
-	private HashMap<Country, ArrayList<Question>> countryToQuestionsMap;
-	private HashMap<Country, User> countryToUser;
+	private HashMap<Country, ArrayList<Question>> countryToQuestionMap;
+	private HashMap<Country, User> countryToUserMap;
 	private int currentQuestionIndex;
 	private Context context;
 
@@ -45,22 +45,22 @@ public class GameManager
 		questionGenerator = new QuestionGenerator(this.context);
 		questions = questionGenerator.getQuestions(100);
 
-		countryToQuestionsMap = new HashMap<Country, ArrayList<Question>>();
+		countryToQuestionMap = new HashMap<Country, ArrayList<Question>>();
 		for (Question question : questions)
 		{
 			Country country = question.correspondingCountry;
-			if (countryToQuestionsMap.containsKey(country))
+			if (countryToQuestionMap.containsKey(country))
 			{
-				countryToQuestionsMap.get(country).add(question);
+				countryToQuestionMap.get(country).add(question);
 			} else
 			{
 				ArrayList<Question> newList = new ArrayList<Question>();
 				newList.add(question);
-				countryToQuestionsMap.put(country, newList);
+				countryToQuestionMap.put(country, newList);
 			}
 		}
 
-		countryToUser = new HashMap<Country, User>();
+		countryToUserMap = new HashMap<Country, User>();
 	}
 
 	public QuestionGenerator getQuestionGenerator()
@@ -95,23 +95,23 @@ public class GameManager
 
 	public HashMap<Country, ArrayList<Question>> getCountryToQuestionsMap()
 	{
-		return countryToQuestionsMap;
+		return countryToQuestionMap;
 	}
 
 	public void setCountryToQuestionsMap(
 			HashMap<Country, ArrayList<Question>> countryToQuestionsMap)
 	{
-		this.countryToQuestionsMap = countryToQuestionsMap;
+		this.countryToQuestionMap = countryToQuestionsMap;
 	}
 
 	public HashMap<Country, User> getCountryToUser()
 	{
-		return countryToUser;
+		return countryToUserMap;
 	}
 
 	public void setCountryToUser(HashMap<Country, User> countryToUser)
 	{
-		this.countryToUser = countryToUser;
+		this.countryToUserMap = countryToUser;
 	}
 
 	public int getCurrentQuestionIndex()
@@ -170,16 +170,16 @@ public class GameManager
 	private void updatecountryToUser(String countryName, User user)
 	{
 		Country target_country = new Country(countryName);
-		if(countryToQuestionsMap.containsKey(target_country)) {
+		if(countryToQuestionMap.containsKey(target_country)) {
 			Country country = target_country;
-			if (countryToUser.containsKey(country))
+			if (countryToUserMap.containsKey(country))
 			{
 				country.setDefense(country.getDefense() - 1);
 				if (country.getDefense() == 0)
 				{
 					MainActivity.removeMarker(country.getName());
 					country.setDefense(1);
-					countryToUser.put(country, user);
+					countryToUserMap.put(country, user);
 					MainActivity.drawMarker(MainActivity.lg
 							.getLocationFromAddress(context,
 									country.getName()), user
@@ -188,7 +188,7 @@ public class GameManager
 			} else
 			{
 				country.setDefense(1);
-				countryToUser.put(country, user);
+				countryToUserMap.put(country, user);
 				MainActivity.drawMarker(
 						MainActivity.lg.getLocationFromAddress(context,
 								country.getName()), user.getSmallAvatar());
@@ -265,11 +265,11 @@ public class GameManager
 	{
 		isFinished = true;
 
-		for (Country country : countryToQuestionsMap.keySet())
+		for (Country country : countryToQuestionMap.keySet())
 		{
-			if (countryToUser.containsKey(country))
+			if (countryToUserMap.containsKey(country))
 			{
-				User user = countryToUser.get(country);
+				User user = countryToUserMap.get(country);
 				user.setScore(user.getScore() + country.getDefense());
 			}
 
