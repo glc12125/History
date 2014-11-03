@@ -68,7 +68,10 @@ public class GameManager
 	{
 		return currentQuestionIndex;
 	}
-
+	/**
+	 * check the answers submitted by users are correct or not
+	 * @return whether we should pass to the next question
+	 */
 	public boolean checkAnswers()
 	{
 		int count = 0;
@@ -77,7 +80,6 @@ public class GameManager
 		for (int i = 0; i < users.size(); i++)
 		{
 			User user = users.get(i);
-
 			if (user.isQuestionSubmitted())
 			{
 				count++;
@@ -104,17 +106,8 @@ public class GameManager
 					return true;
 				}
 			}
-
 		}
-
-		if (count == users.size())
-		{
-			return true;
-		} else
-		{
-			return false;
-		}
-
+		return count == users.size(); // If all users have answer this question, then we pass it to next round
 	}
 
 	private void updatecountryToUser(String countryName, User user)
