@@ -1,6 +1,8 @@
 package appathon.history.models;
 
-import android.R.integer;
+import java.util.ArrayList;
+
+import appathon.history.R;
 import appathon.qa.Question;
 
 public class User implements Comparable<User>
@@ -18,11 +20,6 @@ public class User implements Comparable<User>
 	private int small_avatar;
 
 	private String selectedAnswer;
-
-	public User()
-	{
-		super();
-	}
 
 	public User(String name, boolean isAI, int avatar, int small_avatar)
 	{
@@ -138,7 +135,7 @@ public class User implements Comparable<User>
 	@Override
 	public String toString()
 	{
-		return name + "         total scores:" + score;
+		return name + "\ttotal scores:" + score;
 	}
 
 	@Override
@@ -169,4 +166,23 @@ public class User implements Comparable<User>
 		return true;
 	}
 
+	public static ArrayList<User> generateFakeUsers() {
+		ArrayList<User> user_list = new ArrayList<User>();
+		user_list.add(new User("Meng Zhang", true, R.drawable.avatar_meng_zhang,
+				R.drawable.avatar_meng_zhang_small));
+		user_list.add(new User("Chao Gao", true, R.drawable.avatar_chao_gao,
+				R.drawable.avatar_chao_gao_small));
+		user_list.add(new User("Liangchuan Gu", true,
+				R.drawable.avatar_liangchuan_gu,
+				R.drawable.avatar_liang_chuan_small));
+		user_list.add(new User("Yimai Fang", false, R.drawable.avatar_yimai_fang,
+				R.drawable.avatar_yi_mai_small));
+		
+		user_list.get(0).setScore(53);
+		user_list.get(1).setScore(14);
+		user_list.get(2).setScore(22);
+		user_list.get(3).setScore(31);
+		
+		return user_list;
+	}
 }
