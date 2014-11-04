@@ -294,6 +294,7 @@ public class MainActivity extends Activity
 		counter.cancel();
 		player.stop();
 		mPopupWindowForQuestion.dismiss();
+		v.setVisibility(View.GONE);
 
 		manager.rankUsers();
 		ArrayList<User> users = MainActivity.manager.getUsers();
