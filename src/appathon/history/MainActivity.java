@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import android.R.integer;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -299,9 +300,10 @@ public class MainActivity extends Activity
 		// Sorting based on scores
 		Collections.sort(users, Collections.reverseOrder());
 		SimpleAdapter adapter = new SimpleAdapter(this,
-				convertUsersToMap(users), R.layout.activity_main_popup_ranking_list_item,
-				new String[] { "avatar", "name", "score" }, new int[] {
-						R.id.avatar, R.id.name, R.id.score });
+				convertUsersToMap(users),
+				R.layout.activity_main_popup_ranking_list_item, new String[] {
+						"rankingNo", "avatar", "name", "score" }, new int[] {
+						R.id.rankingNo, R.id.avatar, R.id.name, R.id.score });
 
 		mPopupWindowForRanking.showAtLocation(findViewById(R.id.map),
 				Gravity.TOP, 0, 0);
@@ -316,10 +318,12 @@ public class MainActivity extends Activity
 	{
 		List<Map<String, Object>> userList = new ArrayList<Map<String, Object>>();
 
-		for (User user : users)
+		for (int i = 0; i < users.size(); i++)
 		{
+			User user = users.get(i);
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("avatar", user.getAvatar());
+			map.put("rankingNo", "" + (i + 1));
+			map.put("avatar", user.getSmallAvatar());
 			map.put("name", user.getName());
 			map.put("score", user.getScore());
 			userList.add(map);
