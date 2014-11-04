@@ -11,7 +11,6 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,6 +21,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
@@ -85,7 +85,11 @@ public class MainActivity extends Activity
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+		getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
+		getActionBar().hide();
+
+		setContentView(R.layout.activity_main); // be sure you call this AFTER
+												// requestFeature
 		player = MediaPlayer.create(this, R.raw.background_audio);
 		player.setLooping(true); // Set looping
 		player.setVolume(100, 100);
@@ -291,55 +295,21 @@ public class MainActivity extends Activity
 		mPopupWindowForQuestion.dismiss();
 
 		manager.calculateUserScores();
-
-		mPopupWindowForRanking.showAtLocation(findViewById(R.id.map),
-				Gravity.TOP, 0, 218);
-
 		ArrayList<User> users = MainActivity.manager.getUsers();
-
 		// Sorting based on scores
 		Collections.sort(users, Collections.reverseOrder());
-
 		SimpleAdapter adapter = new SimpleAdapter(this,
 				convertUsersToMap(users), R.layout.activity_result_list_item,
 				new String[] { "avatar", "name", "score" }, new int[] {
 						R.id.avatar, R.id.name, R.id.score });
 
-//		ListView listView = (ListView) findViewById(R.id.rankingListView);
-//		listView.setAdapter(adapter);
+		mPopupWindowForRanking.showAtLocation(findViewById(R.id.map),
+				Gravity.TOP, 0, 0);
 
-//		TextView questionTextView = ((TextView) mPopupWindowForQuestion
-//				.getContentView().findViewById(R.id.questionTextView));
-//		questionTextView.setText(question.question);
-//
-//		ListView answerListView = ((ListView) mPopupWindowForQuestion
-//				.getContentView().findViewById(R.id.answerListView));
-//
-//		answerListView.setOnItemClickListener(new OnItemClickListener()
-//		{
-//			@Override
-//			public void onItemClick(AdapterView<?> parent, View view,
-//					int position, long id)
-//			{
-//				ListView answerListView = (ListView) parent;
-//
-//				HashMap<String, String> map = (HashMap<String, String>) answerListView
-//						.getItemAtPosition(position);
-//				String yourAnswer = map.get("option_string");
-//
-//				manager.updateUser(userName, yourAnswer);
-//
-//				mPopupWindowForQuestion.dismiss();
-//			}
-//		});
-//
-//		SimpleAdapter adapter = new SimpleAdapter(this,
-//				convertOptionsToMap(question.options),
-//				R.layout.activity_main_popup_question_list_item,
-//				new String[] { "option_string" },
-//				new int[] { R.id.option_string });
-//
-//		answerListView.setAdapter(adapter);
+		ListView rankingListView = ((ListView) mPopupWindowForRanking
+				.getContentView().findViewById(R.id.rankingListView));
+
+		rankingListView.setAdapter(adapter);
 	}
 
 	private List<Map<String, Object>> convertUsersToMap(ArrayList<User> users)
@@ -357,7 +327,7 @@ public class MainActivity extends Activity
 
 		return userList;
 	}
-	
+
 	public void displayAllAnswers(View v)
 	{
 		mPopupWindowForQuestion.dismiss();
@@ -434,7 +404,7 @@ public class MainActivity extends Activity
 		}
 
 		mPopupWindowForQuestion.showAtLocation(findViewById(R.id.map),
-				Gravity.TOP, 0, 218);
+				Gravity.TOP, 0, 0);
 
 		TextView questionTextView = ((TextView) mPopupWindowForQuestion
 				.getContentView().findViewById(R.id.questionTextView));
