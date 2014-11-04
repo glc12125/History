@@ -299,7 +299,7 @@ public class MainActivity extends Activity
 		// Sorting based on scores
 		Collections.sort(users, Collections.reverseOrder());
 		SimpleAdapter adapter = new SimpleAdapter(this,
-				convertUsersToMap(users), R.layout.activity_result_list_item,
+				convertUsersToMap(users), R.layout.activity_main_popup_ranking_list_item,
 				new String[] { "avatar", "name", "score" }, new int[] {
 						R.id.avatar, R.id.name, R.id.score });
 
