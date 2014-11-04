@@ -143,7 +143,6 @@ public class MainActivity extends Activity
 																			// for
 																			// each
 																			// country
-		manager = new GameManager(context, mHandler);
 
 		// set popup for question
 		View popupViewForQuestion = getLayoutInflater().inflate(
@@ -154,7 +153,7 @@ public class MainActivity extends Activity
 		mPopupWindowForQuestion.setOutsideTouchable(false);
 
 		mHandler = new MsgHandler(this);
-
+		manager = new GameManager(context, mHandler);
 		// pup up 500ms later
 		mHandler.sendEmptyMessageDelayed(MsgHandler.MSG_TYPE_SHOW_QUESTION, 500);
 
