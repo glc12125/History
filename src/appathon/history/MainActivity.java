@@ -319,6 +319,7 @@ public class MainActivity extends Activity
 		for (int i = 0; i < users.size(); i++)
 		{
 			User user = users.get(i);
+
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("ranking", user.getRanking());
 			map.put("avatar", user.getSmallAvatar());
