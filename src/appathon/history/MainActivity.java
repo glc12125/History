@@ -295,10 +295,8 @@ public class MainActivity extends Activity
 		player.stop();
 		mPopupWindowForQuestion.dismiss();
 
-		manager.calculateUserScores();
+		manager.rankUsers();
 		ArrayList<User> users = MainActivity.manager.getUsers();
-		// Sorting based on scores
-		Collections.sort(users, Collections.reverseOrder());
 		SimpleAdapter adapter = new SimpleAdapter(this,
 				convertUsersToMap(users),
 				R.layout.activity_main_popup_ranking_list_item, new String[] {
@@ -322,7 +320,7 @@ public class MainActivity extends Activity
 		{
 			User user = users.get(i);
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("rankingNo", "" + (i + 1));
+			map.put("rankingNo", user.getRanking());
 			map.put("avatar", user.getSmallAvatar());
 			map.put("name", user.getName());
 			map.put("score", user.getScore());
