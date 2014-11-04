@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
+import android.R.integer;
 import android.content.Context;
 import android.media.MediaPlayer;
+import android.os.Bundle;
+import android.os.Message;
 import android.widget.Toast;
 import appathon.history.MainActivity;
 import appathon.history.MainActivity.MsgHandler;
@@ -129,22 +132,39 @@ public class GameManager
 				country.setDefense(country.getDefense() - 1);
 				if (country.getDefense() == 0)
 				{
-					MainActivity.removeMarker(country.getName());
+					removeMarker(country.getName());
 					country.setDefense(1);
 					countryToUserMap.put(country, user);
-					MainActivity.drawMarker(
-							MainActivity.lg.getLocationFromAddress(context,
-									country.getName()), user.getSmallAvatar());
+					drawMarker(country.getName(), user.getSmallAvatar());
 				}
 			} else
 			{
 				country.setDefense(1);
 				countryToUserMap.put(country, user);
-				MainActivity.drawMarker(
-						MainActivity.lg.getLocationFromAddress(context,
-								country.getName()), user.getSmallAvatar());
+				drawMarker(country.getName(), user.getSmallAvatar());
 			}
 		}
+	}
+
+	private void drawMarker(String countryName, int avatar)
+	{
+		Message msg = new Message();
+		msg.what = MsgHandler.MSG_TYPE_DRAW_MARKER;
+		Bundle b = new Bundle();
+		b.putString("countryName", countryName);
+		b.putInt("avatar", avatar);
+		msg.setData(b);
+		mHandler.sendMessage(msg);
+	}
+
+	private void removeMarker(String countryName)
+	{
+		Message msg = new Message();
+		msg.what = MsgHandler.MSG_TYPE_REMOVE_MARKER;
+		Bundle b = new Bundle();
+		b.putString("countryName", countryName);
+		msg.setData(b);
+		mHandler.sendMessage(msg);
 	}
 
 	public void RestartUsers()

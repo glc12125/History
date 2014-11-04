@@ -166,7 +166,7 @@ public class User implements Comparable<User>
 		return true;
 	}
 
-	public static ArrayList<User> generateFakeUsers()
+	public ArrayList<User> generateFakeUsers()
 	{
 		ArrayList<User> user_list = new ArrayList<User>();
 		user_list.add(new User("Meng Zhang", true,

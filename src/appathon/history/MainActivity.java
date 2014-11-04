@@ -49,16 +49,16 @@ public class MainActivity extends Activity
 {
 	private MsgHandler mHandler = null;
 	private int roundTime = 5000;
-	public static String userName = "Yimai Fang";
-	static GoogleMap worldMap;
-	public static LocationGetter lg;
+	public static final String userName = "Yimai Fang";
+	GoogleMap worldMap;
+	public LocationGetter lg;
 	Context context;
-	public static GameManager manager;
+	public GameManager manager;
 	PopupWindow mPopupWindowForQuestion;
 	PopupWindow mPopupWindowForRanking;
 	CounterClass counter;
-	static HashMap<String, Marker> marker_map; // Store countries and marker
-												// pair, it
+	HashMap<String, Marker> marker_map; // Store countries and marker
+										// pair, it
 	// is used for Game
 	HashMap<Marker, HashMap<String, String>> marker_text_map = new HashMap<Marker, HashMap<String, String>>(); // Store
 	MediaPlayer player; // the
@@ -73,8 +73,8 @@ public class MainActivity extends Activity
 	{
 		WeakReference<MainActivity> mActivity;
 		public static final int MSG_TYPE_SHOW_QUESTION = 1;
-		public static final int MSG_TYPE_TAKEPICTURE = 2;
-		public static final int MSG_TYPE_COLLECT_DATA = 3;
+		public static final int MSG_TYPE_DRAW_MARKER = 2;
+		public static final int MSG_TYPE_REMOVE_MARKER = 3;
 
 		MsgHandler(MainActivity aActivity)
 		{
@@ -85,12 +85,26 @@ public class MainActivity extends Activity
 		public void handleMessage(Message msg)
 		{
 			MainActivity mAct = mActivity.get();
+			Bundle b = null;
+			String countryName = null;
+
 			switch (msg.what)
 			{
 			case MsgHandler.MSG_TYPE_SHOW_QUESTION:
 				mAct.showQuestion(manager.NextQuestion());
 				break;
-
+			case MsgHandler.MSG_TYPE_DRAW_MARKER:
+				b = msg.getData();
+				int avatar = b.getInt("avatar");
+				countryName = b.getString("countryName");
+				drawMarker(lg.getLocationFromAddress(context, countryName),
+						avatar);
+				break;
+			case MsgHandler.MSG_TYPE_REMOVE_MARKER:
+				b = msg.getData();
+				countryName = b.getString("countryName");
+				removeMarker(countryName);
+				break;
 			default:
 				break;
 			}
@@ -247,7 +261,7 @@ public class MainActivity extends Activity
 		return sb.toString();
 	}
 
-	public static void removeMarker(String countryName)
+	public void removeMarker(String countryName)
 	{
 		if (marker_map.containsKey(countryName))
 		{
@@ -262,7 +276,7 @@ public class MainActivity extends Activity
 		return drawMarker(ll);
 	}
 
-	public static Marker drawMarker(LatLng ll, int avatar_id)
+	public Marker drawMarker(LatLng ll, int avatar_id)
 	{
 		if (worldMap == null)
 		{
@@ -315,7 +329,7 @@ public class MainActivity extends Activity
 		v.setVisibility(View.GONE);
 
 		manager.rankUsers();
-		ArrayList<User> users = MainActivity.manager.getUsers();
+		ArrayList<User> users = manager.getUsers();
 		SimpleAdapter adapter = new SimpleAdapter(this,
 				convertUsersToMap(users),
 				R.layout.activity_main_popup_ranking_list_item, new String[] {
