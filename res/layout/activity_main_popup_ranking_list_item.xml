@@ -23,7 +23,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="5dp"
-        android:layout_toRightOf="@+id/rankingNo" />
+        android:layout_toRightOf="@+id/ranking" />
 
     <TextView
         android:id="@+id/name"
