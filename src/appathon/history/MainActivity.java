@@ -1,6 +1,7 @@
 package appathon.history;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -290,18 +291,77 @@ public class MainActivity extends Activity
 		mPopupWindowForQuestion.dismiss();
 
 		manager.calculateUserScores();
-		Intent intent = new Intent();
-		// Pass information to the next screen
-		intent.setClass(getApplicationContext(), ResultActivity.class);
-		// Redirect to next screen
-		startActivityForResult(intent, 0);
 
+		mPopupWindowForRanking.showAtLocation(findViewById(R.id.map),
+				Gravity.TOP, 0, 218);
+
+		ArrayList<User> users = MainActivity.manager.getUsers();
+
+		// Sorting based on scores
+		Collections.sort(users, Collections.reverseOrder());
+
+		SimpleAdapter adapter = new SimpleAdapter(this,
+				convertUsersToMap(users), R.layout.activity_result_list_item,
+				new String[] { "avatar", "name", "score" }, new int[] {
+						R.id.avatar, R.id.name, R.id.score });
+
+//		ListView listView = (ListView) findViewById(R.id.rankingListView);
+//		listView.setAdapter(adapter);
+
+//		TextView questionTextView = ((TextView) mPopupWindowForQuestion
+//				.getContentView().findViewById(R.id.questionTextView));
+//		questionTextView.setText(question.question);
+//
+//		ListView answerListView = ((ListView) mPopupWindowForQuestion
+//				.getContentView().findViewById(R.id.answerListView));
+//
+//		answerListView.setOnItemClickListener(new OnItemClickListener()
+//		{
+//			@Override
+//			public void onItemClick(AdapterView<?> parent, View view,
+//					int position, long id)
+//			{
+//				ListView answerListView = (ListView) parent;
+//
+//				HashMap<String, String> map = (HashMap<String, String>) answerListView
+//						.getItemAtPosition(position);
+//				String yourAnswer = map.get("option_string");
+//
+//				manager.updateUser(userName, yourAnswer);
+//
+//				mPopupWindowForQuestion.dismiss();
+//			}
+//		});
+//
+//		SimpleAdapter adapter = new SimpleAdapter(this,
+//				convertOptionsToMap(question.options),
+//				R.layout.activity_main_popup_question_list_item,
+//				new String[] { "option_string" },
+//				new int[] { R.id.option_string });
+//
+//		answerListView.setAdapter(adapter);
 	}
 
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data)
+	private List<Map<String, Object>> convertUsersToMap(ArrayList<User> users)
+	{
+		List<Map<String, Object>> userList = new ArrayList<Map<String, Object>>();
+
+		for (User user : users)
+		{
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("avatar", user.getAvatar());
+			map.put("name", user.getName());
+			map.put("score", user.getScore());
+			userList.add(map);
+		}
+
+		return userList;
+	}
+	
+	public void displayAllAnswers(View v)
 	{
 		mPopupWindowForQuestion.dismiss();
+		mPopupWindowForRanking.dismiss();
 		displayAllAnswers(manager.getQuestions());
 	}
 
