@@ -52,18 +52,19 @@ public class MainActivity extends Activity
 	public static LocationGetter lg;
 	Context context;
 	public static GameManager manager;
-	PopupWindow mPopupWindow;
+	PopupWindow mPopupWindowForQuestion;
+	PopupWindow mPopupWindowForRanking;
 	CounterClass counter;
 	static HashMap<String, Marker> marker_map; // Store countries and marker
 												// pair, it
 	// is used for Game
 	HashMap<Marker, HashMap<String, String>> marker_text_map = new HashMap<Marker, HashMap<String, String>>(); // Store
-	MediaPlayer player;																											// the
-																												// question/answer
-																												// pair
-																												// for
-																												// each
-																												// country
+	MediaPlayer player; // the
+	// question/answer
+	// pair
+	// for
+	// each
+	// country
 
 	private Handler popupHandler = new Handler()
 	{
@@ -85,9 +86,9 @@ public class MainActivity extends Activity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		player = MediaPlayer.create(this, R.raw.background_audio);
-        player.setLooping(true); // Set looping
-        player.setVolume(100,100);
-        player.start();
+		player.setLooping(true); // Set looping
+		player.setVolume(100, 100);
+		// player.start();
 		worldMap = ((MapFragment) getFragmentManager().findFragmentById(
 				R.id.map)).getMap();
 
@@ -109,15 +110,23 @@ public class MainActivity extends Activity
 																			// country
 		manager = new GameManager(context);
 
-		View popupView = getLayoutInflater().inflate(
+		// set popup for question
+		View popupViewForQuestion = getLayoutInflater().inflate(
 				R.layout.activity_main_popup_question, null);
-
-		mPopupWindow = new PopupWindow(popupView, LayoutParams.MATCH_PARENT,
-				LayoutParams.WRAP_CONTENT, true);
-		mPopupWindow.setTouchable(true);
-		mPopupWindow.setOutsideTouchable(false);
-
+		mPopupWindowForQuestion = new PopupWindow(popupViewForQuestion,
+				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, true);
+		mPopupWindowForQuestion.setTouchable(true);
+		mPopupWindowForQuestion.setOutsideTouchable(false);
+		// pup up 500ms later
 		popupHandler.sendEmptyMessageDelayed(0, 500);
+
+		// set popup for ranking
+		View popupViewForRanking = getLayoutInflater().inflate(
+				R.layout.activity_main_popup_ranking, null);
+		mPopupWindowForRanking = new PopupWindow(popupViewForRanking,
+				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, true);
+		mPopupWindowForRanking.setTouchable(true);
+		mPopupWindowForRanking.setOutsideTouchable(false);
 
 		counter = new CounterClass(roundTime, 1000);
 		counter.start();
@@ -167,8 +176,7 @@ public class MainActivity extends Activity
 			if (q.correspondingCountry != null)
 			{
 				String countryName = q.correspondingCountry.getName();
-				LatLng ll = lg
-						.getLocationFromAddress(context, countryName);
+				LatLng ll = lg.getLocationFromAddress(context, countryName);
 				if (!marker_map.containsKey(countryName))
 				{
 					Marker marker = drawMarker(ll);
@@ -180,8 +188,7 @@ public class MainActivity extends Activity
 				} else
 				{
 					Marker marker = marker_map.get(countryName);
-					marker_text_map.get(marker).put(q.question,
-							countryName);
+					marker_text_map.get(marker).put(q.question, countryName);
 				}
 			}
 		}
@@ -246,10 +253,11 @@ public class MainActivity extends Activity
 		}
 
 		Marker temp_marker = worldMap.addMarker(marker);
-		CameraPosition cameraPosition = new CameraPosition.Builder().target(ll).build() ;
+		CameraPosition cameraPosition = new CameraPosition.Builder().target(ll)
+				.build();
 		worldMap.moveCamera(CameraUpdateFactory
 				.newCameraPosition(cameraPosition));
-		
+
 		return temp_marker;
 	}
 
@@ -279,6 +287,7 @@ public class MainActivity extends Activity
 	{
 		counter.cancel();
 		player.stop();
+		mPopupWindowForQuestion.dismiss();
 
 		manager.calculateUserScores();
 		Intent intent = new Intent();
@@ -292,7 +301,7 @@ public class MainActivity extends Activity
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
-		mPopupWindow.dismiss();
+		mPopupWindowForQuestion.dismiss();
 		displayAllAnswers(manager.getQuestions());
 	}
 
@@ -344,33 +353,35 @@ public class MainActivity extends Activity
 	private void showQuestion(final Question question)
 	{
 		if (question.kind == "ChooseCountry")
-			moveCameraToCountry(question.correspondingCountry.getName(), (float) 1.5);
+			moveCameraToCountry(question.correspondingCountry.getName(),
+					(float) 1.5);
 		else
-			moveCameraToCountry(question.correspondingCountry.getName(), (float) 3.5);
+			moveCameraToCountry(question.correspondingCountry.getName(),
+					(float) 3.5);
 
-//		try
-//		{
-//			Thread.sleep(1000);
-//		} catch (InterruptedException e)
-//		{
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-		
-		if (mPopupWindow.isShowing())
+		// try
+		// {
+		// Thread.sleep(1000);
+		// } catch (InterruptedException e)
+		// {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
+
+		if (mPopupWindowForQuestion.isShowing())
 		{
-			mPopupWindow.dismiss();
+			mPopupWindowForQuestion.dismiss();
 		}
 
-		mPopupWindow
-				.showAtLocation(findViewById(R.id.map), Gravity.TOP, 0, 218);
+		mPopupWindowForQuestion.showAtLocation(findViewById(R.id.map),
+				Gravity.TOP, 0, 218);
 
-		TextView questionTextView = ((TextView) mPopupWindow.getContentView()
-				.findViewById(R.id.questionTextView));
+		TextView questionTextView = ((TextView) mPopupWindowForQuestion
+				.getContentView().findViewById(R.id.questionTextView));
 		questionTextView.setText(question.question);
 
-		ListView answerListView = ((ListView) mPopupWindow.getContentView()
-				.findViewById(R.id.answerListView));
+		ListView answerListView = ((ListView) mPopupWindowForQuestion
+				.getContentView().findViewById(R.id.answerListView));
 
 		answerListView.setOnItemClickListener(new OnItemClickListener()
 		{
@@ -386,7 +397,7 @@ public class MainActivity extends Activity
 
 				manager.updateUser(userName, yourAnswer);
 
-				mPopupWindow.dismiss();
+				mPopupWindowForQuestion.dismiss();
 			}
 		});
 
