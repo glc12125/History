@@ -1,13 +1,12 @@
 package appathon.history;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import android.R.integer;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -48,6 +47,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MainActivity extends Activity
 {
+	private MsgHandler mHandler = null;
 	private int roundTime = 5000;
 	public static String userName = "Yimai Fang";
 	static GoogleMap worldMap;
@@ -62,25 +62,40 @@ public class MainActivity extends Activity
 	// is used for Game
 	HashMap<Marker, HashMap<String, String>> marker_text_map = new HashMap<Marker, HashMap<String, String>>(); // Store
 	MediaPlayer player; // the
+
 	// question/answer
 	// pair
 	// for
 	// each
 	// country
 
-	private Handler popupHandler = new Handler()
+	public class MsgHandler extends Handler
 	{
+		WeakReference<MainActivity> mActivity;
+		public static final int MSG_TYPE_SHOW_QUESTION = 1;
+		public static final int MSG_TYPE_TAKEPICTURE = 2;
+		public static final int MSG_TYPE_COLLECT_DATA = 3;
+
+		MsgHandler(MainActivity aActivity)
+		{
+			mActivity = new WeakReference<MainActivity>(aActivity);
+		}
+
 		@Override
 		public void handleMessage(Message msg)
 		{
+			MainActivity mAct = mActivity.get();
 			switch (msg.what)
 			{
-			case 0:
-				showQuestion(manager.NextQuestion());
+			case MsgHandler.MSG_TYPE_SHOW_QUESTION:
+				mAct.showQuestion(manager.NextQuestion());
+				break;
+
+			default:
 				break;
 			}
 		}
-	};
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -114,7 +129,7 @@ public class MainActivity extends Activity
 																			// for
 																			// each
 																			// country
-		manager = new GameManager(context);
+		manager = new GameManager(context, mHandler);
 
 		// set popup for question
 		View popupViewForQuestion = getLayoutInflater().inflate(
@@ -123,8 +138,11 @@ public class MainActivity extends Activity
 				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, true);
 		mPopupWindowForQuestion.setTouchable(true);
 		mPopupWindowForQuestion.setOutsideTouchable(false);
+
+		mHandler = new MsgHandler(this);
+
 		// pup up 500ms later
-		popupHandler.sendEmptyMessageDelayed(0, 500);
+		mHandler.sendEmptyMessageDelayed(MsgHandler.MSG_TYPE_SHOW_QUESTION, 500);
 
 		// set popup for ranking
 		View popupViewForRanking = getLayoutInflater().inflate(

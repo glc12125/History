@@ -8,6 +8,7 @@ import android.content.Context;
 import android.media.MediaPlayer;
 import android.widget.Toast;
 import appathon.history.MainActivity;
+import appathon.history.MainActivity.MsgHandler;
 import appathon.history.R;
 import appathon.history.models.qa.Question;
 import appathon.history.models.qa.QuestionGenerator;
@@ -21,13 +22,14 @@ public class GameManager
 	private HashMap<Country, User> countryToUserMap;
 	private int currentQuestionIndex;
 	private Context context;
-
+	private MsgHandler mHandler = null;
 	public boolean isFinished;
 
-	public GameManager(Context context)
+	public GameManager(Context context, MsgHandler msgH)
 	{
 		super();
 		this.context = context;
+		this.mHandler = msgH;
 		isFinished = false;
 
 		users = initailizeUsers();
