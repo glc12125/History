@@ -300,8 +300,8 @@ public class MainActivity extends Activity
 		SimpleAdapter adapter = new SimpleAdapter(this,
 				convertUsersToMap(users),
 				R.layout.activity_main_popup_ranking_list_item, new String[] {
-						"rankingNo", "avatar", "name", "score" }, new int[] {
-						R.id.rankingNo, R.id.avatar, R.id.name, R.id.score });
+						"ranking", "avatar", "name", "score" }, new int[] {
+						R.id.ranking, R.id.avatar, R.id.name, R.id.score });
 
 		mPopupWindowForRanking.showAtLocation(findViewById(R.id.map),
 				Gravity.TOP, 0, 0);
@@ -320,7 +320,7 @@ public class MainActivity extends Activity
 		{
 			User user = users.get(i);
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("rankingNo", user.getRanking());
+			map.put("ranking", user.getRanking());
 			map.put("avatar", user.getSmallAvatar());
 			map.put("name", user.getName());
 			map.put("score", user.getScore());
