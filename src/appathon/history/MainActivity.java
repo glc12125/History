@@ -97,7 +97,8 @@ public class MainActivity extends Activity
 			case MsgHandler.MSG_TYPE_REMOVE_MARKER:
 				b = msg.getData();
 				countryName = b.getString("countryName");
-				removeMarker(countryName);
+				Country c = new Country(countryName);
+				removeMarker(c);
 				break;
 			default:
 				break;
@@ -153,9 +154,9 @@ public class MainActivity extends Activity
 		counter.start();
 	}
 
-	public void moveCameraToCountry(String country, float zoomLevel)
+	public void moveCameraToCountry(Country country, float zoomLevel)
 	{
-		LatLng ll = lg.getLocationFromAddress(context, country, 7.5);
+		LatLng ll = lg.getLocationFromAddress(context, country.getName(), 7.5);
 		// Creates a CameraPosition from the builder
 		CameraPosition cameraPosition = new CameraPosition.Builder().target(ll).zoom(zoomLevel).build(); 
 		// Move camera to specific position
@@ -224,18 +225,18 @@ public class MainActivity extends Activity
 		return sb.toString();
 	}
 
-	public void removeMarker(String countryName)
+	public void removeMarker(Country country)
 	{
-		if (marker_map.containsKey(countryName))
+		if (marker_map.containsKey(country))
 		{
-			Marker marker = marker_map.remove(countryName);
+			Marker marker = marker_map.remove(country);
 			marker.remove();
 		}
 	}
 
-	public Marker drawMarker(String countryName)
+	public Marker drawMarker(Country country)
 	{
-		LatLng ll = lg.getLocationFromAddress(context, countryName);
+		LatLng ll = lg.getLocationFromAddress(context, country.getName());
 		return drawMarker(ll);
 	}
 
@@ -372,10 +373,10 @@ public class MainActivity extends Activity
 	private void showQuestion(final Question question)
 	{
 		if (question.kind == "ChooseCountry")
-			moveCameraToCountry(question.correspondingCountry.getName(),
+			moveCameraToCountry(question.correspondingCountry,
 					1.5f);
 		else
-			moveCameraToCountry(question.correspondingCountry.getName(),
+			moveCameraToCountry(question.correspondingCountry,
 					3.5f);
 
 		// try
