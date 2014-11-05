@@ -49,7 +49,7 @@ public class GameManager
 	public boolean checkAnswers(long millisPassed)
 	{
 		int count = 0;
-		Question currentQuestion = questions.get(this.currentQuestionIndex);
+		Question currentQuestion = getCurrentQuestion();
 
 		for (int i = 0; i < users.size(); i++)
 		{
@@ -67,7 +67,6 @@ public class GameManager
 				String selectedAnswer = user.getSelectedAnswer();
 				if (selectedAnswer.equals(currentQuestion.correctAnswer))
 				{
-					
 					try {
 						changeCountryGameInfo(currentQuestion.correspondingCountry, user);
 						if (!user.isAI()) {
@@ -77,6 +76,7 @@ public class GameManager
 							Toast.makeText(context, "Country is controled by " + user.getName(), Toast.LENGTH_SHORT).show();
 							playSoundWrong();
 						}
+						drawMarker(currentQuestion.correspondingCountry.getName(), user.getSmallAvatar());
 						return true;
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
@@ -105,12 +105,10 @@ public class GameManager
 		if(cgi.getUser() == null) {
 			cgi.setDefense(1);
 			cgi.setUser(user);
-			drawMarker(target_country.getName(), user.getSmallAvatar());
 		} else if(cgi.getUser().equals(user)){
 			cgi.setDefense(cgi.getDefense() + 1);
 		} else {
 			cgi.setUser(user);
-			drawMarker(target_country.getName(), user.getSmallAvatar());
 		}
 	}
 
@@ -146,15 +144,13 @@ public class GameManager
 
 	/**
 	 * Get to next round.
-	 * Initailze game and user
+	 * Initialize next question and users' status
 	 * @return
 	 */
-	public Question getToNextRound() {
+	public void getToNextRound() {
 		Question q = getNextQuestion();
 		restartUsers(q);
-		return q;
 	}
-	
 	
 	/**
 	 * Change the question submitted status for all users to False
@@ -211,20 +207,6 @@ public class GameManager
 				user.setQuestionSubmitted(true);
 			}
 		}
-	}
-
-	private void playSoundCorrect()
-	{
-		MediaPlayer mediaPlayer = MediaPlayer.create(context,
-				R.raw.sound_correct);
-		mediaPlayer.start();
-	}
-
-	private void playSoundWrong()
-	{
-		MediaPlayer mediaPlayer = MediaPlayer
-				.create(context, R.raw.sound_wrong);
-		mediaPlayer.start(); 
 	}
 
 	/**
@@ -297,4 +279,17 @@ public class GameManager
 		return users;
 	}
 
+	private void playSoundCorrect()
+	{
+		MediaPlayer mediaPlayer = MediaPlayer.create(context,
+				R.raw.sound_correct);
+		mediaPlayer.start();
+	}
+
+	private void playSoundWrong()
+	{
+		MediaPlayer mediaPlayer = MediaPlayer
+				.create(context, R.raw.sound_wrong);
+		mediaPlayer.start(); 
+	}
 }
