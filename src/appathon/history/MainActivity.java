@@ -48,7 +48,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class MainActivity extends Activity
 {
 	private MsgHandler mHandler = null;
-	private int roundTime = 5000;
+	private int millisRoundTime = 5000;
 	public static final String userName = "Yimai Fang";
 	GoogleMap worldMap;
 	public LocationGetter lg;
@@ -57,17 +57,12 @@ public class MainActivity extends Activity
 	PopupWindow mPopupWindowForQuestion;
 	PopupWindow mPopupWindowForRanking;
 	CounterClass counter;
-	HashMap<String, Marker> marker_map; // Store countries and marker
-	// pair, it
-	// is used for Game
+	HashMap<String, Marker> marker_map; 
+	// Store countries and marker pair, it is used for Game
 	HashMap<Marker, HashMap<String, String>> marker_text_map = new HashMap<Marker, HashMap<String, String>>(); // Store
-	MediaPlayer player; // the
+	// The question/answer pair for each marker
+	MediaPlayer backgroundMusicPlayer; 
 
-	// question/answer
-	// pair
-	// for
-	// each
-	// country
 
 	public class MsgHandler extends Handler
 	{
@@ -91,7 +86,7 @@ public class MainActivity extends Activity
 			switch (msg.what)
 			{
 			case MsgHandler.MSG_TYPE_SHOW_QUESTION:
-				mAct.showQuestion(manager.getNextQuestion());
+				mAct.showQuestion(manager.getCurrentQuestion());
 				break;
 			case MsgHandler.MSG_TYPE_DRAW_MARKER:
 				b = msg.getData();
@@ -120,31 +115,22 @@ public class MainActivity extends Activity
 
 		setContentView(R.layout.activity_main); // be sure you call this AFTER
 		// requestFeature
-		player = MediaPlayer.create(this, R.raw.background_audio);
-		player.setLooping(true); // Set looping
-		player.setVolume(100, 100);
-		// player.start();
+		backgroundMusicPlayer = MediaPlayer.create(this, R.raw.background_audio);
+		backgroundMusicPlayer.setLooping(true); // Set looping
+		backgroundMusicPlayer.setVolume(100, 100);
+		backgroundMusicPlayer.start();
+		
 		worldMap = ((MapFragment) getFragmentManager().findFragmentById(
 				R.id.map)).getMap();
 
 		Bundle bundle = this.getIntent().getExtras();
 		lg = new LocationGetter();
 		context = this.getApplicationContext();
-		// if (bundle == null)
-		// {
-		// worldMap.setOnMapClickListener(new clickMapWhilePlayingListener());
-		// }
-
+		// Store the country to marker map
 		marker_map = new HashMap<String, Marker>();
-		marker_text_map = new HashMap<Marker, HashMap<String, String>>(); // Store
-		// the
-		// question/answer
-		// pair
-		// for
-		// each
-		// country
-
-		// set popup for question
+		// Store the question/answer pair for each country
+		marker_text_map = new HashMap<Marker, HashMap<String, String>>(); 
+		// Set popup for question
 		View popupViewForQuestion = getLayoutInflater().inflate(
 				R.layout.activity_main_popup_question, null);
 		mPopupWindowForQuestion = new PopupWindow(popupViewForQuestion,
@@ -156,7 +142,6 @@ public class MainActivity extends Activity
 		manager = new GameManager(context, mHandler);
 		// pup up 500ms later
 		mHandler.sendEmptyMessageDelayed(MsgHandler.MSG_TYPE_SHOW_QUESTION, 500);
-
 		// set popup for ranking
 		View popupViewForRanking = getLayoutInflater().inflate(
 				R.layout.activity_main_popup_ranking, null);
@@ -165,27 +150,17 @@ public class MainActivity extends Activity
 		mPopupWindowForRanking.setTouchable(true);
 		mPopupWindowForRanking.setOutsideTouchable(false);
 
-		counter = new CounterClass(roundTime, 1000);
+		counter = new CounterClass(millisRoundTime, 1000);
 		counter.start();
 	}
 
 	public void moveCameraToCountry(String country, float zoomLevel)
 	{
 		LatLng ll = lg.getLocationFromAddress(context, country, 7.5);
-		CameraPosition cameraPosition = new CameraPosition.Builder().target(ll) // Sets
-				// the
-				// center
-				// of
-				// the
-				// map
-				// to
-				// country
-				.zoom(zoomLevel) // Sets the zoom
-				.build(); // Creates a CameraPosition from the builder
-		worldMap.moveCamera(CameraUpdateFactory
-				.newCameraPosition(cameraPosition));
-		// worldMap.animateCamera(CameraUpdateFactory
-		// .newCameraPosition(cameraPosition));
+		// Creates a CameraPosition from the builder
+		CameraPosition cameraPosition = new CameraPosition.Builder().target(ll).zoom(zoomLevel).build(); 
+		// Move camera to specific position
+		worldMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 	}
 
 	public void displayAllAnswers(ArrayList<Question> q_list)
@@ -295,25 +270,10 @@ public class MainActivity extends Activity
 				.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
 	}
 
-	public Marker drawMarker(LatLng ll, User user)
-	{
-		return worldMap.addMarker(new MarkerOptions().position(ll).icon(
-				BitmapDescriptorFactory.fromResource(user.getSmallAvatar())));
-	}
-
-	public void drawMarkers(String[] countryNames)
-	{
-		for (String cn : countryNames)
-		{
-			LatLng ll = lg.getLocationFromAddress(context, cn);
-			drawMarker(ll);
-		}
-	}
-
 	public void showRanking(View v)
 	{
 		counter.cancel();
-		player.stop();
+		backgroundMusicPlayer.stop();
 		mPopupWindowForQuestion.dismiss();
 		v.setVisibility(View.GONE);
 
@@ -370,9 +330,9 @@ public class MainActivity extends Activity
 		@Override
 		public void onFinish()
 		{
-			manager.checkAnswers();
-			manager.restartUsers();
-			showQuestion(manager.getNextQuestion());
+			manager.checkAnswers(millisRoundTime);
+			manager.getToNextRound();
+			showQuestion(manager.getCurrentQuestion());
 			this.cancel();
 			this.start();
 		}
@@ -382,26 +342,24 @@ public class MainActivity extends Activity
 		@Override
 		public void onTick(long millisUntilFinished)
 		{
-			long millis = millisUntilFinished;
-			String hms = String.format(
-					"%02d:%02d:%02d",
-					TimeUnit.MILLISECONDS.toHours(millis),
-					TimeUnit.MILLISECONDS.toMinutes(millis)
-					- TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS
-							.toHours(millis)),
-							TimeUnit.MILLISECONDS.toSeconds(millis)
-							- TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS
-									.toMinutes(millis)));
-			System.out.println(hms);
-
-			if ((roundTime - millisUntilFinished) > 1000)
+//			long millis = millisUntilFinished;
+//			String hms = String.format(
+//					"%02d:%02d:%02d",
+//					TimeUnit.MILLISECONDS.toHours(millis),
+//					TimeUnit.MILLISECONDS.toMinutes(millis)
+//					- TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS
+//							.toHours(millis)),
+//							TimeUnit.MILLISECONDS.toSeconds(millis)
+//							- TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS
+//									.toMinutes(millis)));
+//			System.out.println(hms);
+			long millisPassed = millisRoundTime - millisUntilFinished;
+			if (manager.checkAnswers(millisPassed))
 			{
-				if (manager.checkAnswers())
-				{
-					showQuestion(manager.getNextQuestion());
-					this.cancel();
-					this.start();
-				}
+				manager.getToNextRound();
+				showQuestion(manager.getCurrentQuestion());
+				this.cancel();
+				this.start();
 			}
 		}
 	}

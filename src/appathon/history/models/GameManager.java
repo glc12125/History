@@ -24,7 +24,7 @@ public class GameManager
 	private Context context;
 	private MsgHandler mHandler = null;
 	public boolean isFinished;
-
+	
 	public GameManager(Context context, MsgHandler msgH)
 	{
 		super();
@@ -37,7 +37,6 @@ public class GameManager
 		questionGenerator = new QuestionGenerator(this.context);
 		questions = questionGenerator.getQuestions(100);
 		currentQuestionIndex = 0;
-		
 		initailizeCountryToQuestionMap();
 
 	}
@@ -61,13 +60,14 @@ public class GameManager
 	{
 		return currentQuestionIndex;
 	}
-
+	
+	
 	/**
 	 * check the answers submitted by users are correct or not
 	 * 
 	 * @return whether we should pass to the next question
 	 */
-	public boolean checkAnswers()
+	public boolean checkAnswers(long millisPassed)
 	{
 		int count = 0;
 		Question currentQuestion = questions.get(this.currentQuestionIndex);
@@ -75,19 +75,16 @@ public class GameManager
 		for (int i = 0; i < users.size(); i++)
 		{
 			User user = users.get(i);
-			if (user.isQuestionSubmitted())
-			{
+			
+			if(user.isChecked()) {
 				count++;
-				String selectedAnswer;
-				//@todo AI needs a timer
-				if (user.isAI())
-				{
-					selectedAnswer = currentQuestion.options.get(i).answer;
-				} else
-				{
-					selectedAnswer = user.getSelectedAnswer();
-				}
-
+				continue;
+			}
+			
+			if((user.isAI() && user.getReactiveMillis() < millisPassed) || 
+			(!user.isAI() && user.isQuestionSubmitted())) {
+				count++;
+				String selectedAnswer = user.getSelectedAnswer();
 				if (selectedAnswer.equals(currentQuestion.correctAnswer))
 				{
 					try {
@@ -102,8 +99,7 @@ public class GameManager
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					
-				}
+				} else if(!user.isAI()) playSoundWrong();
 			}
 		}
 		return count == users.size(); // If all users have answer this question,
@@ -163,13 +159,32 @@ public class GameManager
 	}
 
 	/**
+	 * Get to next round.
+	 * Initailze game and user
+	 * @return
+	 */
+	public Question getToNextRound() {
+		Question q = getNextQuestion();
+		restartUsers(q);
+		return q;
+	}
+	
+	
+	/**
 	 * Change the question submitted status for all users to False
 	 */
-	public void restartUsers()
+	private void restartUsers(Question q)
 	{
 		for (int i = 0; i < users.size(); ++i)
 		{
-			users.get(i).restartQuestionSubmittedStatus();
+			User user = users.get(i);
+			user.restartQuestionSubmittedStatus();
+			if(user.isAI()) {
+				AIUser ai_user = (AIUser) user;
+				ai_user.sampleReaction(q);
+			} else {
+				user.setSelectedAnswer(null);
+			}
 		}
 	}
 
@@ -177,7 +192,7 @@ public class GameManager
 	 * Get next question.
 	 * @return next question to display for game
 	 */
-	public Question getNextQuestion()
+	private Question getNextQuestion()
 	{
 		currentQuestionIndex++;
 		if (currentQuestionIndex >= questions.size())
@@ -187,6 +202,14 @@ public class GameManager
 		return questions.get(currentQuestionIndex);
 	}
 
+	/**
+	 * Get current question
+	 * @return
+	 */
+	public Question getCurrentQuestion() {
+		return questions.get(currentQuestionIndex);
+	}
+	
 	public boolean updateUser(String userName, String selectedAnswer)
 	{
 		Question currentQuestion = questions.get(this.currentQuestionIndex);
@@ -259,11 +282,11 @@ public class GameManager
 	private void initailizeUsers()
 	{
 		this.users = new ArrayList<User>();
-		users.add(new User(1, "Meng Zhang", true, R.drawable.avatar_meng_zhang,
+		users.add(new AIUser(1, "Meng Zhang", true, R.drawable.avatar_meng_zhang,
 				R.drawable.avatar_meng_zhang_small));
-		users.add(new User(2, "Chao Gao", true, R.drawable.avatar_chao_gao,
+		users.add(new AIUser(2, "Chao Gao", true, R.drawable.avatar_chao_gao,
 				R.drawable.avatar_chao_gao_small));
-		users.add(new User(3, "Liangchuan Gu", true,
+		users.add(new AIUser(3, "Liangchuan Gu", true,
 				R.drawable.avatar_liangchuan_gu,
 				R.drawable.avatar_liang_chuan_small));
 		users.add(new User(4, "Yimai Fang", false, R.drawable.avatar_yimai_fang,

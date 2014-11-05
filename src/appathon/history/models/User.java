@@ -17,6 +17,8 @@ public class User implements Comparable<User>
 	private boolean questionSubmitted;
 	private int small_avatar;
 	private int numOfCountries;
+	private boolean isChecked;
+	protected long reactiveMillis;
 	private String selectedAnswer;
 
 	public User(int id, String name, boolean isAI, int avatar, int small_avatar)
@@ -29,8 +31,17 @@ public class User implements Comparable<User>
 		this.questionSubmitted = false;
 		this.numOfCountries = 0;
 		this.small_avatar = small_avatar;
+		this.reactiveMillis = -1;
+		this.isChecked = false;
 	}
 
+	public long getReactiveMillis() {
+		return this.reactiveMillis;
+	}
+	
+	public void setReactiveMillis(long ms) {
+		this.reactiveMillis = ms;
+	}
 	
 	public void incrementNumOfCountriesByOne() {
 		this.numOfCountries++;
@@ -71,6 +82,14 @@ public class User implements Comparable<User>
 		this.isAI = isAI;
 	}
 
+	public boolean isChecked() {
+		return isChecked;
+	}
+	
+	public void checked() {
+		isChecked = true;
+	}
+	
 	public int getScore()
 	{
 		return score;
@@ -131,13 +150,8 @@ public class User implements Comparable<User>
 
 	public void restartQuestionSubmittedStatus()
 	{
-		if (isAI)
-		{
-			questionSubmitted = true;
-		} else
-		{
-			questionSubmitted = false;
-		}
+		isChecked = false;	
+		questionSubmitted = false;
 	}
 
 	@Override

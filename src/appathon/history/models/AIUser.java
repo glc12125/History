@@ -7,36 +7,46 @@ import appathon.history.models.qa.Question;
 public class AIUser extends User {
 
 	private double correctPercentage; // To determine the probability AI can correctly answer one question, 0.0 - 1.0
-	private double second_mean; // Decide the average time one AI responses 
-	private double second_std; // Decide the variance of responding time
-	private double second_this_turn; // Seconds this AI responds question this turn
+	private long millis_mean; // Decide the average time one AI responses 
+	private double millis_std; // Decide the variance of responding time
+
 	
 	public AIUser(int id, String name, boolean isAI, int avatar, int small_avatar) {
-		super(id, name, isAI, avatar, small_avatar);
+		this(id, name, avatar, small_avatar, 0.85, 3000, 1000);
 	}
 	
 	public AIUser(int id, String name, int avatar, int small_avatar, 
-			double correctPercentage, double second_mean, double second_std) {
+			double correctPercentage, long millis_mean, double millis_std) {
 		super(id, name, true, avatar, small_avatar);
 		this.correctPercentage = correctPercentage;
-		this.second_mean = second_mean;
-		this.second_std = second_std;
-		this.second_this_turn = sampleSecond();
+		this.millis_mean = millis_mean;
+		this.millis_std = millis_std;
+		this.reactiveMillis = sampleMillis();
 	}
 
-	public double sampleSecond() {
+	/**
+	 * Determine the answer given by AI and how quick it replies
+	 * @param s
+	 */
+	public void sampleReaction(Question q) {
+		sampleMillis();
 		Random r = new Random();
-		return Math.abs(r.nextGaussian() * second_mean + second_std);
+		double d = r.nextDouble();
+		if(d < this.correctPercentage) {
+			this.setSelectedAnswer(q.correctAnswer);
+		}
+		this.setSelectedAnswer("###WRONG ANSWER");
 	}
 	
-	public double getSecondThisTurn() {
-		return second_this_turn;
+	/**
+	 * Generate how many milliseconds can AI answer question
+	 * @return
+	 */
+	private long sampleMillis() {
+		Random r = new Random();
+		this.reactiveMillis = Math.abs((long)(r.nextGaussian() * millis_std) + millis_mean);
+		return this.reactiveMillis;
 	}
 	
-	public String sendResult(Question question, String selectedAnswer)
-	// Make an answer to one question
-	{
-		return null;
-	}
 	
 }
