@@ -216,7 +216,12 @@ public class GameManager
 		return questions.get(currentQuestionIndex);
 	}
 	
-	public boolean updateUser(String userName, String selectedAnswer)
+	/**
+	 * Update selectedAnswer for user whose name is userName
+	 * @param userName
+	 * @param selectedAnswer
+	 */
+	public void updateUser(String userName, String selectedAnswer)
 	{
 		for (User user : users)
 		{
@@ -224,27 +229,22 @@ public class GameManager
 			{
 				user.setSelectedAnswer(selectedAnswer);
 				user.setQuestionSubmitted(true);
-				return true;
 			}
 		}
-		return false;
 	}
 
 	private void playSoundCorrect()
 	{
 		MediaPlayer mediaPlayer = MediaPlayer.create(context,
 				R.raw.sound_correct);
-		mediaPlayer.start(); // no need to call prepare(); create() does that
-		// for you
-
+		mediaPlayer.start();
 	}
 
 	private void playSoundWrong()
 	{
 		MediaPlayer mediaPlayer = MediaPlayer
 				.create(context, R.raw.sound_wrong);
-		mediaPlayer.start(); // no need to call prepare(); create() does that
-								// for you
+		mediaPlayer.start(); 
 	}
 
 	/**
