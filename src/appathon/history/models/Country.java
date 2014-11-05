@@ -20,7 +20,7 @@ import com.google.android.gms.maps.model.LatLng;
 public class Country {
 	
 	private static HashMap<String, LatLng> llMap = initailzeLLMap();
-	
+	private static HashMap<String, String> countryNameMap = initailzeCountryNameMap();
 	private String name; // 
 	private int avatar; // Store R.drawable.flag
 	private LatLng ll;
@@ -67,6 +67,11 @@ public class Country {
 	
 	private static HashMap<String, LatLng> initailzeLLMap() {
 		return new HashMap<String, LatLng>();
+	}
+	
+	private static HashMap<String, String> initailzeCountryNameMap() {
+		HashMap<String, String> map = new HashMap<String, String>();
+		return new HashMap<String, String>();
 	}
 	
 }
