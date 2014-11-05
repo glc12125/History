@@ -83,11 +83,12 @@ public class GameManager
 			
 			if((user.isAI() && user.getReactiveMillis() < millisPassed) || 
 			(!user.isAI() && user.isQuestionSubmitted())) {
+				user.checked();
 				count++;
 				String selectedAnswer = user.getSelectedAnswer();
 				if (selectedAnswer.equals(currentQuestion.correctAnswer))
 				{
-					user.checked();
+					
 					try {
 						changeCountryGameInfo(currentQuestion.correspondingCountry, user);
 						if (!user.isAI()) {
