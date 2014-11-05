@@ -228,7 +228,7 @@ public class GameManager
 	}
 
 	/**
-	 *  Ranking the users based on the number of countries they have occupied
+	 *  Ranking the users based on the score
 	 */
 	public void rankUsers()
 	{
@@ -237,7 +237,7 @@ public class GameManager
 		for (CountryGameInfo cgi: countryGameInfoMap.values())
 		{
 			if(cgi.getUser() != null) {
-				cgi.getUser().incrementNumOfCountriesByOne();
+				cgi.getUser().setScore(cgi.getDefense());
 			}
 		}
 
@@ -270,7 +270,7 @@ public class GameManager
 		this.countryGameInfoMap = new HashMap<Country, CountryGameInfo>();
 		if (questions == null)
 		{
-			throw new NullPointerException();
+			throw new NullPointerException("Quesitions are null");
 		}
 
 		for (Question question : questions)
