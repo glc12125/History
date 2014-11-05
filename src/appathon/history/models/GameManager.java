@@ -90,7 +90,7 @@ public class GameManager implements GameUpdateRunnableMethods
 				user.checked();
 				count++;
 				String selectedAnswer = user.getSelectedAnswer();
-				if (selectedAnswer.equals(currentQuestion.correctAnswer))
+				if (selectedAnswer != null && selectedAnswer.equals(currentQuestion.correctAnswer))
 				{
 					try {
 						changeCountryGameInfo(currentQuestion.correspondingCountry, user);
