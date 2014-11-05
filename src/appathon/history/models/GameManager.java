@@ -41,27 +41,6 @@ public class GameManager
 
 	}
 
-	public QuestionGenerator getQuestionGenerator()
-	{
-		return questionGenerator;
-	}
-
-	public ArrayList<Question> getQuestions()
-	{
-		return questions;
-	}
-
-	public ArrayList<User> getUsers()
-	{
-		return users;
-	}
-
-	public int getCurrentQuestionIndex()
-	{
-		return currentQuestionIndex;
-	}
-	
-	
 	/**
 	 * check the answers submitted by users are correct or not
 	 * 
@@ -305,8 +284,17 @@ public class GameManager
 				CountryGameInfo cgi = new CountryGameInfo(country, question);
 				countryGameInfoMap.put(country, cgi);
 			}
-	
 		}
+	}
+	
+	public ArrayList<Question> getQuestions()
+	{
+		return questions;
+	}
+
+	public ArrayList<User> getUsers()
+	{
+		return users;
 	}
 
 }
