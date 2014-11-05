@@ -4,13 +4,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
-import android.R.integer;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Message;
 import android.widget.Toast;
-import appathon.history.MainActivity;
 import appathon.history.MainActivity.MsgHandler;
 import appathon.history.R;
 import appathon.history.models.qa.Question;
@@ -21,8 +19,7 @@ public class GameManager
 	private QuestionGenerator questionGenerator;
 	private ArrayList<Question> questions;
 	private ArrayList<User> users;
-	private HashMap<Country, ArrayList<Question>> countryToQuestionMap;
-	private HashMap<Country, User> countryToUserMap;
+	private HashMap<Country, CountryGameInfo> countryGameInfoMap;
 	private int currentQuestionIndex;
 	private Context context;
 	private MsgHandler mHandler = null;
@@ -35,14 +32,14 @@ public class GameManager
 		this.mHandler = msgH;
 		isFinished = false;
 
-		users = initailizeUsers();
+		initailizeUsers();
 
 		questionGenerator = new QuestionGenerator(this.context);
 		questions = questionGenerator.getQuestions(100);
 		currentQuestionIndex = 0;
+		
+		initailizeCountryToQuestionMap();
 
-		countryToQuestionMap = initailizeCountryToQuestionMap();
-		countryToUserMap = new HashMap<Country, User>();
 	}
 
 	public QuestionGenerator getQuestionGenerator()
@@ -58,16 +55,6 @@ public class GameManager
 	public ArrayList<User> getUsers()
 	{
 		return users;
-	}
-
-	public HashMap<Country, ArrayList<Question>> getCountryToQuestionsMap()
-	{
-		return countryToQuestionMap;
-	}
-
-	public HashMap<Country, User> getCountryToUser()
-	{
-		return countryToUserMap;
 	}
 
 	public int getCurrentQuestionIndex()
@@ -92,7 +79,7 @@ public class GameManager
 			{
 				count++;
 				String selectedAnswer;
-
+				//@todo AI needs a timer
 				if (user.isAI())
 				{
 					selectedAnswer = currentQuestion.options.get(i).answer;
@@ -103,49 +90,53 @@ public class GameManager
 
 				if (selectedAnswer.equals(currentQuestion.correctAnswer))
 				{
-					if (user.getName().equals(MainActivity.userName))
-					{
-						playSoundCorrect();
-					} else
-					{
-						playSoundWrong();
+					try {
+						changeCountryGameInfo(currentQuestion.correspondingCountry, user);
+						if (!user.isAI()) {
+							playSoundCorrect();
+						} else {
+							playSoundWrong();
+						}
+						return true;
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
-					updatecountryToUser(
-							currentQuestion.correspondingCountry.getName(),
-							user);
-					return true;
+					
 				}
 			}
 		}
 		return count == users.size(); // If all users have answer this question,
 										// then we pass it to next round
 	}
-
-	private void updatecountryToUser(String countryName, User user)
-	{
-		Country target_country = new Country(countryName);
-		if (countryToQuestionMap.containsKey(target_country))
-		{
-			Country country = target_country;
-			if (countryToUserMap.containsKey(country))
-			{
-				country.setDefense(country.getDefense() - 1);
-				if (country.getDefense() == 0)
-				{
-					removeMarker(country.getName());
-					country.setDefense(1);
-					countryToUserMap.put(country, user);
-					drawMarker(country.getName(), user.getSmallAvatar());
-				}
-			} else
-			{
-				country.setDefense(1);
-				countryToUserMap.put(country, user);
-				drawMarker(country.getName(), user.getSmallAvatar());
-			}
+	
+	
+	/**
+	 * Update GameInfoCountry for specific country
+	 * @param countryName
+	 * @param user
+	 */
+	private void changeCountryGameInfo(Country target_country, User user) throws Exception{
+		if (!countryGameInfoMap.containsKey(target_country)) 
+			throw new Exception("Country " + target_country.getName() + " does not exist in countryGameInfoMap");
+		CountryGameInfo cgi = countryGameInfoMap.get(target_country);
+		if(cgi.getUser() == null) {
+			cgi.setDefense(1);
+			cgi.setUser(user);
+			drawMarker(target_country.getName(), user.getSmallAvatar());
+		} else if(cgi.getUser().equals(user)){
+			cgi.setDefense(cgi.getDefense() + 1);
+		} else {
+			cgi.setUser(user);
+			drawMarker(target_country.getName(), user.getSmallAvatar());
 		}
 	}
 
+	/**
+	 * Method to notify MainActivity to draw marker for specific country and avatar
+	 * @param countryName
+	 * @param avatar
+	 */
 	private void drawMarker(String countryName, int avatar)
 	{
 		Message msg = new Message();
@@ -157,6 +148,10 @@ public class GameManager
 		mHandler.sendMessage(msg);
 	}
 
+	/**
+	 * Method to notify MainActivity to remove marker for specific country
+	 * @param countryName
+	 */
 	private void removeMarker(String countryName)
 	{
 		Message msg = new Message();
@@ -167,23 +162,28 @@ public class GameManager
 		mHandler.sendMessage(msg);
 	}
 
-	public void RestartUsers()
+	/**
+	 * Change the question submitted status for all users to False
+	 */
+	public void restartUsers()
 	{
 		for (int i = 0; i < users.size(); ++i)
 		{
-			users.get(i).restart();
+			users.get(i).restartQuestionSubmittedStatus();
 		}
 	}
 
-	public Question NextQuestion()
+	/**
+	 * Get next question.
+	 * @return next question to display for game
+	 */
+	public Question getNextQuestion()
 	{
 		currentQuestionIndex++;
 		if (currentQuestionIndex >= questions.size())
 		{
 			currentQuestionIndex = 0;
 		}
-
-		RestartUsers();
 		return questions.get(currentQuestionIndex);
 	}
 
@@ -232,16 +232,17 @@ public class GameManager
 								// for you
 	}
 
+	/**
+	 *  Ranking the users based on the number of countries they have occupied
+	 */
 	public void rankUsers()
 	{
 		isFinished = true;
 
-		for (Country country : countryToQuestionMap.keySet())
+		for (CountryGameInfo cgi: countryGameInfoMap.values())
 		{
-			if (countryToUserMap.containsKey(country))
-			{
-				User user = countryToUserMap.get(country);
-				user.setScore(user.getScore() + country.getDefense());
+			if(cgi.getUser() != null) {
+				cgi.getUser().incrementNumOfCountriesByOne();
 			}
 		}
 
@@ -255,43 +256,41 @@ public class GameManager
 		}
 	}
 
-	private ArrayList<User> initailizeUsers()
+	private void initailizeUsers()
 	{
-		ArrayList<User> users = new ArrayList<User>();
-		users.add(new User("Meng Zhang", true, R.drawable.avatar_meng_zhang,
+		this.users = new ArrayList<User>();
+		users.add(new User(1, "Meng Zhang", true, R.drawable.avatar_meng_zhang,
 				R.drawable.avatar_meng_zhang_small));
-		users.add(new User("Chao Gao", true, R.drawable.avatar_chao_gao,
+		users.add(new User(2, "Chao Gao", true, R.drawable.avatar_chao_gao,
 				R.drawable.avatar_chao_gao_small));
-		users.add(new User("Liangchuan Gu", true,
+		users.add(new User(3, "Liangchuan Gu", true,
 				R.drawable.avatar_liangchuan_gu,
 				R.drawable.avatar_liang_chuan_small));
-		users.add(new User("Yimai Fang", false, R.drawable.avatar_yimai_fang,
+		users.add(new User(4, "Yimai Fang", false, R.drawable.avatar_yimai_fang,
 				R.drawable.avatar_yi_mai_small));
-		return users;
 	}
 
-	private HashMap<Country, ArrayList<Question>> initailizeCountryToQuestionMap()
+	private void initailizeCountryToQuestionMap()
 	{
+		this.countryGameInfoMap = new HashMap<Country, CountryGameInfo>();
 		if (questions == null)
 		{
 			throw new NullPointerException();
 		}
 
-		HashMap<Country, ArrayList<Question>> countryToQuestionMap = new HashMap<Country, ArrayList<Question>>();
 		for (Question question : questions)
 		{
 			Country country = question.correspondingCountry;
-			if (countryToQuestionMap.containsKey(country))
+			if (countryGameInfoMap.containsKey(country))
 			{
-				countryToQuestionMap.get(country).add(question);
+				countryGameInfoMap.get(country).addQuestion(question);
 			} else
 			{
-				ArrayList<Question> newList = new ArrayList<Question>();
-				newList.add(question);
-				countryToQuestionMap.put(country, newList);
+				CountryGameInfo cgi = new CountryGameInfo(country, question);
+				countryGameInfoMap.put(country, cgi);
 			}
+	
 		}
-		return countryToQuestionMap;
 	}
 
 }

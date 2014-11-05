@@ -11,13 +11,13 @@ public class AIUser extends User {
 	private double second_std; // Decide the variance of responding time
 	private double second_this_turn; // Seconds this AI responds question this turn
 	
-	public AIUser(String name, boolean isAI, int avatar, int small_avatar) {
-		super(name, isAI, avatar, small_avatar);
+	public AIUser(int id, String name, boolean isAI, int avatar, int small_avatar) {
+		super(id, name, isAI, avatar, small_avatar);
 	}
 	
-	public AIUser(String name, int avatar, int small_avatar, 
+	public AIUser(int id, String name, int avatar, int small_avatar, 
 			double correctPercentage, double second_mean, double second_std) {
-		super(name, true, avatar, small_avatar);
+		super(id, name, true, avatar, small_avatar);
 		this.correctPercentage = correctPercentage;
 		this.second_mean = second_mean;
 		this.second_std = second_std;

@@ -58,7 +58,7 @@ public class MainActivity extends Activity
 	PopupWindow mPopupWindowForRanking;
 	CounterClass counter;
 	HashMap<String, Marker> marker_map; // Store countries and marker
-										// pair, it
+	// pair, it
 	// is used for Game
 	HashMap<Marker, HashMap<String, String>> marker_text_map = new HashMap<Marker, HashMap<String, String>>(); // Store
 	MediaPlayer player; // the
@@ -91,7 +91,7 @@ public class MainActivity extends Activity
 			switch (msg.what)
 			{
 			case MsgHandler.MSG_TYPE_SHOW_QUESTION:
-				mAct.showQuestion(manager.NextQuestion());
+				mAct.showQuestion(manager.getNextQuestion());
 				break;
 			case MsgHandler.MSG_TYPE_DRAW_MARKER:
 				b = msg.getData();
@@ -119,7 +119,7 @@ public class MainActivity extends Activity
 		getActionBar().hide();
 
 		setContentView(R.layout.activity_main); // be sure you call this AFTER
-												// requestFeature
+		// requestFeature
 		player = MediaPlayer.create(this, R.raw.background_audio);
 		player.setLooping(true); // Set looping
 		player.setVolume(100, 100);
@@ -137,12 +137,12 @@ public class MainActivity extends Activity
 
 		marker_map = new HashMap<String, Marker>();
 		marker_text_map = new HashMap<Marker, HashMap<String, String>>(); // Store
-																			// the
-																			// question/answer
-																			// pair
-																			// for
-																			// each
-																			// country
+		// the
+		// question/answer
+		// pair
+		// for
+		// each
+		// country
 
 		// set popup for question
 		View popupViewForQuestion = getLayoutInflater().inflate(
@@ -183,13 +183,13 @@ public class MainActivity extends Activity
 	{
 		LatLng ll = lg.getLocationFromAddress(context, country, 7.5);
 		CameraPosition cameraPosition = new CameraPosition.Builder().target(ll) // Sets
-																				// the
-																				// center
-																				// of
-																				// the
-																				// map
-																				// to
-																				// country
+				// the
+				// center
+				// of
+				// the
+				// map
+				// to
+				// country
 				.zoom(zoomLevel) // Sets the zoom
 				.build(); // Creates a CameraPosition from the builder
 		worldMap.moveCamera(CameraUpdateFactory
@@ -302,7 +302,7 @@ public class MainActivity extends Activity
 	{
 		return worldMap.addMarker(new MarkerOptions().position(ll).icon(
 				BitmapDescriptorFactory
-						.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+				.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
 	}
 
 	public Marker drawMarker(LatLng ll, User user)
@@ -332,8 +332,8 @@ public class MainActivity extends Activity
 		SimpleAdapter adapter = new SimpleAdapter(this,
 				convertUsersToMap(users),
 				R.layout.activity_main_popup_ranking_list_item, new String[] {
-						"ranking", "avatar", "name", "score" }, new int[] {
-						R.id.ranking, R.id.avatar, R.id.name, R.id.score });
+			"ranking", "avatar", "name", "score" }, new int[] {
+			R.id.ranking, R.id.avatar, R.id.name, R.id.score });
 
 		mPopupWindowForRanking.showAtLocation(findViewById(R.id.map),
 				Gravity.TOP, 0, 0);
@@ -381,7 +381,8 @@ public class MainActivity extends Activity
 		public void onFinish()
 		{
 			manager.checkAnswers();
-			showQuestion(manager.NextQuestion());
+			manager.restartUsers();
+			showQuestion(manager.getNextQuestion());
 			this.cancel();
 			this.start();
 		}
@@ -396,9 +397,9 @@ public class MainActivity extends Activity
 					"%02d:%02d:%02d",
 					TimeUnit.MILLISECONDS.toHours(millis),
 					TimeUnit.MILLISECONDS.toMinutes(millis)
-							- TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS
-									.toHours(millis)),
-					TimeUnit.MILLISECONDS.toSeconds(millis)
+					- TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS
+							.toHours(millis)),
+							TimeUnit.MILLISECONDS.toSeconds(millis)
 							- TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS
 									.toMinutes(millis)));
 			System.out.println(hms);
@@ -407,7 +408,7 @@ public class MainActivity extends Activity
 			{
 				if (manager.checkAnswers())
 				{
-					showQuestion(manager.NextQuestion());
+					showQuestion(manager.getNextQuestion());
 					this.cancel();
 					this.start();
 				}
@@ -415,14 +416,20 @@ public class MainActivity extends Activity
 		}
 	}
 
+	/**
+	 * Move camera to specific area
+	 * show question on mPopupWindowForQuestion
+	 * Add event listener for mPopupWindowForQuestion
+	 * @param question
+	 */
 	private void showQuestion(final Question question)
 	{
 		if (question.kind == "ChooseCountry")
 			moveCameraToCountry(question.correspondingCountry.getName(),
-					(float) 1.5);
+					1.5f);
 		else
 			moveCameraToCountry(question.correspondingCountry.getName(),
-					(float) 3.5);
+					3.5f);
 
 		// try
 		// {
@@ -477,7 +484,7 @@ public class MainActivity extends Activity
 
 	private List<Map<String, Object>> convertOptionsToMap(
 			ArrayList<Answer> options)
-	{
+			{
 		List<Map<String, Object>> optionList = new ArrayList<Map<String, Object>>();
 
 		for (Answer option : options)
@@ -488,5 +495,5 @@ public class MainActivity extends Activity
 		}
 
 		return optionList;
-	}
+			}
 }

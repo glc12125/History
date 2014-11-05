@@ -2,6 +2,7 @@ package appathon.history.models;
 
 import java.util.ArrayList;
 
+import appathon.exception.NumOfCountriesException;
 import appathon.history.R;
 import appathon.history.models.qa.Question;
 
@@ -9,23 +10,42 @@ public class User implements Comparable<User>
 {
 	private String name;
 	private boolean isAI;
+	private int id;
 	private int score;
 	private int ranking;
 	private int avatar;
 	private boolean questionSubmitted;
 	private int small_avatar;
+	private int numOfCountries;
 	private String selectedAnswer;
 
-	public User(String name, boolean isAI, int avatar, int small_avatar)
+	public User(int id, String name, boolean isAI, int avatar, int small_avatar)
 	{
+		this.id = id;
 		this.name = name;
 		this.isAI = isAI;
 		this.score = 0;
 		this.avatar = avatar;
 		this.questionSubmitted = false;
+		this.numOfCountries = 0;
 		this.small_avatar = small_avatar;
 	}
 
+	
+	public void incrementNumOfCountriesByOne() {
+		this.numOfCountries++;
+	}
+	
+	public void decreaseNumOfCountriesByOne() throws NumOfCountriesException {
+		if(numOfCountries == 0) 
+			throw new NumOfCountriesException("The number of countries of one user should bigger than zero");
+		this.numOfCountries--;
+	}
+	
+	public int getNumOfQuestions() {
+		return this.numOfCountries;
+	}
+	
 	public String getName()
 	{
 		return name;
@@ -109,7 +129,7 @@ public class User implements Comparable<User>
 		}
 	}
 
-	public void restart()
+	public void restartQuestionSubmittedStatus()
 	{
 		if (isAI)
 		{
@@ -169,15 +189,15 @@ public class User implements Comparable<User>
 	public ArrayList<User> generateFakeUsers()
 	{
 		ArrayList<User> user_list = new ArrayList<User>();
-		user_list.add(new User("Meng Zhang", true,
+		user_list.add(new User(1, "Meng Zhang", true,
 				R.drawable.avatar_meng_zhang,
 				R.drawable.avatar_meng_zhang_small));
-		user_list.add(new User("Chao Gao", true, R.drawable.avatar_chao_gao,
+		user_list.add(new User(2, "Chao Gao", true, R.drawable.avatar_chao_gao,
 				R.drawable.avatar_chao_gao_small));
-		user_list.add(new User("Liangchuan Gu", true,
+		user_list.add(new User(3, "Liangchuan Gu", true,
 				R.drawable.avatar_liangchuan_gu,
 				R.drawable.avatar_liang_chuan_small));
-		user_list.add(new User("Yimai Fang", false,
+		user_list.add(new User(4, "Yimai Fang", false,
 				R.drawable.avatar_yimai_fang, R.drawable.avatar_yi_mai_small));
 
 		user_list.get(0).setScore(53);
