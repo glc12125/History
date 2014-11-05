@@ -85,7 +85,10 @@ public class MainActivity extends Activity
 			switch (msg.what)
 			{
 			case MsgHandler.MSG_TYPE_SHOW_QUESTION:
-				mAct.showQuestion(manager.getCurrentQuestion());
+				b = msg.getData();
+				Question question = (Question)b.getSerializable("question");
+				//mAct.showQuestion(manager.getCurrentQuestion());
+				mAct.showQuestion(question);
 				break;
 			case MsgHandler.MSG_TYPE_DRAW_MARKER:
 				b = msg.getData();

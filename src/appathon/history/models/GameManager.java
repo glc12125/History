@@ -11,11 +11,18 @@ import android.os.Message;
 import android.widget.Toast;
 import appathon.history.MainActivity.MsgHandler;
 import appathon.history.R;
+import appathon.history.models.GameUpdateRunnable.GameUpdateRunnableMethods;
 import appathon.history.models.qa.Question;
 import appathon.history.models.qa.QuestionGenerator;
 
-public class GameManager
+public class GameManager implements GameUpdateRunnableMethods
 {
+    /*
+     * Field containing the Thread this task is running on.
+     */
+    private Thread currentThread;
+    private Runnable gameUpdateRunnable;
+
 	private QuestionGenerator questionGenerator;
 	private ArrayList<Question> questions;
 	private ArrayList<User> users;
@@ -38,14 +45,32 @@ public class GameManager
 		questions = questionGenerator.getQuestions(100);
 		currentQuestionIndex = 0;
 		initailizeCountryToQuestionMap();
+		gameUpdateRunnable = new GameUpdateRunnable(this);
 
 	}
 
+	public Runnable getGameUpdateRunnable() {
+		return gameUpdateRunnable;
+	}
+	
+	public void startCountDown(){
+		if(gameUpdateRunnable !=null){
+			Thread t = new Thread(gameUpdateRunnable);
+			currentThread = t;
+	        t.start();
+		}
+	}
+
+	public Thread getCurrentThread() {
+		return currentThread;
+	}
+	
 	/**
 	 * check the answers submitted by users are correct or not
 	 * 
 	 * @return whether we should pass to the next question
 	 */
+	@Override
 	public boolean checkAnswers(long millisPassed)
 	{
 		int count = 0;
@@ -174,7 +199,7 @@ public class GameManager
 	 * Get next question.
 	 * @return next question to display for game
 	 */
-	private Question getNextQuestion()
+	public Question getNextQuestion()
 	{
 		currentQuestionIndex++;
 		if (currentQuestionIndex >= questions.size())
@@ -188,6 +213,7 @@ public class GameManager
 	 * Get current question
 	 * @return
 	 */
+	@Override
 	public Question getCurrentQuestion() {
 		return questions.get(currentQuestionIndex);
 	}
@@ -292,4 +318,16 @@ public class GameManager
 				.create(context, R.raw.sound_wrong);
 		mediaPlayer.start(); 
 	}
+
+	@Override
+	public void showQuestion(Question question) {
+		Message msg = new Message();
+		msg.what = MsgHandler.MSG_TYPE_SHOW_QUESTION;
+		Bundle b = new Bundle();
+		b.putSerializable("question", question);
+		msg.setData(b);
+		mHandler.sendMessage(msg);
+		
+	}
+
 }

@@ -1,9 +1,11 @@
 package appathon.history.models.qa;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import appathon.history.models.Country;
 
-public class Question {
+@SuppressWarnings("serial")
+public class Question implements Serializable {
 	
 	public String kind;  // ChooseCountry, ChooseCity, ChooseOption
 	public String question;
