@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -28,6 +27,7 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import appathon.history.models.Country;
 import appathon.history.models.GameManager;
 import appathon.history.models.User;
 import appathon.history.models.qa.Answer;
@@ -36,7 +36,6 @@ import appathon.util.LocationGetter;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -57,7 +56,7 @@ public class MainActivity extends Activity
 	PopupWindow mPopupWindowForQuestion;
 	PopupWindow mPopupWindowForRanking;
 	CounterClass counter;
-	HashMap<String, Marker> marker_map; 
+	HashMap<Country, Marker> marker_map; 
 	// Store countries and marker pair, it is used for Game
 	HashMap<Marker, HashMap<String, String>> marker_text_map = new HashMap<Marker, HashMap<String, String>>(); // Store
 	// The question/answer pair for each marker
@@ -127,7 +126,7 @@ public class MainActivity extends Activity
 		lg = new LocationGetter();
 		context = this.getApplicationContext();
 		// Store the country to marker map
-		marker_map = new HashMap<String, Marker>();
+		marker_map = new HashMap<Country, Marker>();
 		// Store the question/answer pair for each country
 		marker_text_map = new HashMap<Marker, HashMap<String, String>>(); 
 		// Set popup for question
@@ -167,7 +166,7 @@ public class MainActivity extends Activity
 	{
 		if (marker_map == null)
 		{
-			marker_map = new HashMap<String, Marker>();
+			marker_map = new HashMap<Country, Marker>();
 		}
 		if (marker_text_map == null)
 		{
@@ -177,20 +176,20 @@ public class MainActivity extends Activity
 		{
 			if (q.correspondingCountry != null)
 			{
-				String countryName = q.correspondingCountry.getName();
-				LatLng ll = lg.getLocationFromAddress(context, countryName);
-				if (!marker_map.containsKey(countryName))
+				Country country = q.correspondingCountry;
+				LatLng ll = lg.getLocationFromAddress(context, country.getName());
+				if (!marker_map.containsKey(country))
 				{
 					Marker marker = drawMarker(ll);
-					marker.setTitle(countryName);
-					marker_map.put(countryName, marker);
+					marker.setTitle(country.getName());
+					marker_map.put(country, marker);
 					HashMap<String, String> textMap = new HashMap<String, String>();
-					textMap.put(q.question, countryName);
+					textMap.put(q.question, country.getName());
 					marker_text_map.put(marker, textMap);
 				} else
 				{
-					Marker marker = marker_map.get(countryName);
-					marker_text_map.get(marker).put(q.question, countryName);
+					Marker marker = marker_map.get(country);
+					marker_text_map.get(marker).put(q.question, country.getName());
 				}
 			}
 		}

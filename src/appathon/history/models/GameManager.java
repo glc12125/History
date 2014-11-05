@@ -76,7 +76,7 @@ public class GameManager
 							Toast.makeText(context, "Country is controled by " + user.getName(), Toast.LENGTH_SHORT).show();
 							playSoundWrong();
 						}
-						drawMarker(currentQuestion.correspondingCountry.getName(), user.getSmallAvatar());
+						drawMarker(currentQuestion.correspondingCountry, user.getSmallAvatar());
 						return true;
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
@@ -117,12 +117,12 @@ public class GameManager
 	 * @param countryName
 	 * @param avatar
 	 */
-	private void drawMarker(String countryName, int avatar)
+	private void drawMarker(Country country, int avatar)
 	{
 		Message msg = new Message();
 		msg.what = MsgHandler.MSG_TYPE_DRAW_MARKER;
 		Bundle b = new Bundle();
-		b.putString("countryName", countryName);
+		b.putString("countryName", country.getName());
 		b.putInt("avatar", avatar);
 		msg.setData(b);
 		mHandler.sendMessage(msg);
@@ -132,12 +132,12 @@ public class GameManager
 	 * Method to notify MainActivity to remove marker for specific country
 	 * @param countryName
 	 */
-	private void removeMarker(String countryName)
+	private void removeMarker(Country country)
 	{
 		Message msg = new Message();
 		msg.what = MsgHandler.MSG_TYPE_REMOVE_MARKER;
 		Bundle b = new Bundle();
-		b.putString("countryName", countryName);
+		b.putString("countryName", country.getName());
 		msg.setData(b);
 		mHandler.sendMessage(msg);
 	}
