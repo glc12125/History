@@ -169,16 +169,6 @@ public class MainActivity extends Activity
 		counter.start();
 	}
 
-	public class clickMapWhilePlayingListener implements OnMapClickListener
-	{
-
-		@Override
-		public void onMapClick(LatLng arg0)
-		{
-			drawMarker(arg0, R.drawable.avatar_chao_gao_small);
-		}
-	}
-
 	public void moveCameraToCountry(String country, float zoomLevel)
 	{
 		LatLng ll = lg.getLocationFromAddress(context, country, 7.5);
