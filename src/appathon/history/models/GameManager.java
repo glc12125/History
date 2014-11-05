@@ -87,11 +87,14 @@ public class GameManager
 				String selectedAnswer = user.getSelectedAnswer();
 				if (selectedAnswer.equals(currentQuestion.correctAnswer))
 				{
+					user.checked();
 					try {
 						changeCountryGameInfo(currentQuestion.correspondingCountry, user);
 						if (!user.isAI()) {
+							Toast.makeText(context, "Correct!!", Toast.LENGTH_SHORT).show();
 							playSoundCorrect();
 						} else {
+							Toast.makeText(context, "Country is controled by " + user.getName(), Toast.LENGTH_SHORT).show();
 							playSoundWrong();
 						}
 						return true;
@@ -99,7 +102,10 @@ public class GameManager
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-				} else if(!user.isAI()) playSoundWrong();
+				} else if(!user.isAI()) {
+					playSoundWrong();
+					Toast.makeText(context, "Wrong!!", Toast.LENGTH_SHORT).show();
+				}
 			}
 		}
 		return count == users.size(); // If all users have answer this question,
@@ -212,29 +218,15 @@ public class GameManager
 	
 	public boolean updateUser(String userName, String selectedAnswer)
 	{
-		Question currentQuestion = questions.get(this.currentQuestionIndex);
 		for (User user : users)
 		{
 			if (user.getName().equals(userName))
 			{
 				user.setSelectedAnswer(selectedAnswer);
 				user.setQuestionSubmitted(true);
-
-				if (currentQuestion.correctAnswer.equals(selectedAnswer))
-				{
-					playSoundCorrect();
-					Toast.makeText(context, "Correct!!", Toast.LENGTH_SHORT)
-							.show();
-				} else
-				{
-					playSoundWrong();
-					Toast.makeText(context, "Wrong!!", Toast.LENGTH_SHORT)
-							.show();
-				}
 				return true;
 			}
 		}
-
 		return false;
 	}
 
