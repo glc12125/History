@@ -1,6 +1,9 @@
 package appathon.history.models;
 
+import java.io.InputStream;
 import java.util.HashMap;
+
+import appathon.history.MainActivity;
 
 import com.google.android.gms.maps.model.LatLng;
 
