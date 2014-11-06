@@ -35,7 +35,7 @@ public class AIUser extends User {
 		if(d < this.correctPercentage) {
 			this.setSelectedAnswer(q.correctAnswer);
 		}
-		this.setSelectedAnswer("###WRONG ANSWER");
+		else this.setSelectedAnswer("###WRONG ANSWER");
 	}
 	
 	/**
