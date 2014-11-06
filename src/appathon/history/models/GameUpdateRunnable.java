@@ -4,7 +4,13 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.CountDownTimer;
+import android.util.Log;
 import appathon.history.models.qa.Question;
+
+/*
+ * GameUpdateRunnable is a member variable of GameManager. And it gets kicked off when
+ * startCountDown() is called.
+ * */
 
 public class GameUpdateRunnable implements Runnable {
 
@@ -78,6 +84,15 @@ public class GameUpdateRunnable implements Runnable {
 			gameUpdateTask.getToNextRound();
 			gameUpdateTask.showQuestion(gameUpdateTask.getCurrentQuestion());
 			this.cancel();
+			
+	        try {
+	             // thread to sleep for 1000 milliseconds
+	        	Thread.sleep(SLEEP_TIME_MILLISECONDS);
+	        } catch (Exception e) {
+	            System.out.println(e);
+	            Log.e(LOG_TAG, "Error when set timer to sleep:\n" + e.getMessage());
+	        }
+			
 			this.start();
 		}
 

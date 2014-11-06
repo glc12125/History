@@ -59,7 +59,6 @@ public class MainActivity extends Activity
 	public GameManager manager;
 	PopupWindow mPopupWindowForQuestion;
 	PopupWindow mPopupWindowForRanking;
-	GameUpdateRunnable gameUpdateRunnable;
 	HashMap<Country, Marker> marker_map;
 	// Store countries and marker pair, it is used for Game
 	HashMap<Marker, HashMap<String, String>> marker_text_map = new HashMap<Marker, HashMap<String, String>>(); // Store
@@ -180,8 +179,7 @@ public class MainActivity extends Activity
 		mPopupWindowForRanking.setTouchable(true);
 		mPopupWindowForRanking.setOutsideTouchable(false);
 
-		gameUpdateRunnable = manager.getGameUpdateRunnable();
-		gameUpdateRunnable.run();
+		manager.startCountDown();
 	}
 
 	public void moveCameraToCountry(Country country, float zoomLevel)
