@@ -167,7 +167,8 @@ public class GameManager implements GameUpdateRunnableMethods
 			cgi.setDefense(cgi.getDefense() + 1);
 		} else
 		{
-			cgi.setUser(user);
+			if(cgi.getDefense() == 1) cgi.setUser(user);
+			else cgi.setDefense(cgi.getDefense() - 1);
 		}
 	}
 
