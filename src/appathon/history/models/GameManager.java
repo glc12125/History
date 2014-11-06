@@ -245,7 +245,7 @@ public class GameManager implements GameUpdateRunnableMethods
 		for (CountryGameInfo cgi: countryGameInfoMap.values())
 		{
 			if(cgi.getUser() != null) {
-				cgi.getUser().setScore(cgi.getDefense());
+				cgi.getUser().setScore(cgi.getDefense() + cgi.getUser().getScore());
 			}
 		}
 
