@@ -63,6 +63,13 @@ public class GameManager implements GameUpdateRunnableMethods
 			t.start();
 		}
 	}
+	
+	public void stopCountDown(){
+		if (gameUpdateRunnable != null)
+		{
+			gameUpdateRunnable.stop();
+		}
+	}
 
 	public Thread getCurrentThread()
 	{

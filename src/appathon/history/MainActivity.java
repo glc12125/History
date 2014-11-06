@@ -31,7 +31,6 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import appathon.history.models.Country;
 import appathon.history.models.GameManager;
-import appathon.history.models.GameUpdateRunnable;
 import appathon.history.models.User;
 import appathon.history.models.qa.Answer;
 import appathon.history.models.qa.Question;
@@ -355,7 +354,7 @@ public class MainActivity extends Activity
 
 	public void showRanking(View v)
 	{
-		gameUpdateRunnable.stop();
+		manager.stopCountDown();
 		backgroundMusicPlayer.stop();
 		mPopupWindowForQuestion.dismiss();
 		v.setVisibility(View.GONE);
