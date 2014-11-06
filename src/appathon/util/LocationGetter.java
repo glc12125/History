@@ -91,7 +91,7 @@ public class LocationGetter
 	
 	public void initailzeLLMap() {
 		try {
-			InputStream is = new FileInputStream("geocoding.json"); 
+			InputStream is = context.getAssets().open("geocoding.json");
 			BufferedReader reader = new BufferedReader((new InputStreamReader(is, "UTF-8")));	
 			String line = reader.readLine();
 			Gson gson = new Gson();
