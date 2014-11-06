@@ -69,7 +69,6 @@ public class MainActivity extends Activity
 		public static final int MSG_TYPE_SHOW_QUESTION = 1;
 		public static final int MSG_TYPE_DRAW_MARKER = 2;
 		public static final int MSG_TYPE_REMOVE_MARKER = 3;
-
 		MsgHandler(MainActivity aActivity)
 		{
 			mActivity = new WeakReference<MainActivity>(aActivity);
@@ -86,7 +85,7 @@ public class MainActivity extends Activity
 			{
 			case MsgHandler.MSG_TYPE_SHOW_QUESTION:
 				b = msg.getData();
-				Question question = (Question)b.getSerializable("question");
+				Question question = manager.getCurrentQuestion();
 				//mAct.showQuestion(manager.getCurrentQuestion());
 				mAct.showQuestion(question);
 				break;
@@ -115,20 +114,21 @@ public class MainActivity extends Activity
 		super.onCreate(savedInstanceState);
 		getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
 		getActionBar().hide();
-
 		setContentView(R.layout.activity_main); // be sure you call this AFTER
 		// requestFeature
+		
+		context = this.getApplicationContext();
+		
 		backgroundMusicPlayer = MediaPlayer.create(this, R.raw.background_audio);
-		backgroundMusicPlayer.setLooping(true); // Set looping
-		backgroundMusicPlayer.setVolume(100, 100);
-		backgroundMusicPlayer.start();
+		//backgroundMusicPlayer.setLooping(true); // Set looping
+		//backgroundMusicPlayer.setVolume(100, 100);
+		//backgroundMusicPlayer.start();
 		
 		worldMap = ((MapFragment) getFragmentManager().findFragmentById(
 				R.id.map)).getMap();
 
 		Bundle bundle = this.getIntent().getExtras();
-		lg = new LocationGetter();
-		context = this.getApplicationContext();
+		lg = LocationGetter.getLocationGetter(context);
 		// Store the country to marker map
 		marker_map = new HashMap<Country, Marker>();
 		// Store the question/answer pair for each country
