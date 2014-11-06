@@ -250,7 +250,7 @@ public class MainActivity extends Activity
 			sb.append("\n");
 			sb.append("A:");
 			sb.append(map.get(question));
-			sb.append("\n");
+			sb.append("\n\n");
 		}
 		return sb.toString();
 	}
