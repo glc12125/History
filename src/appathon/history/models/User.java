@@ -19,7 +19,7 @@ public class User implements Comparable<User>
 	private int numOfCountries;
 	private boolean isChecked;
 	protected long reactiveMillis;
-	private String selectedAnswer;
+	protected String selectedAnswer;
 
 	public User(int id, String name, boolean isAI, int avatar, int small_avatar)
 	{
@@ -127,7 +127,7 @@ public class User implements Comparable<User>
 
 	public String getSelectedAnswer()
 	{
-		return selectedAnswer;
+		return this.selectedAnswer;
 	}
 
 	public void setSelectedAnswer(String selectedAnswer)
