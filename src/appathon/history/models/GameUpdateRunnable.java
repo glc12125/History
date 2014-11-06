@@ -4,11 +4,9 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.CountDownTimer;
-import android.util.Log;
-import appathon.history.MainActivity.CounterClass;
 import appathon.history.models.qa.Question;
 
-class GameUpdateRunnable implements Runnable {
+public class GameUpdateRunnable implements Runnable {
 
     // Tells the Runnable to pause for a certain number of milliseconds
     private static final long SLEEP_TIME_MILLISECONDS = 250;
@@ -58,9 +56,11 @@ class GameUpdateRunnable implements Runnable {
      */
     @Override
     public void run() {
-        
         this.counter.start();
-
+    }
+    
+    public void stop() {
+    	this.counter.cancel();
     }
     
 	public class CounterClass extends CountDownTimer

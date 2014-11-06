@@ -6,14 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.media.MediaPlayer;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -29,6 +25,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import appathon.history.models.Country;
 import appathon.history.models.GameManager;
+import appathon.history.models.GameUpdateRunnable;
 import appathon.history.models.User;
 import appathon.history.models.qa.Answer;
 import appathon.history.models.qa.Question;
@@ -55,7 +52,7 @@ public class MainActivity extends Activity
 	public GameManager manager;
 	PopupWindow mPopupWindowForQuestion;
 	PopupWindow mPopupWindowForRanking;
-	CounterClass counter;
+	GameUpdateRunnable gameUpdateRunnable;
 	HashMap<Country, Marker> marker_map; 
 	// Store countries and marker pair, it is used for Game
 	HashMap<Marker, HashMap<String, String>> marker_text_map = new HashMap<Marker, HashMap<String, String>>(); // Store
@@ -153,8 +150,8 @@ public class MainActivity extends Activity
 		mPopupWindowForRanking.setTouchable(true);
 		mPopupWindowForRanking.setOutsideTouchable(false);
 
-		counter = new CounterClass(millisRoundTime, 1000);
-		counter.start();
+		gameUpdateRunnable = manager.getGameUpdateRunnable();
+		gameUpdateRunnable.run();
 	}
 
 	public void moveCameraToCountry(Country country, float zoomLevel)
@@ -275,7 +272,7 @@ public class MainActivity extends Activity
 
 	public void showRanking(View v)
 	{
-		counter.cancel();
+		gameUpdateRunnable.stop();
 		backgroundMusicPlayer.stop();
 		mPopupWindowForQuestion.dismiss();
 		v.setVisibility(View.GONE);
@@ -323,49 +320,7 @@ public class MainActivity extends Activity
 		displayAllAnswers(manager.getQuestions());
 	}
 
-	public class CounterClass extends CountDownTimer
-	{
-		public CounterClass(long millisInFuture, long countDownInterval)
-		{
-			super(millisInFuture, countDownInterval);
-		}
-
-		@Override
-		public void onFinish()
-		{
-			manager.checkAnswers(millisRoundTime);
-			manager.getToNextRound();
-			showQuestion(manager.getCurrentQuestion());
-			this.cancel();
-			this.start();
-		}
-
-		@SuppressLint("NewApi")
-		@TargetApi(Build.VERSION_CODES.GINGERBREAD)
-		@Override
-		public void onTick(long millisUntilFinished)
-		{
-//			long millis = millisUntilFinished;
-//			String hms = String.format(
-//					"%02d:%02d:%02d",
-//					TimeUnit.MILLISECONDS.toHours(millis),
-//					TimeUnit.MILLISECONDS.toMinutes(millis)
-//					- TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS
-//							.toHours(millis)),
-//							TimeUnit.MILLISECONDS.toSeconds(millis)
-//							- TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS
-//									.toMinutes(millis)));
-//			System.out.println(hms);
-			long millisPassed = millisRoundTime - millisUntilFinished;
-			if (manager.checkAnswers(millisPassed))
-			{
-				manager.getToNextRound();
-				showQuestion(manager.getCurrentQuestion());
-				this.cancel();
-				this.start();
-			}
-		}
-	}
+	
 
 	/**
 	 * Move camera to specific area

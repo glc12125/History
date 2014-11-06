@@ -21,7 +21,7 @@ public class GameManager implements GameUpdateRunnableMethods
      * Field containing the Thread this task is running on.
      */
     private Thread currentThread;
-    private Runnable gameUpdateRunnable;
+    private GameUpdateRunnable gameUpdateRunnable;
 
 	private QuestionGenerator questionGenerator;
 	private ArrayList<Question> questions;
@@ -46,10 +46,10 @@ public class GameManager implements GameUpdateRunnableMethods
 		currentQuestionIndex = 0;
 		initailizeCountryToQuestionMap();
 		gameUpdateRunnable = new GameUpdateRunnable(this);
-
+		restartUsers();
 	}
 
-	public Runnable getGameUpdateRunnable() {
+	public GameUpdateRunnable getGameUpdateRunnable() {
 		return gameUpdateRunnable;
 	}
 	
@@ -173,14 +173,14 @@ public class GameManager implements GameUpdateRunnableMethods
 	 * @return
 	 */
 	public void getToNextRound() {
-		Question q = getNextQuestion();
-		restartUsers(q);
+		getNextQuestion();
+		restartUsers();
 	}
 	
 	/**
 	 * Change the question submitted status for all users to False
 	 */
-	private void restartUsers(Question q)
+	private void restartUsers()
 	{
 		for (int i = 0; i < users.size(); ++i)
 		{
@@ -188,7 +188,7 @@ public class GameManager implements GameUpdateRunnableMethods
 			user.restartQuestionSubmittedStatus();
 			if(user.isAI()) {
 				AIUser ai_user = (AIUser) user;
-				ai_user.sampleReaction(q);
+				ai_user.sampleReaction(this.getCurrentQuestion());
 			} else {
 				user.setSelectedAnswer(null);
 			}
