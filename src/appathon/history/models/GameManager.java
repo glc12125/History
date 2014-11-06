@@ -17,11 +17,11 @@ import appathon.history.models.qa.QuestionGenerator;
 
 public class GameManager implements GameUpdateRunnableMethods
 {
-    /*
-     * Field containing the Thread this task is running on.
-     */
-    private Thread currentThread;
-    private GameUpdateRunnable gameUpdateRunnable;
+	/*
+	 * Field containing the Thread this task is running on.
+	 */
+	private Thread currentThread;
+	private GameUpdateRunnable gameUpdateRunnable;
 
 	private QuestionGenerator questionGenerator;
 	private ArrayList<Question> questions;
@@ -31,7 +31,7 @@ public class GameManager implements GameUpdateRunnableMethods
 	private Context context;
 	private MsgHandler mHandler = null;
 	public boolean isFinished;
-	
+
 	public GameManager(Context context, MsgHandler msgH)
 	{
 		super();
@@ -49,22 +49,26 @@ public class GameManager implements GameUpdateRunnableMethods
 		restartUsers();
 	}
 
-	public GameUpdateRunnable getGameUpdateRunnable() {
+	public GameUpdateRunnable getGameUpdateRunnable()
+	{
 		return gameUpdateRunnable;
 	}
-	
-	public void startCountDown(){
-		if(gameUpdateRunnable !=null){
+
+	public void startCountDown()
+	{
+		if (gameUpdateRunnable != null)
+		{
 			Thread t = new Thread(gameUpdateRunnable);
 			currentThread = t;
-	        t.start();
+			t.start();
 		}
 	}
 
-	public Thread getCurrentThread() {
+	public Thread getCurrentThread()
+	{
 		return currentThread;
 	}
-	
+
 	/**
 	 * check the answers submitted by users are correct or not
 	 * 
@@ -79,82 +83,109 @@ public class GameManager implements GameUpdateRunnableMethods
 		for (int i = 0; i < users.size(); i++)
 		{
 			User user = users.get(i);
-			
-			if(user.isChecked()) {
+
+			if (user.isChecked())
+			{
 				count++;
 				continue;
 			}
-			
-			if((user.isAI() && user.getReactiveMillis() < millisPassed) || 
-			(!user.isAI() && user.isQuestionSubmitted())) {
+
+			if ((user.isAI() && user.getReactiveMillis() < millisPassed)
+					|| (!user.isAI() && user.isQuestionSubmitted()))
+			{
 				user.checked();
 				count++;
 				String selectedAnswer = user.getSelectedAnswer();
-				if (selectedAnswer != null && selectedAnswer.equals(currentQuestion.correctAnswer))
+				if (selectedAnswer != null
+						&& selectedAnswer.equals(currentQuestion.correctAnswer))
 				{
-					try {
-						changeCountryGameInfo(currentQuestion.correspondingCountry, user);
-						if (!user.isAI()) {
-							Toast.makeText(context, "Correct!!", Toast.LENGTH_SHORT).show();
+					try
+					{
+						changeCountryGameInfo(
+								currentQuestion.correspondingCountry, user);
+						if (!user.isAI())
+						{
+							Toast.makeText(context, "Correct!!",
+									Toast.LENGTH_SHORT).show();
 							playSoundCorrect();
-						} else {
-							Toast.makeText(context, "Country is controled by " + user.getName(), Toast.LENGTH_SHORT).show();
+						} else
+						{
+							Toast.makeText(
+									context,
+									"Country is controled by " + user.getName(),
+									Toast.LENGTH_SHORT).show();
 							playSoundWrong();
 						}
-						drawMarker(currentQuestion.correspondingCountry, user.getSmallAvatar());
+						
+						drawMarker(currentQuestion.correspondingCountry,
+								user.getSmallAvatar(),countryGameInfoMap
+								.get(currentQuestion.correspondingCountry).getDefense());
 						return true;
-					} catch (Exception e) {
+					} catch (Exception e)
+					{
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-				} else if(!user.isAI()) {
+				} else if (!user.isAI())
+				{
 					playSoundWrong();
-					Toast.makeText(context, "Wrong!!", Toast.LENGTH_SHORT).show();
+					Toast.makeText(context, "Wrong!!", Toast.LENGTH_SHORT)
+							.show();
 				}
 			}
 		}
 		return count == users.size(); // If all users have answer this question,
 										// then we pass it to next round
 	}
-	
-	
+
 	/**
 	 * Update GameInfoCountry for specific country
+	 * 
 	 * @param countryName
 	 * @param user
 	 */
-	private void changeCountryGameInfo(Country target_country, User user) throws Exception{
-		if (!countryGameInfoMap.containsKey(target_country)) 
-			throw new Exception("Country " + target_country.getName() + " does not exist in countryGameInfoMap");
+	private void changeCountryGameInfo(Country target_country, User user)
+			throws Exception
+	{
+		if (!countryGameInfoMap.containsKey(target_country))
+			throw new Exception("Country " + target_country.getName()
+					+ " does not exist in countryGameInfoMap");
 		CountryGameInfo cgi = countryGameInfoMap.get(target_country);
-		if(cgi.getUser() == null) {
+		if (cgi.getUser() == null)
+		{
 			cgi.setDefense(1);
 			cgi.setUser(user);
-		} else if(cgi.getUser().equals(user)){
+		} else if (cgi.getUser().equals(user))
+		{
 			cgi.setDefense(cgi.getDefense() + 1);
-		} else {
+		} else
+		{
 			cgi.setUser(user);
 		}
 	}
 
 	/**
-	 * Method to notify MainActivity to draw marker for specific country and avatar
+	 * Method to notify MainActivity to draw marker for specific country and
+	 * avatar
+	 * 
 	 * @param countryName
 	 * @param avatar
 	 */
-	private void drawMarker(Country country, int avatar)
+	private void drawMarker(Country country, int avatar,int defense)
 	{
 		Message msg = new Message();
 		msg.what = MsgHandler.MSG_TYPE_DRAW_MARKER;
 		Bundle b = new Bundle();
 		b.putString("countryName", country.getName());
 		b.putInt("avatar", avatar);
+		b.putInt("defense", defense);
 		msg.setData(b);
 		mHandler.sendMessage(msg);
 	}
 
 	/**
 	 * Method to notify MainActivity to remove marker for specific country
+	 * 
 	 * @param countryName
 	 */
 	private void removeMarker(Country country)
@@ -168,15 +199,16 @@ public class GameManager implements GameUpdateRunnableMethods
 	}
 
 	/**
-	 * Get to next round.
-	 * Initialize next question and users' status
+	 * Get to next round. Initialize next question and users' status
+	 * 
 	 * @return
 	 */
-	public void getToNextRound() {
+	public void getToNextRound()
+	{
 		getNextQuestion();
 		restartUsers();
 	}
-	
+
 	/**
 	 * Change the question submitted status for all users to False
 	 */
@@ -186,10 +218,12 @@ public class GameManager implements GameUpdateRunnableMethods
 		{
 			User user = users.get(i);
 			user.restartQuestionSubmittedStatus();
-			if(user.isAI()) {
+			if (user.isAI())
+			{
 				AIUser ai_user = (AIUser) user;
 				ai_user.sampleReaction(this.getCurrentQuestion());
-			} else {
+			} else
+			{
 				user.setSelectedAnswer(null);
 			}
 		}
@@ -197,6 +231,7 @@ public class GameManager implements GameUpdateRunnableMethods
 
 	/**
 	 * Get next question.
+	 * 
 	 * @return next question to display for game
 	 */
 	public Question getNextQuestion()
@@ -211,15 +246,18 @@ public class GameManager implements GameUpdateRunnableMethods
 
 	/**
 	 * Get current question
+	 * 
 	 * @return
 	 */
 	@Override
-	public Question getCurrentQuestion() {
+	public Question getCurrentQuestion()
+	{
 		return questions.get(currentQuestionIndex);
 	}
-	
+
 	/**
 	 * Update selectedAnswer for user whose name is userName
+	 * 
 	 * @param userName
 	 * @param selectedAnswer
 	 */
@@ -236,16 +274,18 @@ public class GameManager implements GameUpdateRunnableMethods
 	}
 
 	/**
-	 *  Ranking the users based on the score
+	 * Ranking the users based on the score
 	 */
 	public void rankUsers()
 	{
 		isFinished = true;
 
-		for (CountryGameInfo cgi: countryGameInfoMap.values())
+		for (CountryGameInfo cgi : countryGameInfoMap.values())
 		{
-			if(cgi.getUser() != null) {
-				cgi.getUser().setScore(cgi.getDefense() + cgi.getUser().getScore());
+			if (cgi.getUser() != null)
+			{
+				cgi.getUser().setScore(
+						cgi.getDefense() + cgi.getUser().getScore());
 			}
 		}
 
@@ -262,15 +302,16 @@ public class GameManager implements GameUpdateRunnableMethods
 	private void initailizeUsers()
 	{
 		this.users = new ArrayList<User>();
-		users.add(new AIUser(1, "Meng Zhang", true, R.drawable.avatar_meng_zhang,
+		users.add(new AIUser(1, "Meng Zhang", true,
+				R.drawable.avatar_meng_zhang,
 				R.drawable.avatar_meng_zhang_small));
 		users.add(new AIUser(2, "Chao Gao", true, R.drawable.avatar_chao_gao,
 				R.drawable.avatar_chao_gao_small));
 		users.add(new AIUser(3, "Liangchuan Gu", true,
 				R.drawable.avatar_liangchuan_gu,
 				R.drawable.avatar_liang_chuan_small));
-		users.add(new User(4, "Yimai Fang", false, R.drawable.avatar_yimai_fang,
-				R.drawable.avatar_yi_mai_small));
+		users.add(new User(4, "Yimai Fang", false,
+				R.drawable.avatar_yimai_fang, R.drawable.avatar_yi_mai_small));
 	}
 
 	private void initailizeCountryToQuestionMap()
@@ -294,7 +335,7 @@ public class GameManager implements GameUpdateRunnableMethods
 			}
 		}
 	}
-	
+
 	public ArrayList<Question> getQuestions()
 	{
 		return questions;
@@ -316,18 +357,19 @@ public class GameManager implements GameUpdateRunnableMethods
 	{
 		MediaPlayer mediaPlayer = MediaPlayer
 				.create(context, R.raw.sound_wrong);
-		mediaPlayer.start(); 
+		mediaPlayer.start();
 	}
 
 	@Override
-	public void showQuestion(Question question) {
+	public void showQuestion(Question question)
+	{
 		Message msg = new Message();
 		msg.what = MsgHandler.MSG_TYPE_SHOW_QUESTION;
 		Bundle b = new Bundle();
 		b.putSerializable("question", question);
 		msg.setData(b);
 		mHandler.sendMessage(msg);
-		
+
 	}
 
 }

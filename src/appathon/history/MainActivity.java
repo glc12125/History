@@ -8,6 +8,12 @@ import java.util.Map;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -90,9 +96,10 @@ public class MainActivity extends Activity
 			case MsgHandler.MSG_TYPE_DRAW_MARKER:
 				b = msg.getData();
 				int avatar = b.getInt("avatar");
+				int defense = b.getInt("defense");
 				countryName = b.getString("countryName");
 				drawMarker(lg.getLocationFromAddress(context, countryName),
-						avatar);
+						avatar, defense);
 				break;
 			case MsgHandler.MSG_TYPE_REMOVE_MARKER:
 				b = msg.getData();
@@ -270,14 +277,17 @@ public class MainActivity extends Activity
 		return drawMarker(ll);
 	}
 
-	public Marker drawMarker(LatLng ll, int avatar_id)
+	public Marker drawMarker(LatLng ll, int avatar_id, int defense)
 	{
 		if (worldMap == null)
 		{
 			Log.e("aaaaaaaaaa", "world map is null");
 		}
+
 		MarkerOptions marker = new MarkerOptions().position(ll).icon(
-				BitmapDescriptorFactory.fromResource(avatar_id));
+				BitmapDescriptorFactory
+						.fromBitmap(generateCustomizedMarkerBitmap(avatar_id,
+								defense)));
 
 		if (marker == null)
 		{
@@ -291,6 +301,51 @@ public class MainActivity extends Activity
 				.newCameraPosition(cameraPosition));
 
 		return temp_marker;
+	}
+
+	private Bitmap generateCustomizedMarkerBitmap(int avatar_id, int defense)
+	{
+		Bitmap.Config conf = Bitmap.Config.ARGB_8888;
+		Bitmap bmp = Bitmap.createBitmap(110, 130, conf);
+		Canvas canvas = new Canvas(bmp);
+
+		Paint paint = new Paint();
+		paint.setAntiAlias(true);
+		canvas.drawBitmap(
+				BitmapFactory.decodeResource(getResources(), avatar_id), 0, 30,
+				paint);
+
+		switch (avatar_id)
+		{
+		case R.drawable.avatar_chao_gao_small:
+			paint.setARGB(128, 0, 0, 255);
+			break;
+		case R.drawable.avatar_liang_chuan_small:
+			paint.setARGB(128, 0, 255, 0);
+			break;
+		case R.drawable.avatar_meng_zhang_small:
+			paint.setARGB(128, 255, 0, 0);
+			break;
+		case R.drawable.avatar_yi_mai_small:
+			paint.setARGB(128, 255, 255, 51);
+			break;
+
+		default:
+			paint.setARGB(128, 0, 0, 255);
+			break;
+		}
+
+		paint.setStyle(Paint.Style.FILL);
+
+		canvas.drawCircle(80, 30, 30, paint);
+
+		Typeface tf = Typeface.create("Helvetica", Typeface.BOLD);
+		paint.setTypeface(tf);
+		paint.setTextSize(60);
+		paint.setColor(Color.WHITE);
+		canvas.drawText("" + defense, 65, 50, paint);
+
+		return bmp;
 	}
 
 	public Marker drawMarker(LatLng ll)
