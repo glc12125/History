@@ -217,13 +217,12 @@ public class MainActivity extends Activity
 					marker.setTitle(country.getName());
 					marker_map.put(country, marker);
 					HashMap<String, String> textMap = new HashMap<String, String>();
-					textMap.put(q.question, country.getName());
+					textMap.put(q.question, q.correctAnswer);
 					marker_text_map.put(marker, textMap);
 				} else
 				{
 					Marker marker = marker_map.get(country);
-					marker_text_map.get(marker).put(q.question,
-							country.getName());
+					marker_text_map.get(marker).put(q.question, q.correctAnswer);
 				}
 			}
 		}
@@ -249,10 +248,10 @@ public class MainActivity extends Activity
 		StringBuffer sb = new StringBuffer();
 		for (String question : map.keySet())
 		{
-			sb.append("Q:");
+			sb.append("Q: ");
 			sb.append(question);
 			sb.append("\n");
-			sb.append("A:");
+			sb.append("A: ");
 			sb.append(map.get(question));
 			sb.append("\n\n");
 		}
