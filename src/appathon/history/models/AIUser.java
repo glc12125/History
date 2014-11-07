@@ -11,13 +11,12 @@ public class AIUser extends User {
 	private double millis_std; // Decide the variance of responding time
 
 	
-	public AIUser(int id, String name, boolean isAI, int avatar, int small_avatar) {
-		this(id, name, avatar, small_avatar, 0.85, 3000, 1000);
+	public AIUser(int id) {
+		this(id, 0.85, 3000, 1000);
 	}
 	
-	public AIUser(int id, String name, int avatar, int small_avatar, 
-			double correctPercentage, long millis_mean, double millis_std) {
-		super(id, name, true, avatar, small_avatar);
+	public AIUser(int id, double correctPercentage, long millis_mean, double millis_std) {
+		super(id, "", true);
 		this.correctPercentage = correctPercentage;
 		this.millis_mean = millis_mean;
 		this.millis_std = millis_std;

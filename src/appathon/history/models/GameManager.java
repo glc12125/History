@@ -119,7 +119,7 @@ public class GameManager implements GameUpdateRunnableMethods
 						{
 							Toast.makeText(
 									context,
-									"Country is controled by " + user.getName(),
+									user.getName() + " got this correct ;-(",
 									Toast.LENGTH_SHORT).show();
 							playSoundWrong();
 						}
@@ -310,16 +310,10 @@ public class GameManager implements GameUpdateRunnableMethods
 	private void initailizeUsers()
 	{
 		this.users = new ArrayList<User>();
-		users.add(new AIUser(1, "Meng Zhang", true,
-				R.drawable.avatar_meng_zhang,
-				R.drawable.avatar_meng_zhang_small));
-		users.add(new AIUser(2, "Chao Gao", true, R.drawable.avatar_chao_gao,
-				R.drawable.avatar_chao_gao_small));
-		users.add(new AIUser(3, "Liangchuan Gu", true,
-				R.drawable.avatar_liangchuan_gu,
-				R.drawable.avatar_liang_chuan_small));
-		users.add(new User(4, "Yimai Fang", false,
-				R.drawable.avatar_yimai_fang, R.drawable.avatar_yi_mai_small));
+		users.add(new AIUser(1));
+		users.add(new AIUser(2));
+		users.add(new AIUser(3));
+		users.add(new User(4, "Player-Chosen Name", false));
 	}
 
 	private void initailizeCountryToQuestionMap()

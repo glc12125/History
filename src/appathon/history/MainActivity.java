@@ -51,7 +51,7 @@ public class MainActivity extends Activity
 {
 	private MsgHandler mHandler = null;
 	private int millisRoundTime = 5000;
-	public static final String userName = "Yimai Fang";
+	public static final String userName = "Player-Chosen Name";
 	GoogleMap worldMap;
 	public LocationGetter lg;
 	Context context;
@@ -313,18 +313,18 @@ public class MainActivity extends Activity
 
 		switch (avatar_id)
 		{
-		case R.drawable.avatar_chao_gao_small:
-			paint.setARGB(128, 0, 0, 255);
-			break;
-		case R.drawable.avatar_liang_chuan_small:
-			paint.setARGB(128, 0, 255, 0);
-			break;
-		case R.drawable.avatar_meng_zhang_small:
-			paint.setARGB(128, 255, 0, 0);
-			break;
-		case R.drawable.avatar_yi_mai_small:
-			paint.setARGB(128, 255, 255, 51);
-			break;
+//		case R.drawable.avatar_chao_gao_small:
+//			paint.setARGB(128, 0, 0, 255);
+//			break;
+//		case R.drawable.avatar_liang_chuan_small:
+//			paint.setARGB(128, 0, 255, 0);
+//			break;
+//		case R.drawable.avatar_meng_zhang_small:
+//			paint.setARGB(128, 255, 0, 0);
+//			break;
+//		case R.drawable.avatar_yi_mai_small:
+//			paint.setARGB(128, 255, 255, 51);
+//			break;
 
 		default:
 			paint.setARGB(128, 0, 0, 255);
@@ -333,13 +333,13 @@ public class MainActivity extends Activity
 
 		paint.setStyle(Paint.Style.FILL);
 
-		canvas.drawCircle(80, 30, 30, paint);
+		canvas.drawCircle(80, 30, 20, paint);
 
 		Typeface tf = Typeface.create("Helvetica", Typeface.BOLD);
 		paint.setTypeface(tf);
-		paint.setTextSize(60);
+		paint.setTextSize(40);
 		paint.setColor(Color.WHITE);
-		canvas.drawText("" + defense, 65, 50, paint);
+		canvas.drawText("" + defense, 70, 45, paint);
 
 		return bmp;
 	}
