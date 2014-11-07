@@ -9,9 +9,11 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+
 public class LoginActivity extends Activity
 {
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -24,11 +26,15 @@ public class LoginActivity extends Activity
 		ImageView appTitleImageView = (ImageView) findViewById(R.id.app_title);
 		appTitleImageView.setImageResource(R.drawable.app_title);
 
+		GoogleMap mapForLogin = ((MapFragment) getFragmentManager().findFragmentById(
+				R.id.mapForLogin)).getMap();
+
+		mapForLogin.getUiSettings().setZoomControlsEnabled(false);
 	}
 
 	public void login(View v)
 	{
-		 startActivity(new Intent(this, MainActivity.class));
+		startActivity(new Intent(this, MainActivity.class));
 	}
 
 	@Override

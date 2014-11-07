@@ -2,8 +2,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/login_view_background"
     tools:context="appathon.history.LoginActivity" >
+
+    <fragment
+        android:id="@+id/mapForLogin"
+        android:name="com.google.android.gms.maps.MapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <ImageView
         android:id="@+id/app_title"
