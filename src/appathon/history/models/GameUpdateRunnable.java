@@ -15,7 +15,7 @@ import appathon.history.models.qa.Question;
 public class GameUpdateRunnable implements Runnable {
 
     // Tells the Runnable to pause for a certain number of milliseconds
-    private static final long SLEEP_TIME_MILLISECONDS = 250;
+    private static final long SLEEP_TIME_MILLISECONDS = 1000;
     
 	private static int MILLIS_ROUNDTIME = 5000;
     
@@ -86,7 +86,7 @@ public class GameUpdateRunnable implements Runnable {
 			this.cancel();
 			
 	        try {
-	             // thread to sleep for 1000 milliseconds
+	             // thread to sleep for SLEEP_TIME_MILLISECONDS
 	        	Thread.sleep(SLEEP_TIME_MILLISECONDS);
 	        } catch (Exception e) {
 	            System.out.println(e);
@@ -118,6 +118,13 @@ public class GameUpdateRunnable implements Runnable {
 				gameUpdateTask.getToNextRound();
 				gameUpdateTask.showQuestion(gameUpdateTask.getCurrentQuestion());
 				this.cancel();
+		        try {
+		             // thread to sleep for SLEEP_TIME_MILLISECONDS
+		        	Thread.sleep(SLEEP_TIME_MILLISECONDS);
+		        } catch (Exception e) {
+		            System.out.println(e);
+		            Log.e(LOG_TAG, "Error when set timer to sleep:\n" + e.getMessage());
+		        }
 				this.start();
 			}
 		}
