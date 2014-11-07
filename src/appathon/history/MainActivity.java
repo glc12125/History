@@ -209,15 +209,15 @@ public class MainActivity extends Activity
 			if (q.correspondingCountry != null)
 			{
 				Country country = q.correspondingCountry;
-				LatLng ll = lg.getLocationFromAddress(
-						country.getName());
+				LatLng ll = lg.getLocationFromAddress(country.getName());
 				if (!marker_text_map.containsKey(country))
 				{
 					Marker marker = marker_map.get(country);
-					if(marker == null) {
+					if (marker == null)
+					{
 						marker = drawMarker(ll);
 						marker_map.put(country, marker);
-					} 
+					}
 					marker.setTitle(country.getName());
 					HashMap<String, String> textMap = new HashMap<String, String>();
 					textMap.put(q.question, q.correctAnswer);
@@ -226,7 +226,8 @@ public class MainActivity extends Activity
 				{
 					Marker marker = marker_map.get(country);
 					marker.setTitle(country.getName());
-					marker_text_map.get(marker).put(q.question, q.correctAnswer);
+					marker_text_map.get(marker)
+							.put(q.question, q.correctAnswer);
 				}
 			}
 		}
@@ -285,23 +286,24 @@ public class MainActivity extends Activity
 			Log.e("NullPointerException", "World Map is null");
 		}
 
-		
 		Marker temp_marker;
-		if(marker_map.containsKey(country)) {
-			marker_map.get(country).setIcon(BitmapDescriptorFactory
-						.fromBitmap(generateCustomizedMarkerBitmap(avatar_id,
-								defense)));
+		if (marker_map.containsKey(country))
+		{
+			marker_map.get(country).setIcon(
+					BitmapDescriptorFactory
+							.fromBitmap(generateCustomizedMarkerBitmap(
+									avatar_id, defense)));
 			temp_marker = marker_map.get(country);
-		}
-		else {
+		} else
+		{
 			MarkerOptions marker = new MarkerOptions().position(ll).icon(
 					BitmapDescriptorFactory
-							.fromBitmap(generateCustomizedMarkerBitmap(avatar_id,
-									defense)));
-			temp_marker = worldMap.addMarker(marker); 
+							.fromBitmap(generateCustomizedMarkerBitmap(
+									avatar_id, defense)));
+			temp_marker = worldMap.addMarker(marker);
 			marker_map.put(country, temp_marker);
 		}
-		 
+
 		return temp_marker;
 	}
 
@@ -319,18 +321,18 @@ public class MainActivity extends Activity
 
 		switch (avatar_id)
 		{
-//		case R.drawable.avatar_chao_gao_small:
-//			paint.setARGB(128, 0, 0, 255);
-//			break;
-//		case R.drawable.avatar_liang_chuan_small:
-//			paint.setARGB(128, 0, 255, 0);
-//			break;
-//		case R.drawable.avatar_meng_zhang_small:
-//			paint.setARGB(128, 255, 0, 0);
-//			break;
-//		case R.drawable.avatar_yi_mai_small:
-//			paint.setARGB(128, 255, 255, 51);
-//			break;
+		// case R.drawable.avatar_chao_gao_small:
+		// paint.setARGB(128, 0, 0, 255);
+		// break;
+		// case R.drawable.avatar_liang_chuan_small:
+		// paint.setARGB(128, 0, 255, 0);
+		// break;
+		// case R.drawable.avatar_meng_zhang_small:
+		// paint.setARGB(128, 255, 0, 0);
+		// break;
+		// case R.drawable.avatar_yi_mai_small:
+		// paint.setARGB(128, 255, 255, 51);
+		// break;
 
 		default:
 			paint.setARGB(128, 0, 0, 255);
