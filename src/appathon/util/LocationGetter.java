@@ -59,11 +59,11 @@ public class LocationGetter
 		return null;
 	}
 
-	public LatLng getLocationFromAddress(Context context, String strAddress){
-		return getLocationFromAddress(context, strAddress, 0.0);
+	public LatLng getLocationFromAddress(String strAddress){
+		return getLocationFromAddress(strAddress, 0.0);
 	}
 	
-	public LatLng getLocationFromAddress(Context context, String strAddress, double latDiff)
+	public LatLng getLocationFromAddress(String strAddress, double latDiff)
 	{
 		if(llMap.containsKey(strAddress)) return llMap.get(strAddress);
 		

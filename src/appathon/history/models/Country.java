@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 
 import appathon.history.MainActivity;
+import appathon.util.LocationGetter;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -22,7 +23,6 @@ import com.google.android.gms.maps.model.LatLng;
  */
 public class Country {
 	
-	private static HashMap<String, LatLng> llMap = initailzeLLMap();
 	private static HashMap<String, String> countryNameMap = initailzeCountryNameMap();
 	private String name; // 
 	private int avatar; // Store R.drawable.flag
@@ -31,7 +31,7 @@ public class Country {
 	public Country(String name) {
 		super();
 		this.name = name;
-		this.ll = llMap.get(name);
+		this.ll = LocationGetter.getLocationGetter().getLocationFromAddress(name);
 	}
 
 	public String getName() {
@@ -40,6 +40,10 @@ public class Country {
 	
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public LatLng getLatLng() {
+		return ll;
 	}
 	
 	
@@ -68,10 +72,7 @@ public class Country {
 		return true;
 	}
 	
-	private static HashMap<String, LatLng> initailzeLLMap() {
-		return new HashMap<String, LatLng>();
-	}
-	
+
 	private static HashMap<String, String> initailzeCountryNameMap() {
 		HashMap<String, String> map = new HashMap<String, String>();
 		return new HashMap<String, String>();
