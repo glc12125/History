@@ -20,6 +20,7 @@
         android:layout_marginBottom="53dp"
         android:background="@drawable/login_with_facebook"
         android:clickable="true"
-        android:focusable="true" />
+        android:focusable="true"
+        android:onClick="login" />
 
 </RelativeLayout>

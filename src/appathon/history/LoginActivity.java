@@ -1,13 +1,11 @@
 package appathon.history;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.PixelFormat;
-import android.graphics.drawable.Drawable;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 
@@ -25,29 +23,12 @@ public class LoginActivity extends Activity
 
 		ImageView appTitleImageView = (ImageView) findViewById(R.id.app_title);
 		appTitleImageView.setImageResource(R.drawable.app_title);
-		
-		// startActivity(new Intent(this, MainActivity.class));
+
 	}
 
-	// private void init()
-	// {
-	// Drawable de = this.getBackground();
-	// BitmapDrawable bd = new BitmapDrawable(drawableToBitmap(de));
-	// bd.setTileModeXY(TileMode.REPEAT, TileMode.REPEAT);
-	// this.setBackgroundDrawable(bd);
-	// }
-
-	// 将图片的背景图转换为bitmap 类型
-	private Bitmap drawableToBitmap(Drawable d)
+	public void login(View v)
 	{
-		Bitmap bitmap = Bitmap.createBitmap(d.getIntrinsicWidth(), d
-				.getIntrinsicHeight(),
-				d.getOpacity() != PixelFormat.OPAQUE ? Bitmap.Config.ARGB_8888
-						: Bitmap.Config.RGB_565);
-		Canvas canvas = new Canvas(bitmap);
-		d.setBounds(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
-		d.draw(canvas);
-		return bitmap;
+		 startActivity(new Intent(this, MainActivity.class));
 	}
 
 	@Override
