@@ -1,5 +1,8 @@
 package appathon.history.models;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.os.Build;
@@ -43,7 +46,12 @@ public class GameUpdateRunnable implements Runnable {
 		void getToNextRound();
 		
 		Question getCurrentQuestion();
+		
+		boolean gameEnd();
+		
+		void updateProgressBar(long millisPassed);
         
+		void gameOver();
     }
 
     /**
@@ -80,20 +88,32 @@ public class GameUpdateRunnable implements Runnable {
 		@Override
 		public void onFinish()
 		{
-			gameUpdateTask.checkAnswers(MILLIS_ROUNDTIME);
-			gameUpdateTask.getToNextRound();
-			gameUpdateTask.showQuestion(gameUpdateTask.getCurrentQuestion());
-			this.cancel();
-			
-	        try {
-	             // thread to sleep for SLEEP_TIME_MILLISECONDS
-	        	Thread.sleep(SLEEP_TIME_MILLISECONDS);
-	        } catch (Exception e) {
-	            System.out.println(e);
-	            Log.e(LOG_TAG, "Error when set timer to sleep:\n" + e.getMessage());
-	        }
+			pauseForNextQuestion();
 			
 			this.start();
+		}
+		
+		private void pauseForNextQuestion(){
+			Timer t = new Timer();
+			t.schedule(new TimerTask() {			
+
+				public void run() {
+					boolean gameEnd = gameUpdateTask.gameEnd();
+					if(gameEnd){
+						gameUpdateTask.gameOver();
+					}
+					else{
+						setupNewQuestion();
+					}
+				}
+				
+			}, 0, SLEEP_TIME_MILLISECONDS);
+		}
+		
+		private void setupNewQuestion()
+		{
+			gameUpdateTask.getToNextRound();
+			gameUpdateTask.showQuestion(gameUpdateTask.getCurrentQuestion());
 		}
 
 		@SuppressLint("NewApi")
@@ -101,30 +121,14 @@ public class GameUpdateRunnable implements Runnable {
 		@Override
 		public void onTick(long millisUntilFinished)
 		{
-//			long millis = millisUntilFinished;
-//			String hms = String.format(
-//					"%02d:%02d:%02d",
-//					TimeUnit.MILLISECONDS.toHours(millis),
-//					TimeUnit.MILLISECONDS.toMinutes(millis)
-//					- TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS
-//							.toHours(millis)),
-//							TimeUnit.MILLISECONDS.toSeconds(millis)
-//							- TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS
-//									.toMinutes(millis)));
-//			System.out.println(hms);
+			// call method in gamemanager to update progress bar
+			// should call "bar.setProgress(value)" in this method
+			
 			long millisPassed = MILLIS_ROUNDTIME - millisUntilFinished;
+			gameUpdateTask.updateProgressBar(millisPassed);
 			if (gameUpdateTask.checkAnswers(millisPassed))
 			{
-				gameUpdateTask.getToNextRound();
-				gameUpdateTask.showQuestion(gameUpdateTask.getCurrentQuestion());
-				this.cancel();
-		        try {
-		             // thread to sleep for SLEEP_TIME_MILLISECONDS
-		        	Thread.sleep(SLEEP_TIME_MILLISECONDS);
-		        } catch (Exception e) {
-		            System.out.println(e);
-		            Log.e(LOG_TAG, "Error when set timer to sleep:\n" + e.getMessage());
-		        }
+				pauseForNextQuestion();
 				this.start();
 			}
 		}

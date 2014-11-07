@@ -30,6 +30,7 @@ public class GameManager implements GameUpdateRunnableMethods
 	private int currentQuestionIndex;
 	private Context context;
 	private MsgHandler mHandler = null;
+	private int questionNum;
 	public boolean isFinished;
 
 	public GameManager(Context context, MsgHandler msgH)
@@ -38,6 +39,7 @@ public class GameManager implements GameUpdateRunnableMethods
 		this.context = context;
 		this.mHandler = msgH;
 		isFinished = false;
+		questionNum = 10;
 
 		initailizeUsers();
 
@@ -215,6 +217,7 @@ public class GameManager implements GameUpdateRunnableMethods
 	{
 		getNextQuestion();
 		restartUsers();
+		--questionNum;
 	}
 
 	/**
@@ -372,6 +375,25 @@ public class GameManager implements GameUpdateRunnableMethods
 		msg.setData(b);
 		mHandler.sendMessage(msg);
 
+	}
+
+	@Override
+	public boolean gameEnd() {
+		if(questionNum==0){
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public void updateProgressBar(long millisPassed) {
+		// Need to create Message to update progressbar
+		
+	}
+	
+	@Override
+	public void gameOver(){
+		// Need to create Message to showRanking in mainActivity
 	}
 
 }
