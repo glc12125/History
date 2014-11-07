@@ -1,6 +1,8 @@
 package appathon.history.models;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Random;
 
 import appathon.exception.NumOfCountriesException;
 import appathon.history.R;
@@ -8,6 +10,20 @@ import appathon.history.models.qa.Question;
 
 public class User implements Comparable<User>
 {
+	protected static ArrayList<Integer> availableIcons = new ArrayList<Integer>(Arrays.asList(
+			R.drawable.astrologer, R.drawable.baby11, R.drawable.baby126,
+			R.drawable.bicyclist, R.drawable.bookkeeper, R.drawable.business61,
+			R.drawable.cool4, R.drawable.criminal, R.drawable.dude1,
+			R.drawable.electrical, R.drawable.genius1, R.drawable.graduate6,
+			R.drawable.karate2, R.drawable.magician3, R.drawable.motorcyclist1,
+			R.drawable.palace, R.drawable.pilot, R.drawable.scientist,
+			R.drawable.speaker48, R.drawable.spy1, R.drawable.stockbroker));
+	protected static ArrayList<String> availableNames = new ArrayList<String>(Arrays.asList(
+			"James", "John", "Robert", "Michael", "William", "David", "Richard", "Charles",
+			"Joseph", "Thomas", "Mark", "Mary", "Patricia", "Linda", "Barbara", "Elizabeth",
+			"Jennifer", "Maria", "Susan", "Margaret", "Dorothy", "Lisa", "Helen", "George"));
+	protected static Random randomGenerator = new Random();
+	
 	private String name;
 	private boolean isAI;
 	private int id;
@@ -21,18 +37,28 @@ public class User implements Comparable<User>
 	protected long reactiveMillis;
 	protected String selectedAnswer;
 
-	public User(int id, String name, boolean isAI, int avatar, int small_avatar)
+	public User(int id, String name, boolean isAI)
 	{
 		this.id = id;
-		this.name = name;
+		if(name != ""){
+			this.name = name;
+			User.availableNames.remove(name);
+		}
+		else{
+			int nameIndex = User.randomGenerator.nextInt(User.availableNames.size());
+			this.name = User.availableNames.get(nameIndex);
+			User.availableNames.remove(nameIndex);
+		}
 		this.isAI = isAI;
 		this.score = 0;
-		this.avatar = avatar;
+		this.avatar = R.drawable.avatar_meng_zhang;
 		this.questionSubmitted = false;
 		this.numOfCountries = 0;
-		this.small_avatar = small_avatar;
 		this.reactiveMillis = -1;
 		this.isChecked = false;
+		int iconIndex = User.randomGenerator.nextInt(User.availableIcons.size());
+		this.small_avatar = User.availableIcons.get(iconIndex);
+		User.availableIcons.remove(iconIndex);
 	}
 
 	public long getReactiveMillis() {
@@ -200,25 +226,4 @@ public class User implements Comparable<User>
 		return true;
 	}
 
-	public ArrayList<User> generateFakeUsers()
-	{
-		ArrayList<User> user_list = new ArrayList<User>();
-		user_list.add(new User(1, "Meng Zhang", true,
-				R.drawable.avatar_meng_zhang,
-				R.drawable.avatar_meng_zhang_small));
-		user_list.add(new User(2, "Chao Gao", true, R.drawable.avatar_chao_gao,
-				R.drawable.avatar_chao_gao_small));
-		user_list.add(new User(3, "Liangchuan Gu", true,
-				R.drawable.avatar_liangchuan_gu,
-				R.drawable.avatar_liang_chuan_small));
-		user_list.add(new User(4, "Yimai Fang", false,
-				R.drawable.avatar_yimai_fang, R.drawable.avatar_yi_mai_small));
-
-		user_list.get(0).setScore(53);
-		user_list.get(1).setScore(14);
-		user_list.get(2).setScore(22);
-		user_list.get(3).setScore(31);
-
-		return user_list;
-	}
 }
