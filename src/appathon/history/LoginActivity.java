@@ -4,13 +4,12 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.PixelFormat;
-import android.graphics.Shader.TileMode;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
+import android.widget.ImageView;
 
 public class LoginActivity extends Activity
 {
@@ -24,16 +23,19 @@ public class LoginActivity extends Activity
 
 		setContentView(R.layout.activity_login);
 
+		ImageView appTitleImageView = (ImageView) findViewById(R.id.app_title);
+		appTitleImageView.setImageResource(R.drawable.app_title);
+		
 		// startActivity(new Intent(this, MainActivity.class));
 	}
 
-//	private void init()
-//	{
-//		Drawable de = this.getBackground();
-//		BitmapDrawable bd = new BitmapDrawable(drawableToBitmap(de));
-//		bd.setTileModeXY(TileMode.REPEAT, TileMode.REPEAT);
-//		this.setBackgroundDrawable(bd);
-//	}
+	// private void init()
+	// {
+	// Drawable de = this.getBackground();
+	// BitmapDrawable bd = new BitmapDrawable(drawableToBitmap(de));
+	// bd.setTileModeXY(TileMode.REPEAT, TileMode.REPEAT);
+	// this.setBackgroundDrawable(bd);
+	// }
 
 	// 将图片的背景图转换为bitmap 类型
 	private Bitmap drawableToBitmap(Drawable d)

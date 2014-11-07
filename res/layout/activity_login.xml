@@ -5,9 +5,21 @@
     android:background="@drawable/login_view_background"
     tools:context="appathon.history.LoginActivity" >
 
-    <TextView
+    <ImageView
+        android:id="@+id/app_title"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_centerHorizontal="true" />
+
+    <ImageButton
+        android:id="@+id/login_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="53dp"
+        android:background="@drawable/login_with_facebook"
+        android:clickable="true"
+        android:focusable="true" />
 
 </RelativeLayout>
