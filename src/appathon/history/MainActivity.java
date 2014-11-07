@@ -96,8 +96,8 @@ public class MainActivity extends Activity
 				int avatar = b.getInt("avatar");
 				int defense = b.getInt("defense");
 				countryName = b.getString("countryName");
-				drawMarker(lg.getLocationFromAddress(context, countryName),
-						avatar, defense);
+				Country country = new Country(countryName);
+				drawMarker(country, avatar, defense);
 				break;
 			case MsgHandler.MSG_TYPE_REMOVE_MARKER:
 				b = msg.getData();
@@ -183,7 +183,7 @@ public class MainActivity extends Activity
 
 	public void moveCameraToCountry(Country country, float zoomLevel)
 	{
-		LatLng ll = lg.getLocationFromAddress(context, country.getName(), 7.5);
+		LatLng ll = lg.getLocationFromAddress(country.getName(), 7.5);
 		// Creates a CameraPosition from the builder
 		CameraPosition cameraPosition = new CameraPosition.Builder().target(ll)
 				.zoom(zoomLevel).build();
@@ -209,19 +209,23 @@ public class MainActivity extends Activity
 			if (q.correspondingCountry != null)
 			{
 				Country country = q.correspondingCountry;
-				LatLng ll = lg.getLocationFromAddress(context,
+				LatLng ll = lg.getLocationFromAddress(
 						country.getName());
-				if (!marker_map.containsKey(country))
+				if (!marker_text_map.containsKey(country))
 				{
-					Marker marker = drawMarker(ll);
+					Marker marker = marker_map.get(country);
+					if(marker == null) {
+						marker = drawMarker(ll);
+						marker_map.put(country, marker);
+					} 
 					marker.setTitle(country.getName());
-					marker_map.put(country, marker);
 					HashMap<String, String> textMap = new HashMap<String, String>();
 					textMap.put(q.question, q.correctAnswer);
 					marker_text_map.put(marker, textMap);
 				} else
 				{
 					Marker marker = marker_map.get(country);
+					marker.setTitle(country.getName());
 					marker_text_map.get(marker).put(q.question, q.correctAnswer);
 				}
 			}
@@ -258,7 +262,7 @@ public class MainActivity extends Activity
 		return sb.toString();
 	}
 
-	public void removeMarker(Country country)
+	private void removeMarker(Country country)
 	{
 		if (marker_map.containsKey(country))
 		{
@@ -267,35 +271,37 @@ public class MainActivity extends Activity
 		}
 	}
 
-	public Marker drawMarker(Country country)
+	private Marker drawMarker(Country country)
 	{
-		LatLng ll = lg.getLocationFromAddress(context, country.getName());
+		LatLng ll = lg.getLocationFromAddress(country.getName());
 		return drawMarker(ll);
 	}
 
-	public Marker drawMarker(LatLng ll, int avatar_id, int defense)
+	public Marker drawMarker(Country country, int avatar_id, int defense)
 	{
+		LatLng ll = country.getLatLng();
 		if (worldMap == null)
 		{
-			Log.e("aaaaaaaaaa", "world map is null");
+			Log.e("NullPointerException", "World Map is null");
 		}
 
-		MarkerOptions marker = new MarkerOptions().position(ll).icon(
-				BitmapDescriptorFactory
+		
+		Marker temp_marker;
+		if(marker_map.containsKey(country)) {
+			marker_map.get(country).setIcon(BitmapDescriptorFactory
 						.fromBitmap(generateCustomizedMarkerBitmap(avatar_id,
 								defense)));
-
-		if (marker == null)
-		{
-			Log.e("aaaaaaaaaa", "marker is null");
+			temp_marker = marker_map.get(country);
 		}
-
-		Marker temp_marker = worldMap.addMarker(marker);
-		CameraPosition cameraPosition = new CameraPosition.Builder().target(ll)
-				.build();
-		worldMap.moveCamera(CameraUpdateFactory
-				.newCameraPosition(cameraPosition));
-
+		else {
+			MarkerOptions marker = new MarkerOptions().position(ll).icon(
+					BitmapDescriptorFactory
+							.fromBitmap(generateCustomizedMarkerBitmap(avatar_id,
+									defense)));
+			temp_marker = worldMap.addMarker(marker); 
+			marker_map.put(country, temp_marker);
+		}
+		 
 		return temp_marker;
 	}
 
