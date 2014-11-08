@@ -1,12 +1,14 @@
 package appathon.history;
 
 import java.lang.ref.WeakReference;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -22,7 +24,6 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
@@ -119,7 +120,15 @@ public class MainActivity extends Activity
 	{
 		super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.activity_main); 
+		@SuppressWarnings("unchecked")
+		HashMap<String, URI> facebook_username_imageuri = new HashMap<String, URI>(
+				(Map<String, URI>) getIntent().getExtras().get(
+						"facebook_username_imageuri"));
+
+		showAlert(facebook_username_imageuri.keySet().toString(),
+				facebook_username_imageuri.values().toString());
+
+		setContentView(R.layout.activity_main);
 
 		context = this.getApplicationContext();
 
@@ -496,5 +505,11 @@ public class MainActivity extends Activity
 		MarkerAnimationCountDownTimer macdt = new MarkerAnimationCountDownTimer(
 				1000, 100, m, 4);
 		macdt.start();
+	}
+
+	private void showAlert(String title, String message)
+	{
+		new AlertDialog.Builder(this).setTitle(title).setMessage(message)
+				.setPositiveButton("ok", null).show();
 	}
 }

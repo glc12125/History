@@ -37,8 +37,6 @@ import com.google.android.gms.maps.MapFragment;
 
 public class LoginActivity extends FragmentActivity
 {
-	public static final int REQUEST_CODE_PICKER = 1;
-
 	private UiLifecycleHelper uiHelper;
 
 	private List<GraphUser> selectedUsers;
@@ -123,45 +121,11 @@ public class LoginActivity extends FragmentActivity
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
 		super.onActivityResult(requestCode, resultCode, data);
-		
-		if (requestCode != REQUEST_CODE_PICKER)
-		{
-			uiHelper.onActivityResult(requestCode, resultCode, data,
-					dialogCallback);
 
-			startActivityForResult(new Intent(this, PickerActivity.class),
-					REQUEST_CODE_PICKER);
-		} else
-		{
+		uiHelper.onActivityResult(requestCode, resultCode, data, dialogCallback);
 
-		}
-	}
-
-	private void onFriendPickerDone(FriendPickerFragment fragment)
-	{
-		FragmentManager fm = getSupportFragmentManager();
-		fm.popBackStack();
-
-		String results = "";
-
-		List<GraphUser> selection = fragment.getSelection();
-
-		if (selection != null && selection.size() > 0)
-		{
-			ArrayList<String> names = new ArrayList<String>();
-			for (GraphUser user : selection)
-			{
-				names.add(user.getName());
-			}
-			results = TextUtils.join(", ", names);
-		} else
-		{
-			results = "no_friends_selected";
-		}
-
-		showAlert("you_picked", results);
-
-		startActivity(new Intent(this, MainActivity.class));
+		startActivity(new Intent(this, PickerActivity.class));
+		finish();
 	}
 
 	private void showAlert(String title, String message)

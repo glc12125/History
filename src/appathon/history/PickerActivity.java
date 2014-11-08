@@ -26,12 +26,11 @@ import org.json.JSONObject;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.net.Uri;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.facebook.FacebookException;
@@ -147,7 +146,7 @@ public class PickerActivity extends FragmentActivity
 
 	private void finishActivity()
 	{
-		HashMap<String, URI> facebook_username_uri = new HashMap<String, URI>();
+		HashMap<String, URI> facebook_username_imageuri = new HashMap<String, URI>();
 
 		List<GraphUser> selectedUsers = friendPickerFragment.getSelection();
 
@@ -171,16 +170,15 @@ public class PickerActivity extends FragmentActivity
 				e.printStackTrace();
 			}
 
-			facebook_username_uri.put(graphUser.getName(), user_avatar_uri);
+			facebook_username_imageuri
+					.put(graphUser.getName(), user_avatar_uri);
 		}
 
-		setResult(RESULT_OK, null);
-		finish();
-	}
+		Intent intent = new Intent(this, MainActivity.class);
 
-	private void showAlert(String title, String message)
-	{
-		new AlertDialog.Builder(this).setTitle(title).setMessage(message)
-				.setPositiveButton("ok", null).show();
+		intent.putExtra("facebook_username_imageuri",
+				facebook_username_imageuri);
+		startActivity(intent);
+		finish();
 	}
 }
