@@ -49,7 +49,7 @@ public class GameManager implements GameUpdateRunnableMethods
 		initailizeUsers(userName, user_avatar_uri, facebook_username_imageuri);
 
 		questionGenerator = new QuestionGenerator(this.context);
-		questions = questionGenerator.getQuestions(questionNum);
+		questions = questionGenerator.getQuestions(questionNum + 1);
 		currentQuestionIndex = 0;
 		initailizeCountryToQuestionMap();
 		gameUpdateRunnable = new GameUpdateTimer(this);
