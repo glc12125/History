@@ -1,15 +1,14 @@
 package appathon.history;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.ref.WeakReference;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +25,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -506,7 +504,7 @@ public class MainActivity extends Activity
 			os.flush();
 
 			os.close();
-
+			
 			sh.waitFor();
 
 		} catch (IOException e)
@@ -518,6 +516,28 @@ public class MainActivity extends Activity
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		BitmapFactory.Options options = new BitmapFactory.Options();
+		options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+		Bitmap bmp = BitmapFactory.decodeFile(Environment.getExternalStorageDirectory()
+                + File.separator + "/sdcard/img.png", options);
+		Bitmap resizedbitmap1=Bitmap.createBitmap(bmp, 0,0, bmp.getWidth(), bmp.getHeight() * 2 / 3);
+		
+		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+		resizedbitmap1.compress(Bitmap.CompressFormat.PNG, 80, bytes);
+		File f = new File(Environment.getExternalStorageDirectory()
+                + File.separator + "/sdcard/img.png");
+		FileOutputStream fo = null;
+		try {
+			f.createNewFile();
+			fo = new FileOutputStream(f);
+			fo.write(bytes.toByteArray());
+			fo.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		
 	}
 
 	private List<Map<String, Object>> convertUsersToMap(ArrayList<User> users)
