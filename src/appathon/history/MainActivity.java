@@ -399,8 +399,15 @@ public class MainActivity extends Activity
 		SimpleAdapter adapter = new SimpleAdapter(this,
 				convertUsersToMap(users),
 				R.layout.activity_main_popup_ranking_list_item, new String[] {
-						"ranking", "avatar", "name", "score" }, new int[] {
-						R.id.ranking, R.id.avatar, R.id.name, R.id.score });
+						"ranking", "avatar", "name", "score", "flag1",
+						"flag2", "flag3", "flag4", "flag5", "flag6", "flag7",
+						"flag8", "flag9", "flag10", "flag11", "flag12", "flag13",
+						"flag14"}, new int[] {
+						R.id.ranking, R.id.avatar, R.id.name, R.id.score, 
+						R.id.flag1, R.id.flag2, R.id.flag3, R.id.flag4,
+						R.id.flag5, R.id.flag6, R.id.flag7, R.id.flag8,
+						R.id.flag9, R.id.flag10, R.id.flag11, R.id.flag12,
+						R.id.flag13, R.id.flag14});
 
 		mPopupWindowForRanking.showAtLocation(findViewById(R.id.map),
 				Gravity.TOP, 0, 0);
@@ -424,6 +431,13 @@ public class MainActivity extends Activity
 			map.put("avatar", user.getSmallAvatar());
 			map.put("name", user.getName());
 			map.put("score", user.getScore());
+			int numCountries = user.getNumOfCountries();
+			for(int cp = 0; cp < 14; cp ++){
+				if(cp < numCountries)
+					map.put("flag" + (cp+1), user.getCountries().get(cp).getFlag());
+				else
+					map.put("flag" + (cp+1), null);
+			}
 			userList.add(map);
 		}
 

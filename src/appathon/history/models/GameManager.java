@@ -52,7 +52,7 @@ public class GameManager implements GameUpdateRunnableMethods
 		initailizeUsers(userName, user_avatar_uri, facebook_username_imageuri);
 
 		questionGenerator = new QuestionGenerator(this.context);
-		questions = questionGenerator.getQuestions(100);
+		questions = questionGenerator.getQuestions(questionNum);
 		currentQuestionIndex = 0;
 		initailizeCountryToQuestionMap();
 		gameUpdateRunnable = new GameUpdateRunnable(this);
@@ -176,15 +176,18 @@ public class GameManager implements GameUpdateRunnableMethods
 		{
 			cgi.setDefense(1);
 			cgi.setUser(user);
+			user.gainCountry(target_country);
 		} else if (cgi.getUser().equals(user))
 		{
 			cgi.setDefense(cgi.getDefense() + 1);
 		} else
 		{
-			if (cgi.getDefense() == 1)
+			if(cgi.getDefense() == 1) {
 				cgi.setUser(user);
-			else
-				cgi.setDefense(cgi.getDefense() - 1);
+				cgi.getUser().loseCountry(target_country);
+				user.gainCountry(target_country);
+			}
+			else cgi.setDefense(cgi.getDefense() - 1);
 		}
 	}
 

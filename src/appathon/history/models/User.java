@@ -38,8 +38,8 @@ public class User implements Comparable<User>
 	private int avatar;
 	private boolean questionSubmitted;
 	private int small_avatar;
-	private int numOfCountries;
 	private boolean isChecked;
+	private ArrayList<Country> controlledCountries;
 	protected long reactiveMillis;
 	protected String selectedAnswer;
 	private Bitmap bitmap;
@@ -77,7 +77,7 @@ public class User implements Comparable<User>
 		this.isAI = isAI;
 		this.score = 0;
 		this.questionSubmitted = false;
-		this.numOfCountries = 0;
+		this.controlledCountries = new ArrayList<Country>();
 		this.reactiveMillis = -1;
 		this.isChecked = false;
 	}
@@ -151,23 +151,21 @@ public class User implements Comparable<User>
 	{
 		this.reactiveMillis = ms;
 	}
-
-	public void incrementNumOfCountriesByOne()
-	{
-		this.numOfCountries++;
+	
+	public void gainCountry(Country country) {
+		this.controlledCountries.add(country);
 	}
-
-	public void decreaseNumOfCountriesByOne() throws NumOfCountriesException
-	{
-		if (numOfCountries == 0)
-			throw new NumOfCountriesException(
-					"The number of countries of one user should bigger than zero");
-		this.numOfCountries--;
+	
+	public void loseCountry(Country country) {
+		this.controlledCountries.remove(country);
 	}
-
-	public int getNumOfQuestions()
-	{
-		return this.numOfCountries;
+	
+	public int getNumOfCountries() {
+		return this.controlledCountries.size();
+	}
+	
+	public ArrayList<Country> getCountries() {
+		return this.controlledCountries;
 	}
 
 	public String getName()
