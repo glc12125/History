@@ -189,9 +189,9 @@ public class MainActivity extends Activity
 
 		backgroundMusicPlayer = MediaPlayer
 				.create(this, R.raw.background_audio);
-		// backgroundMusicPlayer.setLooping(true); // Set looping
-		// backgroundMusicPlayer.setVolume(100, 100);
-		// backgroundMusicPlayer.start();
+		backgroundMusicPlayer.setLooping(true); // Set looping
+		backgroundMusicPlayer.setVolume(100, 100);
+		backgroundMusicPlayer.start();
 
 		worldMap = ((MapFragment) getFragmentManager().findFragmentById(
 				R.id.map)).getMap();
@@ -493,7 +493,7 @@ public class MainActivity extends Activity
 
 	private void saveScreen()
 	{
-		int height_n = 100;
+		int height_n = 90;
 		Process sh;
 		try
 		{
