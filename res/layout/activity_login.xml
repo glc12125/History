@@ -29,6 +29,11 @@
         facebook:confirm_logout="false"
         facebook:fetch_user_info="true" />
 
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
+
     <!--
          <ImageButton
         android:id="@+id/login_button"
