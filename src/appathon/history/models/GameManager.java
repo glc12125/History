@@ -44,7 +44,7 @@ public class GameManager implements GameUpdateRunnableMethods
 		this.context = context;
 		this.mHandler = msgH;
 		isFinished = false;
-		questionNum = 3;
+		questionNum = 1;
 
 		initailizeUsers(userName, user_avatar_uri, facebook_username_imageuri);
 
@@ -422,8 +422,8 @@ public class GameManager implements GameUpdateRunnableMethods
 		mHandler.sendMessage(msg);
 	}
 
-	public Bitmap getUserBitmap(int userId)
+	public int getRankNoOfPlayer()
 	{
-		return users.get(userId).getBitmap();
+		return users.get(users.size() - 1).getRanking();
 	}
 }

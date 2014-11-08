@@ -11,6 +11,7 @@
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:layout_marginLeft="10dp"
+        android:textColor="#000000"
         android:textSize="18sp"
         android:textStyle="bold" />
 
@@ -31,9 +32,10 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_toRightOf="@+id/avatar"
+        android:textColor="#000000"
         android:textSize="18sp"
         android:textStyle="bold" />
-    
+
     <ImageView
         android:id="@+id/flag1"
         android:layout_width="30dp"
@@ -41,9 +43,9 @@
         android:layout_marginBottom="26dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="3dp"
-        android:scaleType="centerCrop"
-        android:layout_toRightOf="@+id/name" />
-        
+        android:layout_toRightOf="@+id/name"
+        android:scaleType="centerCrop" />
+
     <ImageView
         android:id="@+id/flag2"
         android:layout_width="30dp"
@@ -51,19 +53,19 @@
         android:layout_marginBottom="3dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="26dp"
-        android:scaleType="centerCrop"
-        android:layout_toRightOf="@+id/name" />
-        
-   <ImageView
+        android:layout_toRightOf="@+id/name"
+        android:scaleType="centerCrop" />
+
+    <ImageView
         android:id="@+id/flag3"
         android:layout_width="30dp"
         android:layout_height="20dp"
         android:layout_marginBottom="26dp"
         android:layout_marginLeft="7dp"
         android:layout_marginTop="3dp"
-        android:scaleType="centerCrop"
-        android:layout_toRightOf="@+id/flag1" />
-        
+        android:layout_toRightOf="@+id/flag1"
+        android:scaleType="centerCrop" />
+
     <ImageView
         android:id="@+id/flag4"
         android:layout_width="30dp"
@@ -71,9 +73,9 @@
         android:layout_marginBottom="3dp"
         android:layout_marginLeft="7dp"
         android:layout_marginTop="26dp"
-        android:scaleType="centerCrop"
-        android:layout_toRightOf="@+id/flag2" />
-    
+        android:layout_toRightOf="@+id/flag2"
+        android:scaleType="centerCrop" />
+
     <ImageView
         android:id="@+id/flag5"
         android:layout_width="30dp"
@@ -81,9 +83,9 @@
         android:layout_marginBottom="26dp"
         android:layout_marginLeft="7dp"
         android:layout_marginTop="3dp"
-        android:scaleType="centerCrop"
-        android:layout_toRightOf="@+id/flag3" />
-        
+        android:layout_toRightOf="@+id/flag3"
+        android:scaleType="centerCrop" />
+
     <ImageView
         android:id="@+id/flag6"
         android:layout_width="30dp"
@@ -91,9 +93,9 @@
         android:layout_marginBottom="3dp"
         android:layout_marginLeft="7dp"
         android:layout_marginTop="26dp"
-        android:scaleType="centerCrop"
-        android:layout_toRightOf="@+id/flag4" />
-        
+        android:layout_toRightOf="@+id/flag4"
+        android:scaleType="centerCrop" />
+
     <ImageView
         android:id="@+id/flag7"
         android:layout_width="30dp"
@@ -101,9 +103,9 @@
         android:layout_marginBottom="26dp"
         android:layout_marginLeft="7dp"
         android:layout_marginTop="3dp"
-        android:scaleType="centerCrop"
-        android:layout_toRightOf="@+id/flag5" />
-        
+        android:layout_toRightOf="@+id/flag5"
+        android:scaleType="centerCrop" />
+
     <ImageView
         android:id="@+id/flag8"
         android:layout_width="30dp"
@@ -111,9 +113,9 @@
         android:layout_marginBottom="3dp"
         android:layout_marginLeft="7dp"
         android:layout_marginTop="26dp"
-        android:scaleType="centerCrop"
-        android:layout_toRightOf="@+id/flag6" />
-    
+        android:layout_toRightOf="@+id/flag6"
+        android:scaleType="centerCrop" />
+
     <ImageView
         android:id="@+id/flag9"
         android:layout_width="30dp"
@@ -121,9 +123,9 @@
         android:layout_marginBottom="26dp"
         android:layout_marginLeft="7dp"
         android:layout_marginTop="3dp"
-        android:scaleType="centerCrop"
-        android:layout_toRightOf="@+id/flag7" />
-        
+        android:layout_toRightOf="@+id/flag7"
+        android:scaleType="centerCrop" />
+
     <ImageView
         android:id="@+id/flag10"
         android:layout_width="30dp"
@@ -131,9 +133,9 @@
         android:layout_marginBottom="3dp"
         android:layout_marginLeft="7dp"
         android:layout_marginTop="26dp"
-        android:scaleType="centerCrop"
-        android:layout_toRightOf="@+id/flag8" />
-    
+        android:layout_toRightOf="@+id/flag8"
+        android:scaleType="centerCrop" />
+
     <ImageView
         android:id="@+id/flag11"
         android:layout_width="30dp"
@@ -141,9 +143,9 @@
         android:layout_marginBottom="26dp"
         android:layout_marginLeft="7dp"
         android:layout_marginTop="3dp"
-        android:scaleType="centerCrop"
-        android:layout_toRightOf="@+id/flag9" />
-        
+        android:layout_toRightOf="@+id/flag9"
+        android:scaleType="centerCrop" />
+
     <ImageView
         android:id="@+id/flag12"
         android:layout_width="30dp"
@@ -151,9 +153,9 @@
         android:layout_marginBottom="3dp"
         android:layout_marginLeft="7dp"
         android:layout_marginTop="26dp"
-        android:scaleType="centerCrop"
-        android:layout_toRightOf="@+id/flag10" />
-        
+        android:layout_toRightOf="@+id/flag10"
+        android:scaleType="centerCrop" />
+
     <ImageView
         android:id="@+id/flag13"
         android:layout_width="30dp"
@@ -161,9 +163,9 @@
         android:layout_marginBottom="26dp"
         android:layout_marginLeft="7dp"
         android:layout_marginTop="3dp"
-        android:scaleType="centerCrop"
-        android:layout_toRightOf="@+id/flag11" />
-        
+        android:layout_toRightOf="@+id/flag11"
+        android:scaleType="centerCrop" />
+
     <ImageView
         android:id="@+id/flag14"
         android:layout_width="30dp"
@@ -171,8 +173,8 @@
         android:layout_marginBottom="3dp"
         android:layout_marginLeft="7dp"
         android:layout_marginTop="26dp"
-        android:scaleType="centerCrop"
-        android:layout_toRightOf="@+id/flag12" />
+        android:layout_toRightOf="@+id/flag12"
+        android:scaleType="centerCrop" />
 
     <TextView
         android:id="@+id/score"
@@ -181,6 +183,7 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="10dp"
+        android:textColor="#000000"
         android:textSize="18sp"
         android:textStyle="bold" />
 
