@@ -99,9 +99,10 @@ public class MainActivity extends Activity
 				b = msg.getData();
 				int defense = b.getInt("defense");
 				int userId = b.getInt("userId");
+				int avatar = b.getInt("avatar");
 				countryName = b.getString("countryName");
 				Country country = new Country(countryName);
-				drawMarker(country, userId, defense);
+				drawMarker(country, userId, defense, avatar);
 				blinkMarker(marker_map.get(country));
 				break;
 			case MsgHandler.MSG_TYPE_REMOVE_MARKER:
@@ -125,6 +126,7 @@ public class MainActivity extends Activity
 		HashMap<String, URI> facebook_friends_username_imageuri = new HashMap<String, URI>(
 				(Map<String, URI>) getIntent().getExtras().get(
 						"facebook_friends_username_imageuri"));
+
 		// get facebook user
 		SharedPreferences facebook_userinfo = getSharedPreferences(
 				"facebook_userinfo", 0);
@@ -302,7 +304,8 @@ public class MainActivity extends Activity
 		return drawMarker(ll);
 	}
 
-	public Marker drawMarker(Country country, int userId, int defense)
+	public Marker drawMarker(Country country, int userId, int defense,
+			int avatar)
 	{
 		LatLng ll = country.getLatLng();
 		if (worldMap == null)
@@ -316,14 +319,14 @@ public class MainActivity extends Activity
 			marker_map.get(country).setIcon(
 					BitmapDescriptorFactory
 							.fromBitmap(generateCustomizedMarkerBitmap(userId,
-									defense)));
+									avatar, defense)));
 			temp_marker = marker_map.get(country);
 		} else
 		{
 			MarkerOptions marker = new MarkerOptions().position(ll).icon(
 					BitmapDescriptorFactory
 							.fromBitmap(generateCustomizedMarkerBitmap(userId,
-									defense)));
+									avatar, defense)));
 			temp_marker = worldMap.addMarker(marker);
 			marker_map.put(country, temp_marker);
 		}
@@ -331,7 +334,8 @@ public class MainActivity extends Activity
 		return temp_marker;
 	}
 
-	private Bitmap generateCustomizedMarkerBitmap(int userId, int defense)
+	private Bitmap generateCustomizedMarkerBitmap(int userId, int avatar,
+			int defense)
 	{
 		Bitmap.Config conf = Bitmap.Config.ARGB_8888;
 		Bitmap bmp = Bitmap.createBitmap(110, 130, conf);
@@ -339,22 +343,23 @@ public class MainActivity extends Activity
 
 		Paint paint = new Paint();
 		paint.setAntiAlias(true);
-		Bitmap userBitmap = manager.getUserBitmap(userId);
-		canvas.drawBitmap(userBitmap, 0, 30, paint);
+
+		canvas.drawBitmap(BitmapFactory.decodeResource(getResources(), avatar),
+				0, 30, paint);
 
 		switch (userId)
 		{
 		case 1:
-			paint.setARGB(128, 0, 0, 255);
-			break;
-		case 4:
-			paint.setARGB(128, 0, 255, 0);
+			paint.setARGB(128, 255, 255, 51);
 			break;
 		case 2:
-			paint.setARGB(128, 255, 0, 0);
+			paint.setARGB(128, 0, 255, 0);
 			break;
 		case 3:
-			paint.setARGB(128, 255, 255, 51);
+			paint.setARGB(128, 255, 0, 0);
+			break;
+		case 4:
+			paint.setARGB(128, 0, 0, 255);
 			break;
 
 		default:

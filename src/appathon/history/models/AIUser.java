@@ -14,15 +14,15 @@ public class AIUser extends User
 	private long millis_mean; // Decide the average time one AI responses
 	private double millis_std; // Decide the variance of responding time
 
-	public AIUser(int id, String name, URI avatar_uri)
+	public AIUser(int id, String name)
 	{
-		this(id, 0.85, 3000, 1000, name, avatar_uri);
+		this(id, 0.85, 3000, 1000, name);
 	}
 
 	public AIUser(int id, double correctPercentage, long millis_mean,
-			double millis_std, String name, URI avatar_uri)
+			double millis_std, String name)
 	{
-		super(id, name, true, avatar_uri);
+		super(id, name, true);
 		this.correctPercentage = correctPercentage;
 		this.millis_mean = millis_mean;
 		this.millis_std = millis_std;

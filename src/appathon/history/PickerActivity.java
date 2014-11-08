@@ -170,15 +170,22 @@ public class PickerActivity extends FragmentActivity
 				e.printStackTrace();
 			}
 
-			facebook_friends_username_imageuri
-					.put(graphUser.getName(), user_avatar_uri);
+			facebook_friends_username_imageuri.put(graphUser.getName(),
+					user_avatar_uri);
 		}
 
 		Intent intent = new Intent(this, MainActivity.class);
 
 		intent.putExtra("facebook_friends_username_imageuri",
 				facebook_friends_username_imageuri);
+		
 		startActivity(intent);
 		finish();
+	}
+
+	private void showAlert(String title, String message)
+	{
+		new AlertDialog.Builder(this).setTitle(title).setMessage(message)
+				.setPositiveButton("ok", null).show();
 	}
 }

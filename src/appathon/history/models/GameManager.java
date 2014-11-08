@@ -8,11 +8,13 @@ import java.util.Iterator;
 import java.util.Map;
 
 import android.R.integer;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Message;
+import android.util.Log;
 import android.widget.Toast;
 import appathon.history.MainActivity.MsgHandler;
 import appathon.history.R;
@@ -193,7 +195,7 @@ public class GameManager implements GameUpdateRunnableMethods
 	 * @param countryName
 	 * @param avatar
 	 */
-	private void drawMarker(Country country, URI avatar, int userId, int defense)
+	private void drawMarker(Country country, int avatar, int userId, int defense)
 	{
 		Message msg = new Message();
 		msg.what = MsgHandler.MSG_TYPE_DRAW_MARKER;
@@ -201,6 +203,7 @@ public class GameManager implements GameUpdateRunnableMethods
 		b.putString("countryName", country.getName());
 		b.putInt("defense", defense);
 		b.putInt("userId", userId);
+		b.putInt("avatar", avatar);
 		msg.setData(b);
 		mHandler.sendMessage(msg);
 	}
@@ -333,12 +336,11 @@ public class GameManager implements GameUpdateRunnableMethods
 		{
 			counter += 1;
 			Map.Entry pairs = (Map.Entry) it.next();
-			users.add(new AIUser(counter, (String) pairs.getKey(), (URI) pairs
-					.getValue()));
+			users.add(new AIUser(counter, (String) pairs.getKey()));
 		}
 
 		// user
-		users.add(new User(4, userName, false, user_avatar_uri));
+		users.add(new User(4, userName, false));
 	}
 
 	private void initailizeCountryToQuestionMap()
@@ -426,5 +428,4 @@ public class GameManager implements GameUpdateRunnableMethods
 	{
 		return users.get(userId).getBitmap();
 	}
-
 }

@@ -3,6 +3,7 @@ package appathon.history.models;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
@@ -12,6 +13,7 @@ import java.util.Random;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 import appathon.exception.NumOfCountriesException;
 import appathon.history.R;
 import appathon.history.models.qa.Question;
@@ -33,24 +35,44 @@ public class User implements Comparable<User>
 	private int id;
 	private int score;
 	private int ranking;
-	private URI avatar;
+	private int avatar;
 	private boolean questionSubmitted;
-	private URI small_avatar;
+	private int small_avatar;
 	private int numOfCountries;
 	private boolean isChecked;
 	protected long reactiveMillis;
 	protected String selectedAnswer;
 	private Bitmap bitmap;
 
-	public User(int id, String name, boolean isAI, URI avatar_uri)
+	public User(int id, String name, boolean isAI)
 	{
 		this.id = id;
 
 		this.name = name;
-		this.small_avatar = avatar_uri;
-		this.avatar = avatar_uri;
 
-		this.bitmap =
+		if (name.contains("Meng"))
+		{
+			this.small_avatar = R.drawable.avatar_meng_zhang;
+			this.avatar = R.drawable.avatar_meng_zhang;
+		} else if (name.contains("Liangchuan"))
+
+		{
+			this.small_avatar = R.drawable.avatar_meng_zhang;
+			this.avatar = R.drawable.avatar_meng_zhang;
+		} else if (name.contains("Yimai"))
+
+		{
+			this.small_avatar = R.drawable.avatar_meng_zhang;
+			this.avatar = R.drawable.avatar_meng_zhang;
+		} else if (name.contains("Chao"))
+		{
+			this.small_avatar = R.drawable.avatar_meng_zhang;
+			this.avatar = R.drawable.avatar_meng_zhang;
+		} else
+		{
+			this.small_avatar = R.drawable.avatar_meng_zhang;
+			this.avatar = R.drawable.avatar_meng_zhang;
+		}
 
 		this.isAI = isAI;
 		this.score = 0;
@@ -62,14 +84,22 @@ public class User implements Comparable<User>
 
 	private Bitmap loadBitmap(URI uri)
 	{
-		String url = uri.toString();
-/////////here
+		URL url = null;
+		try
+		{
+			url = uri.toURL();
+		} catch (MalformedURLException e1)
+		{
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
 		Bitmap bm = null;
 		InputStream is = null;
 		BufferedInputStream bis = null;
 		try
 		{
-			URLConnection conn = new URL(url).openConnection();
+			URLConnection conn = url.openConnection();
 			conn.connect();
 			is = conn.getInputStream();
 			bis = new BufferedInputStream(is, 8192);
@@ -100,6 +130,15 @@ public class User implements Comparable<User>
 				}
 			}
 		}
+
+		if (bm == null)
+		{
+			Log.e("null", "null");
+		} else
+		{
+			Log.e("not null", "not null");
+		}
+
 		return bm;
 	}
 
@@ -146,7 +185,7 @@ public class User implements Comparable<User>
 		this.bitmap = bitmap;
 	}
 
-	public URI getSmallAvatar()
+	public int getSmallAvatar()
 	{
 		return this.small_avatar;
 	}
@@ -196,7 +235,7 @@ public class User implements Comparable<User>
 		this.ranking = ranking;
 	}
 
-	public URI getAvatar()
+	public int getAvatar()
 	{
 		return avatar;
 	}
@@ -290,5 +329,4 @@ public class User implements Comparable<User>
 			return false;
 		return true;
 	}
-
 }

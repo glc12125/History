@@ -1,9 +1,8 @@
 package appathon.history;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.List;
 
 import org.json.JSONException;
@@ -37,7 +36,7 @@ public class LoginActivity extends FragmentActivity
 {
 	private UiLifecycleHelper uiHelper;
 
-	private List<GraphUser> selectedUsers;
+	private GraphUser user;
 
 	private Session.StatusCallback callback = new Session.StatusCallback()
 	{
@@ -92,37 +91,16 @@ public class LoginActivity extends FragmentActivity
 		showHashKey(this);
 
 		LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
-		loginButton.setReadPermissions("user_friends");
+		loginButton.setReadPermissions(Arrays.asList("public_profile",
+				"user_friends"));
 		loginButton
 				.setUserInfoChangedCallback(new LoginButton.UserInfoChangedCallback()
 				{
 					@Override
 					public void onUserInfoFetched(GraphUser graphUser)
 					{
-						JSONObject jsonUser = graphUser.getInnerJSONObject();
-
-						String user_avatar_uri_string = null;
-						try
-						{
-							user_avatar_uri_string = jsonUser
-									.getJSONObject("picture")
-									.getJSONObject("data").getString("url");
-						} catch (JSONException e)
-						{
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-
-						SharedPreferences facebook_userinfo = getSharedPreferences(
-								"facebook_userinfo", 0);
-						SharedPreferences.Editor facebook_userinfo_editor = facebook_userinfo
-								.edit();
-
-						facebook_userinfo_editor.putString("name",
-								graphUser.getName());
-						facebook_userinfo_editor.putString("user_avatar_uri_string",
-								user_avatar_uri_string);
-						facebook_userinfo_editor.commit();
+						LoginActivity.this.user = graphUser;
+						saveUserInfo();
 					}
 				});
 
@@ -168,5 +146,36 @@ public class LoginActivity extends FragmentActivity
 	private void onSessionStateChange(Session session, SessionState state,
 			Exception exception)
 	{
+	}
+
+	private void saveUserInfo()
+	{
+		// JSONObject jsonUser = this.user.getInnerJSONObject();
+		//
+		// String user_avatar_uri_string = null;
+		// try
+		// {
+		// user_avatar_uri_string = jsonUser.getJSONObject("picture")
+		// .getJSONObject("data").getString("url");
+		// } catch (JSONException e)
+		// {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
+
+		SharedPreferences facebook_userinfo = getSharedPreferences(
+				"facebook_userinfo", 0);
+		SharedPreferences.Editor facebook_userinfo_editor = facebook_userinfo
+				.edit();
+
+		// facebook_userinfo_editor.putString("name", this.user.getName());
+		// facebook_userinfo_editor.putString("user_avatar_uri_string",
+		// user_avatar_uri_string);
+		facebook_userinfo_editor.putString("name", "Chao");
+		facebook_userinfo_editor
+				.putString(
+						"user_avatar_uri_string",
+						"https://scontent-b-lhr.xx.fbcdn.net/hphotos-xpa1/v/t1.0-9/1378093_649030461803545_1085505525_n.jpg?oh=68ab2ee46369245fa5c17e6844bdbde5&oe=54DD4C1D");
+		facebook_userinfo_editor.commit();
 	}
 }
