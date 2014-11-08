@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.R.integer;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -194,6 +195,9 @@ public class MainActivity extends Activity
 
 		worldMap = ((MapFragment) getFragmentManager().findFragmentById(
 				R.id.map)).getMap();
+
+		// hide zoom
+		worldMap.getUiSettings().setZoomControlsEnabled(false);
 
 		// for customized info window
 		worldMap.setInfoWindowAdapter(new InfoWindowAdapter()
@@ -449,17 +453,26 @@ public class MainActivity extends Activity
 		mPopupWindowForRanking.showAtLocation(findViewById(R.id.map),
 				Gravity.TOP, 0, 0);
 
+		TextView rankingTextView = ((TextView) mPopupWindowForRanking
+				.getContentView().findViewById(R.id.rankingText));
+
+		int rankNo = manager.getRankNoOfPlayer();
+		rankingTextView.setText("You're No." + rankNo + " among your friends!");
+
 		ListView rankingListView = ((ListView) mPopupWindowForRanking
 				.getContentView().findViewById(R.id.rankingListView));
 
 		rankingListView.setAdapter(adapter);
 
-		mHandler.sendEmptyMessageDelayed(MsgHandler.MSG_TYPE_SAVE_SCREEN, 1000);
+		// hide zoom
+		worldMap.getUiSettings().setZoomControlsEnabled(false);
+
+		mHandler.sendEmptyMessageDelayed(MsgHandler.MSG_TYPE_SAVE_SCREEN, 3000);
 	}
 
 	public void test(View v)
 	{
-
+		mHandler.sendEmptyMessageDelayed(MsgHandler.MSG_TYPE_SHARE_RANKING, 0);
 	}
 
 	private void shareRankingToFacebook()
@@ -558,6 +571,9 @@ public class MainActivity extends Activity
 
 	public void displayAllAnswers(View v)
 	{
+		// show zoom
+		worldMap.getUiSettings().setZoomControlsEnabled(true);
+
 		mPopupWindowForQuestion.dismiss();
 		mPopupWindowForRanking.dismiss();
 		displayAllAnswers(manager.getQuestions());
