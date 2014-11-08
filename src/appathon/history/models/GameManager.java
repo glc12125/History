@@ -4,9 +4,12 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
+import android.R.integer;
 import android.content.Context;
-import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Message;
@@ -190,13 +193,12 @@ public class GameManager implements GameUpdateRunnableMethods
 	 * @param countryName
 	 * @param avatar
 	 */
-	private void drawMarker(Country country, int avatar, int userId, int defense)
+	private void drawMarker(Country country, URI avatar, int userId, int defense)
 	{
 		Message msg = new Message();
 		msg.what = MsgHandler.MSG_TYPE_DRAW_MARKER;
 		Bundle b = new Bundle();
 		b.putString("countryName", country.getName());
-		b.putInt("avatar", avatar);
 		b.putInt("defense", defense);
 		b.putInt("userId", userId);
 		msg.setData(b);
@@ -325,11 +327,18 @@ public class GameManager implements GameUpdateRunnableMethods
 			HashMap<String, URI> facebook_username_imageuri)
 	{
 		this.users = new ArrayList<User>();
-		
-		users.add(new AIUser(1));
-		users.add(new AIUser(2));
-		users.add(new AIUser(3));
-		users.add(new User(4, "Meng Zhang", false));
+		int counter = 0;
+		Iterator it = facebook_username_imageuri.entrySet().iterator();
+		while (it.hasNext() && (counter < 3))
+		{
+			counter += 1;
+			Map.Entry pairs = (Map.Entry) it.next();
+			users.add(new AIUser(counter, (String) pairs.getKey(), (URI) pairs
+					.getValue()));
+		}
+
+		// user
+		users.add(new User(4, userName, false, user_avatar_uri));
 	}
 
 	private void initailizeCountryToQuestionMap()
@@ -411,6 +420,11 @@ public class GameManager implements GameUpdateRunnableMethods
 	public void gameOver()
 	{
 		// Need to create Message to showRanking in mainActivity
+	}
+
+	public Bitmap getUserBitmap(int userId)
+	{
+		return users.get(userId).getBitmap();
 	}
 
 }

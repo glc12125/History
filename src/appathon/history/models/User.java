@@ -1,87 +1,152 @@
 package appathon.history.models;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import appathon.exception.NumOfCountriesException;
 import appathon.history.R;
 import appathon.history.models.qa.Question;
 
 public class User implements Comparable<User>
 {
-	protected static ArrayList<Integer> availableIcons = new ArrayList<Integer>(Arrays.asList(
-			R.drawable.zuck, R.drawable.ma, R.drawable.jobs, R.drawable.cameron,
-			R.drawable.obama, R.drawable.merkel, R.drawable.kat));
-	protected static ArrayList<String> availableNames = new ArrayList<String>(Arrays.asList(
-			"Mårk Zückerberg", "Jäck Mā", "Stéve Jöbs", "Dävid Cămeron",
-			"Baräck Øbama", "Angēla Mérkel", "Kam Kat"));
+	protected static ArrayList<Integer> availableIcons = new ArrayList<Integer>(
+			Arrays.asList(R.drawable.zuck, R.drawable.ma, R.drawable.jobs,
+					R.drawable.cameron, R.drawable.obama, R.drawable.merkel,
+					R.drawable.kat));
+	protected static ArrayList<String> availableNames = new ArrayList<String>(
+			Arrays.asList("M��rk Z��ckerberg", "J��ck M��", "St��ve J��bs",
+					"D��vid C��meron", "Bar��ck ��bama", "Ang��la M��rkel",
+					"Kam Kat"));
 	protected static Random randomGenerator = new Random();
-	
+
 	private String name;
 	private boolean isAI;
 	private int id;
 	private int score;
 	private int ranking;
-	private int avatar;
+	private URI avatar;
 	private boolean questionSubmitted;
-	private int small_avatar;
+	private URI small_avatar;
 	private int numOfCountries;
 	private boolean isChecked;
 	protected long reactiveMillis;
 	protected String selectedAnswer;
+	private Bitmap bitmap;
 
-	public User(int id, String name, boolean isAI)
+	public User(int id, String name, boolean isAI, URI avatar_uri)
 	{
 		this.id = id;
-		if(name != ""){
-			this.name = name;
-			this.small_avatar = R.drawable.player;
-		}
-		else{
-			int nameIndex = User.randomGenerator.nextInt(User.availableNames.size());
-			this.name = User.availableNames.get(nameIndex);
-			this.small_avatar = User.availableIcons.get(nameIndex);
-			User.availableNames.remove(nameIndex);
-			User.availableIcons.remove(nameIndex);
-		}
+
+		this.name = name;
+		this.small_avatar = avatar_uri;
+		this.avatar = avatar_uri;
+
+		this.bitmap =
+
 		this.isAI = isAI;
 		this.score = 0;
-		this.avatar = R.drawable.avatar_meng_zhang;
 		this.questionSubmitted = false;
 		this.numOfCountries = 0;
 		this.reactiveMillis = -1;
 		this.isChecked = false;
 	}
 
-	public long getReactiveMillis() {
+	private Bitmap loadBitmap(URI uri)
+	{
+		String url = uri.toString();
+/////////here
+		Bitmap bm = null;
+		InputStream is = null;
+		BufferedInputStream bis = null;
+		try
+		{
+			URLConnection conn = new URL(url).openConnection();
+			conn.connect();
+			is = conn.getInputStream();
+			bis = new BufferedInputStream(is, 8192);
+			bm = BitmapFactory.decodeStream(bis);
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			if (bis != null)
+			{
+				try
+				{
+					bis.close();
+				} catch (IOException e)
+				{
+					e.printStackTrace();
+				}
+			}
+			if (is != null)
+			{
+				try
+				{
+					is.close();
+				} catch (IOException e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+		return bm;
+	}
+
+	public long getReactiveMillis()
+	{
 		return this.reactiveMillis;
 	}
-	
-	public void setReactiveMillis(long ms) {
+
+	public void setReactiveMillis(long ms)
+	{
 		this.reactiveMillis = ms;
 	}
-	
-	public void incrementNumOfCountriesByOne() {
+
+	public void incrementNumOfCountriesByOne()
+	{
 		this.numOfCountries++;
 	}
-	
-	public void decreaseNumOfCountriesByOne() throws NumOfCountriesException {
-		if(numOfCountries == 0) 
-			throw new NumOfCountriesException("The number of countries of one user should bigger than zero");
+
+	public void decreaseNumOfCountriesByOne() throws NumOfCountriesException
+	{
+		if (numOfCountries == 0)
+			throw new NumOfCountriesException(
+					"The number of countries of one user should bigger than zero");
 		this.numOfCountries--;
 	}
-	
-	public int getNumOfQuestions() {
+
+	public int getNumOfQuestions()
+	{
 		return this.numOfCountries;
 	}
-	
+
 	public String getName()
 	{
 		return name;
 	}
 
-	public int getSmallAvatar()
+	public Bitmap getBitmap()
+	{
+		return bitmap;
+	}
+
+	public void setBitmap(Bitmap bitmap)
+	{
+		this.bitmap = bitmap;
+	}
+
+	public URI getSmallAvatar()
 	{
 		return this.small_avatar;
 	}
@@ -101,14 +166,16 @@ public class User implements Comparable<User>
 		this.isAI = isAI;
 	}
 
-	public boolean isChecked() {
+	public boolean isChecked()
+	{
 		return isChecked;
 	}
-	
-	public void checked() {
+
+	public void checked()
+	{
 		isChecked = true;
 	}
-	
+
 	public int getScore()
 	{
 		return score;
@@ -129,12 +196,13 @@ public class User implements Comparable<User>
 		this.ranking = ranking;
 	}
 
-	public int getAvatar()
+	public URI getAvatar()
 	{
 		return avatar;
 	}
-	
-	public int getId(){
+
+	public int getId()
+	{
 		return id;
 	}
 
@@ -173,7 +241,7 @@ public class User implements Comparable<User>
 
 	public void restartQuestionSubmittedStatus()
 	{
-		isChecked = false;	
+		isChecked = false;
 		questionSubmitted = false;
 	}
 
