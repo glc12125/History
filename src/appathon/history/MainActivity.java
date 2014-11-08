@@ -1,13 +1,17 @@
 package appathon.history;
 
 import java.lang.ref.WeakReference;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -22,13 +26,13 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import appathon.animation.MarkerAnimationCountDownTimer;
 import appathon.history.models.Country;
 import appathon.history.models.GameManager;
 import appathon.history.models.User;
@@ -50,8 +54,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class MainActivity extends Activity
 {
 	private MsgHandler mHandler = null;
-	private int millisRoundTime = 5000;
-	public static final String userName = "Player-Chosen Name";
+
 	GoogleMap worldMap;
 	public LocationGetter lg;
 	Context context;
@@ -95,11 +98,13 @@ public class MainActivity extends Activity
 				break;
 			case MsgHandler.MSG_TYPE_DRAW_MARKER:
 				b = msg.getData();
-				int avatar = b.getInt("avatar");
 				int defense = b.getInt("defense");
+				int userId = b.getInt("userId");
+				int avatar = b.getInt("avatar");
 				countryName = b.getString("countryName");
 				Country country = new Country(countryName);
-				drawMarker(country, avatar, defense);
+				drawMarker(country, userId, defense, avatar);
+				blinkMarker(marker_map.get(country));
 				break;
 			case MsgHandler.MSG_TYPE_REMOVE_MARKER:
 				b = msg.getData();
@@ -117,10 +122,29 @@ public class MainActivity extends Activity
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
-		getActionBar().hide();
-		setContentView(R.layout.activity_main); // be sure you call this AFTER
-		// requestFeature
+		// get facebook friends
+		@SuppressWarnings("unchecked")
+		HashMap<String, URI> facebook_friends_username_imageuri = new HashMap<String, URI>(
+				(Map<String, URI>) getIntent().getExtras().get(
+						"facebook_friends_username_imageuri"));
+
+		// get facebook user
+		SharedPreferences facebook_userinfo = getSharedPreferences(
+				"facebook_userinfo", 0);
+
+		String userName = facebook_userinfo.getString("name", null);
+		URI user_avatar_uri = null;
+		try
+		{
+			user_avatar_uri = new URI(facebook_userinfo.getString(
+					"user_avatar_uri_string", null));
+		} catch (URISyntaxException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		setContentView(R.layout.activity_main);
 
 		context = this.getApplicationContext();
 
@@ -169,7 +193,8 @@ public class MainActivity extends Activity
 		mPopupWindowForQuestion.setOutsideTouchable(false);
 
 		mHandler = new MsgHandler(this);
-		manager = new GameManager(context, mHandler);
+		manager = new GameManager(context, mHandler, userName, user_avatar_uri,
+				facebook_friends_username_imageuri);
 		// pup up 500ms later
 		mHandler.sendEmptyMessageDelayed(MsgHandler.MSG_TYPE_SHOW_QUESTION, 500);
 		// set popup for ranking
@@ -280,7 +305,8 @@ public class MainActivity extends Activity
 		return drawMarker(ll);
 	}
 
-	public Marker drawMarker(Country country, int avatar_id, int defense)
+	public Marker drawMarker(Country country, int userId, int defense,
+			int avatar)
 	{
 		LatLng ll = country.getLatLng();
 		if (worldMap == null)
@@ -293,15 +319,15 @@ public class MainActivity extends Activity
 		{
 			marker_map.get(country).setIcon(
 					BitmapDescriptorFactory
-							.fromBitmap(generateCustomizedMarkerBitmap(
-									avatar_id, defense)));
+							.fromBitmap(generateCustomizedMarkerBitmap(userId,
+									avatar, defense)));
 			temp_marker = marker_map.get(country);
 		} else
 		{
 			MarkerOptions marker = new MarkerOptions().position(ll).icon(
 					BitmapDescriptorFactory
-							.fromBitmap(generateCustomizedMarkerBitmap(
-									avatar_id, defense)));
+							.fromBitmap(generateCustomizedMarkerBitmap(userId,
+									avatar, defense)));
 			temp_marker = worldMap.addMarker(marker);
 			marker_map.put(country, temp_marker);
 		}
@@ -309,7 +335,8 @@ public class MainActivity extends Activity
 		return temp_marker;
 	}
 
-	private Bitmap generateCustomizedMarkerBitmap(int avatar_id, int defense)
+	private Bitmap generateCustomizedMarkerBitmap(int userId, int avatar,
+			int defense)
 	{
 		Bitmap.Config conf = Bitmap.Config.ARGB_8888;
 		Bitmap bmp = Bitmap.createBitmap(110, 130, conf);
@@ -317,24 +344,24 @@ public class MainActivity extends Activity
 
 		Paint paint = new Paint();
 		paint.setAntiAlias(true);
-		canvas.drawBitmap(
-				BitmapFactory.decodeResource(getResources(), avatar_id), 0, 30,
-				paint);
 
-		switch (avatar_id)
+		canvas.drawBitmap(BitmapFactory.decodeResource(getResources(), avatar),
+				0, 30, paint);
+
+		switch (userId)
 		{
-		// case R.drawable.avatar_chao_gao_small:
-		// paint.setARGB(128, 0, 0, 255);
-		// break;
-		// case R.drawable.avatar_liang_chuan_small:
-		// paint.setARGB(128, 0, 255, 0);
-		// break;
-		// case R.drawable.avatar_meng_zhang_small:
-		// paint.setARGB(128, 255, 0, 0);
-		// break;
-		// case R.drawable.avatar_yi_mai_small:
-		// paint.setARGB(128, 255, 255, 51);
-		// break;
+		case 1:
+			paint.setARGB(128, 255, 255, 51);
+			break;
+		case 2:
+			paint.setARGB(128, 0, 255, 0);
+			break;
+		case 3:
+			paint.setARGB(128, 255, 0, 0);
+			break;
+		case 4:
+			paint.setARGB(128, 0, 0, 255);
+			break;
 
 		default:
 			paint.setARGB(128, 0, 0, 255);
@@ -373,8 +400,14 @@ public class MainActivity extends Activity
 		SimpleAdapter adapter = new SimpleAdapter(this,
 				convertUsersToMap(users),
 				R.layout.activity_main_popup_ranking_list_item, new String[] {
-						"ranking", "avatar", "name", "score" }, new int[] {
-						R.id.ranking, R.id.avatar, R.id.name, R.id.score });
+						"ranking", "avatar", "name", "score", "flag1", "flag2",
+						"flag3", "flag4", "flag5", "flag6", "flag7", "flag8",
+						"flag9", "flag10", "flag11", "flag12", "flag13",
+						"flag14" }, new int[] { R.id.ranking, R.id.avatar,
+						R.id.name, R.id.score, R.id.flag1, R.id.flag2,
+						R.id.flag3, R.id.flag4, R.id.flag5, R.id.flag6,
+						R.id.flag7, R.id.flag8, R.id.flag9, R.id.flag10,
+						R.id.flag11, R.id.flag12, R.id.flag13, R.id.flag14 });
 
 		mPopupWindowForRanking.showAtLocation(findViewById(R.id.map),
 				Gravity.TOP, 0, 0);
@@ -398,6 +431,15 @@ public class MainActivity extends Activity
 			map.put("avatar", user.getSmallAvatar());
 			map.put("name", user.getName());
 			map.put("score", user.getScore());
+			int numCountries = user.getNumOfCountries();
+			for (int cp = 0; cp < 14; cp++)
+			{
+				if (cp < numCountries)
+					map.put("flag" + (cp + 1), user.getCountries().get(cp)
+							.getFlag());
+				else
+					map.put("flag" + (cp + 1), null);
+			}
 			userList.add(map);
 		}
 
@@ -460,7 +502,7 @@ public class MainActivity extends Activity
 						.getItemAtPosition(position);
 				String yourAnswer = map.get("option_string");
 
-				manager.updateUser(userName, yourAnswer);
+				manager.updateUser(yourAnswer);
 
 				mPopupWindowForQuestion.dismiss();
 			}
@@ -488,5 +530,18 @@ public class MainActivity extends Activity
 		}
 
 		return optionList;
+	}
+
+	private void blinkMarker(Marker m)
+	{
+		MarkerAnimationCountDownTimer macdt = new MarkerAnimationCountDownTimer(
+				1000, 100, m, 4);
+		macdt.start();
+	}
+
+	private void showAlert(String title, String message)
+	{
+		new AlertDialog.Builder(this).setTitle(title).setMessage(message)
+				.setPositiveButton("ok", null).show();
 	}
 }

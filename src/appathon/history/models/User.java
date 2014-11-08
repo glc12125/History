@@ -1,29 +1,35 @@
 package appathon.history.models;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Log;
 import appathon.exception.NumOfCountriesException;
 import appathon.history.R;
 import appathon.history.models.qa.Question;
 
 public class User implements Comparable<User>
 {
-	protected static ArrayList<Integer> availableIcons = new ArrayList<Integer>(Arrays.asList(
-			R.drawable.astrologer, R.drawable.baby11, R.drawable.baby126,
-			R.drawable.bicyclist, R.drawable.bookkeeper, R.drawable.business61,
-			R.drawable.cool4, R.drawable.criminal, R.drawable.dude1,
-			R.drawable.electrical, R.drawable.genius1, R.drawable.graduate6,
-			R.drawable.karate2, R.drawable.magician3, R.drawable.motorcyclist1,
-			R.drawable.palace, R.drawable.pilot, R.drawable.scientist,
-			R.drawable.speaker48, R.drawable.spy1, R.drawable.stockbroker));
-	protected static ArrayList<String> availableNames = new ArrayList<String>(Arrays.asList(
-			"James", "John", "Robert", "Michael", "William", "David", "Richard", "Charles",
-			"Joseph", "Thomas", "Mark", "Mary", "Patricia", "Linda", "Barbara", "Elizabeth",
-			"Jennifer", "Maria", "Susan", "Margaret", "Dorothy", "Lisa", "Helen", "George"));
+	protected static ArrayList<Integer> availableIcons = new ArrayList<Integer>(
+			Arrays.asList(R.drawable.zuck, R.drawable.ma, R.drawable.jobs,
+					R.drawable.cameron, R.drawable.obama, R.drawable.merkel,
+					R.drawable.kat));
+	protected static ArrayList<String> availableNames = new ArrayList<String>(
+			Arrays.asList("M��rk Z��ckerberg", "J��ck M��", "St��ve J��bs",
+					"D��vid C��meron", "Bar��ck ��bama", "Ang��la M��rkel",
+					"Kam Kat"));
 	protected static Random randomGenerator = new Random();
-	
+
 	private String name;
 	private boolean isAI;
 	private int id;
@@ -32,60 +38,153 @@ public class User implements Comparable<User>
 	private int avatar;
 	private boolean questionSubmitted;
 	private int small_avatar;
-	private int numOfCountries;
 	private boolean isChecked;
+	private ArrayList<Country> controlledCountries;
 	protected long reactiveMillis;
 	protected String selectedAnswer;
+	private Bitmap bitmap;
 
 	public User(int id, String name, boolean isAI)
 	{
 		this.id = id;
-		if(name != ""){
-			this.name = name;
-			User.availableNames.remove(name);
+
+		this.name = name;
+
+		if (name.contains("Meng"))
+		{
+			this.small_avatar = R.drawable.avatar_meng_zhang;
+			this.avatar = R.drawable.avatar_meng_zhang;
+		} else if (name.contains("Liangchuan"))
+
+		{
+			this.small_avatar = R.drawable.liangchuan;
+			this.avatar = R.drawable.liangchuan;
+		} else if (name.contains("Yimai"))
+
+		{
+			this.small_avatar = R.drawable.yimai;
+			this.avatar = R.drawable.yimai;
+		} else if (name.contains("Chao"))
+		{
+			this.small_avatar = R.drawable.chao;
+			this.avatar = R.drawable.chao;
+		} else
+		{
+			this.small_avatar = R.drawable.meng;
+			this.avatar = R.drawable.meng;
 		}
-		else{
-			int nameIndex = User.randomGenerator.nextInt(User.availableNames.size());
-			this.name = User.availableNames.get(nameIndex);
-			User.availableNames.remove(nameIndex);
-		}
+
 		this.isAI = isAI;
 		this.score = 0;
-		this.avatar = R.drawable.avatar_meng_zhang;
 		this.questionSubmitted = false;
-		this.numOfCountries = 0;
+		this.controlledCountries = new ArrayList<Country>();
 		this.reactiveMillis = -1;
 		this.isChecked = false;
-		int iconIndex = User.randomGenerator.nextInt(User.availableIcons.size());
-		this.small_avatar = User.availableIcons.get(iconIndex);
-		User.availableIcons.remove(iconIndex);
 	}
 
-	public long getReactiveMillis() {
+	private Bitmap loadBitmap(URI uri)
+	{
+		URL url = null;
+		try
+		{
+			url = uri.toURL();
+		} catch (MalformedURLException e1)
+		{
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+		Bitmap bm = null;
+		InputStream is = null;
+		BufferedInputStream bis = null;
+		try
+		{
+			URLConnection conn = url.openConnection();
+			conn.connect();
+			is = conn.getInputStream();
+			bis = new BufferedInputStream(is, 8192);
+			bm = BitmapFactory.decodeStream(bis);
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			if (bis != null)
+			{
+				try
+				{
+					bis.close();
+				} catch (IOException e)
+				{
+					e.printStackTrace();
+				}
+			}
+			if (is != null)
+			{
+				try
+				{
+					is.close();
+				} catch (IOException e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+
+		if (bm == null)
+		{
+			Log.e("null", "null");
+		} else
+		{
+			Log.e("not null", "not null");
+		}
+
+		return bm;
+	}
+
+	public long getReactiveMillis()
+	{
 		return this.reactiveMillis;
 	}
-	
-	public void setReactiveMillis(long ms) {
+
+	public void setReactiveMillis(long ms)
+	{
 		this.reactiveMillis = ms;
 	}
-	
-	public void incrementNumOfCountriesByOne() {
-		this.numOfCountries++;
+
+	public void gainCountry(Country country)
+	{
+		this.controlledCountries.add(country);
 	}
-	
-	public void decreaseNumOfCountriesByOne() throws NumOfCountriesException {
-		if(numOfCountries == 0) 
-			throw new NumOfCountriesException("The number of countries of one user should bigger than zero");
-		this.numOfCountries--;
+
+	public void loseCountry(Country country)
+	{
+		this.controlledCountries.remove(country);
 	}
-	
-	public int getNumOfQuestions() {
-		return this.numOfCountries;
+
+	public int getNumOfCountries()
+	{
+		return this.controlledCountries.size();
 	}
-	
+
+	public ArrayList<Country> getCountries()
+	{
+		return this.controlledCountries;
+	}
+
 	public String getName()
 	{
 		return name;
+	}
+
+	public Bitmap getBitmap()
+	{
+		return bitmap;
+	}
+
+	public void setBitmap(Bitmap bitmap)
+	{
+		this.bitmap = bitmap;
 	}
 
 	public int getSmallAvatar()
@@ -108,14 +207,16 @@ public class User implements Comparable<User>
 		this.isAI = isAI;
 	}
 
-	public boolean isChecked() {
+	public boolean isChecked()
+	{
 		return isChecked;
 	}
-	
-	public void checked() {
+
+	public void checked()
+	{
 		isChecked = true;
 	}
-	
+
 	public int getScore()
 	{
 		return score;
@@ -139,6 +240,11 @@ public class User implements Comparable<User>
 	public int getAvatar()
 	{
 		return avatar;
+	}
+
+	public int getId()
+	{
+		return id;
 	}
 
 	public boolean isQuestionSubmitted()
@@ -176,7 +282,7 @@ public class User implements Comparable<User>
 
 	public void restartQuestionSubmittedStatus()
 	{
-		isChecked = false;	
+		isChecked = false;
 		questionSubmitted = false;
 	}
 
@@ -225,5 +331,4 @@ public class User implements Comparable<User>
 			return false;
 		return true;
 	}
-
 }
