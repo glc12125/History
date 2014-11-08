@@ -87,6 +87,8 @@ public class MainActivity extends Activity
 		public static final int MSG_TYPE_DRAW_MARKER = 2;
 		public static final int MSG_TYPE_REMOVE_MARKER = 3;
 		public static final int MSG_TYPE_SHOW_RANKING = 4;
+		public static final int MSG_TYPE_SAVE_SCREEN = 5;
+		public static final int MSG_TYPE_SHARE_RANKING = 6;
 
 		MsgHandler(MainActivity aActivity)
 		{
@@ -126,6 +128,12 @@ public class MainActivity extends Activity
 				break;
 			case MsgHandler.MSG_TYPE_SHOW_RANKING:
 				showRanking(null);
+				break;
+			case MsgHandler.MSG_TYPE_SAVE_SCREEN:
+				saveScreen();
+				break;
+			case MsgHandler.MSG_TYPE_SHARE_RANKING:
+				shareRankingToFacebook();
 				break;
 			default:
 				break;
@@ -419,48 +427,6 @@ public class MainActivity extends Activity
 
 	public void showRanking(View v)
 	{
-		Process sh;
-		try
-		{
-			sh = Runtime.getRuntime().exec("su", null, null);
-
-			OutputStream os = sh.getOutputStream();
-			os.write(("/system/bin/screencap -p " + "/sdcard/img.png")
-					.getBytes("ASCII"));
-			os.flush();
-
-			os.close();
-
-			sh.waitFor();
-
-		} catch (IOException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		String filePath = Environment.getExternalStorageDirectory()
-				+ File.separator + "img.png";
-		ArrayList<File> photoFiles = new ArrayList<File>();
-		photoFiles.add(new File(filePath));
-
-		if (FacebookDialog.canPresentShareDialog(this,
-				FacebookDialog.ShareDialogFeature.PHOTOS))
-		{
-			FacebookDialog shareDialog = new FacebookDialog.PhotoShareDialogBuilder(
-					this).addPhotoFiles(photoFiles).build();
-			uiHelper.trackPendingDialogCall(shareDialog.present());
-		}
-
-		if (true)
-		{
-			return;
-		}
-		// ////////////
 		manager.stopCountDown();
 		backgroundMusicPlayer.stop();
 		mPopupWindowForQuestion.dismiss();
@@ -487,6 +453,49 @@ public class MainActivity extends Activity
 				.getContentView().findViewById(R.id.rankingListView));
 
 		rankingListView.setAdapter(adapter);
+	}
+
+	private void shareRankingToFacebook()
+	{
+		String filePath = Environment.getExternalStorageDirectory()
+				+ File.separator + "img.png";
+		ArrayList<File> photoFiles = new ArrayList<File>();
+		photoFiles.add(new File(filePath));
+
+		if (FacebookDialog.canPresentShareDialog(this,
+				FacebookDialog.ShareDialogFeature.PHOTOS))
+		{
+			FacebookDialog shareDialog = new FacebookDialog.PhotoShareDialogBuilder(
+					this).addPhotoFiles(photoFiles).build();
+			uiHelper.trackPendingDialogCall(shareDialog.present());
+		}
+	}
+
+	private void saveScreen()
+	{
+		Process sh;
+		try
+		{
+			sh = Runtime.getRuntime().exec("su", null, null);
+
+			OutputStream os = sh.getOutputStream();
+			os.write(("/system/bin/screencap -p " + "/sdcard/img.png")
+					.getBytes("ASCII"));
+			os.flush();
+
+			os.close();
+
+			sh.waitFor();
+
+		} catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private List<Map<String, Object>> convertUsersToMap(ArrayList<User> users)
