@@ -15,7 +15,7 @@ import android.os.Message;
 import android.widget.Toast;
 import appathon.history.MainActivity.MsgHandler;
 import appathon.history.R;
-import appathon.history.models.GameUpdateRunnable.GameUpdateRunnableMethods;
+import appathon.history.models.GameUpdateTimer.GameUpdateRunnableMethods;
 import appathon.history.models.qa.Question;
 import appathon.history.models.qa.QuestionGenerator;
 
@@ -25,7 +25,7 @@ public class GameManager implements GameUpdateRunnableMethods
 	 * Field containing the Thread this task is running on.
 	 */
 	private Thread currentThread;
-	private GameUpdateRunnable gameUpdateRunnable;
+	private GameUpdateTimer gameUpdateRunnable;
 
 	private QuestionGenerator questionGenerator;
 	private ArrayList<Question> questions;
@@ -52,30 +52,25 @@ public class GameManager implements GameUpdateRunnableMethods
 		questions = questionGenerator.getQuestions(questionNum);
 		currentQuestionIndex = 0;
 		initailizeCountryToQuestionMap();
-		gameUpdateRunnable = new GameUpdateRunnable(this);
+		gameUpdateRunnable = new GameUpdateTimer(this);
 		restartUsers();
 	}
 
-	public GameUpdateRunnable getGameUpdateRunnable()
+	public GameUpdateTimer getGameUpdateRunnable()
 	{
 		return gameUpdateRunnable;
 	}
 
 	public void startCountDown()
 	{
-		if (gameUpdateRunnable != null)
-		{
-			Thread t = new Thread(gameUpdateRunnable);
-			currentThread = t;
-			t.start();
-		}
+		gameUpdateRunnable.start();
 	}
 
 	public void stopCountDown()
 	{
 		if (gameUpdateRunnable != null)
 		{
-			gameUpdateRunnable.stop();
+			gameUpdateRunnable.cancel();
 		}
 	}
 

@@ -107,7 +107,9 @@ public class MainActivity extends Activity
 			case MsgHandler.MSG_TYPE_SHOW_QUESTION:
 				b = msg.getData();
 				Question question = manager.getCurrentQuestion();
-				// mAct.showQuestion(manager.getCurrentQuestion());
+				if(question == null){
+					question = manager.getCurrentQuestion();
+				}
 				mAct.showQuestion(question);
 				break;
 			case MsgHandler.MSG_TYPE_DRAW_MARKER:
