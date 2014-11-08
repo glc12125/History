@@ -3,35 +3,41 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content" >
 
-    <TextView
-        android:id="@+id/rankingText"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp"
-        android:fontFamily="Arial"
-        android:gravity="center"
-        android:paddingLeft="10dp"
-        android:text="Another TextView"
-        android:textColor="#000000"
-        android:textSize="23sp"
-        android:textStyle="bold"
-        android:typeface="serif" />
+    <RelativeLayout
+        android:id="@+id/rankingTitleLine"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
 
-    <ImageButton
-        android:id="@+id/shareButton"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_alignParentRight="true"
-        android:layout_toLeftOf="@+id/rankingText"
-        android:background="@drawable/share_button"
-        android:onClick="shareRankingToFacebook" />
+        <TextView
+            android:id="@+id/rankingText"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:fontFamily="Arial"
+            android:gravity="center"
+            android:paddingLeft="10dp"
+            android:textColor="#000000"
+            android:textSize="23sp"
+            android:textStyle="bold"
+            android:typeface="serif" />
+
+        <ImageButton
+            android:id="@+id/shareButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentRight="true"
+            android:layout_toRightOf="@+id/rankingText"
+            android:background="@drawable/share_button"
+            android:onClick="shareRankingToFacebook" />
+    </RelativeLayout>
 
     <ListView
         android:id="@+id/rankingListView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/rankingText"
+        android:layout_below="@+id/rankingTitleLine"
         android:background="#80FFFFFF" >
     </ListView>
 
