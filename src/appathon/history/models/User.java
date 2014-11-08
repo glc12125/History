@@ -44,8 +44,8 @@ public class User implements Comparable<User>
 
 		if (name.contains("Meng"))
 		{
-			this.small_avatar = R.drawable.avatar_meng_zhang;
-			this.avatar = R.drawable.avatar_meng_zhang;
+			this.small_avatar = R.drawable.meng;
+			this.avatar = R.drawable.meng;
 		} else if (name.contains("Liangchuan"))
 
 		{
