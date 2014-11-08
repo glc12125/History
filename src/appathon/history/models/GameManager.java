@@ -44,7 +44,7 @@ public class GameManager implements GameUpdateRunnableMethods
 		this.context = context;
 		this.mHandler = msgH;
 		isFinished = false;
-		questionNum = 10;
+		questionNum = 3;
 
 		initailizeUsers(userName, user_avatar_uri, facebook_username_imageuri);
 

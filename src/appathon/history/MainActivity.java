@@ -107,7 +107,8 @@ public class MainActivity extends Activity
 			case MsgHandler.MSG_TYPE_SHOW_QUESTION:
 				b = msg.getData();
 				Question question = manager.getCurrentQuestion();
-				if(question == null){
+				if (question == null)
+				{
 					question = manager.getCurrentQuestion();
 				}
 				mAct.showQuestion(question);
@@ -129,7 +130,7 @@ public class MainActivity extends Activity
 				removeMarker(c);
 				break;
 			case MsgHandler.MSG_TYPE_SHOW_RANKING:
-				showRanking(null);
+				showRanking();
 				break;
 			case MsgHandler.MSG_TYPE_SAVE_SCREEN:
 				saveScreen();
@@ -427,12 +428,11 @@ public class MainActivity extends Activity
 						.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
 	}
 
-	public void showRanking(View v)
+	public void showRanking()
 	{
 		manager.stopCountDown();
 		backgroundMusicPlayer.stop();
 		mPopupWindowForQuestion.dismiss();
-		v.setVisibility(View.GONE);
 
 		manager.rankUsers();
 		ArrayList<User> users = manager.getUsers();
@@ -455,6 +455,13 @@ public class MainActivity extends Activity
 				.getContentView().findViewById(R.id.rankingListView));
 
 		rankingListView.setAdapter(adapter);
+
+		mHandler.sendEmptyMessageDelayed(MsgHandler.MSG_TYPE_SAVE_SCREEN, 1000);
+	}
+
+	public void test(View v)
+	{
+
 	}
 
 	private void shareRankingToFacebook()

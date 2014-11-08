@@ -18,7 +18,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:background="#80FFFFFF"
-        android:onClick="showRanking"
-        android:text="Show Ranking" />
+        android:onClick="test"
+        android:text="Test" />
 
 </RelativeLayout>
