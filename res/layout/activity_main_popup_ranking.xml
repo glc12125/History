@@ -18,6 +18,15 @@
         android:textStyle="bold"
         android:typeface="serif" />
 
+    <ImageButton
+        android:id="@+id/shareButton"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentRight="true"
+        android:layout_toLeftOf="@+id/rankingText"
+        android:background="@drawable/share_button"
+        android:onClick="shareRankingToFacebook" />
+
     <ListView
         android:id="@+id/rankingListView"
         android:layout_width="match_parent"
@@ -25,16 +34,6 @@
         android:layout_below="@+id/rankingText"
         android:background="#80FFFFFF" >
     </ListView>
-
-    <ImageButton
-        android:id="@+id/shareButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/rankingListView"
-        android:background="@drawable/login_with_facebook"
-        android:onClick="displayAllAnswers"
-        android:text="Review Answers" />
 
     <Button
         android:id="@+id/displayAllAnswersButton"
