@@ -12,13 +12,13 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.Signature;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
-import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -38,6 +38,7 @@ import com.google.android.gms.maps.MapFragment;
 public class LoginActivity extends FragmentActivity
 {
 	private UiLifecycleHelper uiHelper;
+	public static final Uri FRIEND_PICKER = Uri.parse("picker://friend");
 
 	private Session.StatusCallback callback = new Session.StatusCallback()
 	{
@@ -124,7 +125,9 @@ public class LoginActivity extends FragmentActivity
 	{
 		super.onActivityResult(requestCode, resultCode, data);
 		uiHelper.onActivityResult(requestCode, resultCode, data, dialogCallback);
-		pickFriends();
+
+		startActivity(new Intent(this, PickerActivity.class));
+		// pickFriends();
 	}
 
 	private void pickFriends()
