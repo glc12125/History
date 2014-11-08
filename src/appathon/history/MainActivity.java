@@ -135,7 +135,7 @@ public class MainActivity extends Activity
 				saveScreen();
 				break;
 			case MsgHandler.MSG_TYPE_SHARE_RANKING:
-				shareRankingToFacebook();
+				shareRankingToFacebook(null);
 				break;
 			default:
 				break;
@@ -475,7 +475,7 @@ public class MainActivity extends Activity
 		mHandler.sendEmptyMessageDelayed(MsgHandler.MSG_TYPE_SHARE_RANKING, 0);
 	}
 
-	private void shareRankingToFacebook()
+	public void shareRankingToFacebook(View v)
 	{
 		String filePath = Environment.getExternalStorageDirectory()
 				+ File.separator + "img.png";
@@ -493,7 +493,7 @@ public class MainActivity extends Activity
 
 	private void saveScreen()
 	{
-		int height_n = 50;
+		int height_n = 100;
 		Process sh;
 		try
 		{
@@ -505,7 +505,7 @@ public class MainActivity extends Activity
 			os.flush();
 
 			os.close();
-			
+
 			sh.waitFor();
 
 		} catch (IOException e)
@@ -517,29 +517,32 @@ public class MainActivity extends Activity
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		String filePath = Environment.getExternalStorageDirectory()
 				+ File.separator + "img.png";
-		
+
 		BitmapFactory.Options options = new BitmapFactory.Options();
 		options.inPreferredConfig = Bitmap.Config.ARGB_8888;
 		Bitmap bmp = BitmapFactory.decodeFile(filePath, options);
-		Bitmap resizedbitmap1=Bitmap.createBitmap(bmp, 0, height_n, bmp.getWidth(), bmp.getHeight() * 2 / 3);
-		
+		Bitmap resizedbitmap1 = Bitmap.createBitmap(bmp, 0, height_n,
+				bmp.getWidth(), bmp.getHeight() * 2 / 3);
+
 		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 		resizedbitmap1.compress(Bitmap.CompressFormat.PNG, 80, bytes);
 		File f = new File(filePath);
 		FileOutputStream fo = null;
-		try {
+		try
+		{
 			f.createNewFile();
 			fo = new FileOutputStream(f);
 			fo.write(bytes.toByteArray());
 			fo.close();
-		} catch (IOException e) {
+		} catch (IOException e)
+		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} 
-		
+		}
+
 	}
 
 	private List<Map<String, Object>> convertUsersToMap(ArrayList<User> users)

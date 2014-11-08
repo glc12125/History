@@ -26,8 +26,8 @@
         <ImageButton
             android:id="@+id/shareButton"
             android:layout_width="40dp"
-            android:layout_height="50dp"
-            android:layout_marginLeft="10dp"
+            android:layout_height="45dp"
+            android:layout_marginLeft="5dp"
             android:layout_toRightOf="@+id/rankingText"
             android:background="@drawable/share_button"
             android:onClick="shareRankingToFacebook" />
@@ -49,6 +49,8 @@
         android:layout_centerHorizontal="true"
         android:background="#80FFFFFF"
         android:onClick="displayAllAnswers"
-        android:text="Review Answers" />
+        android:text="Review Answers"
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
 </RelativeLayout>
