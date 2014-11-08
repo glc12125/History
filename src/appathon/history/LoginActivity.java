@@ -26,15 +26,28 @@ public class LoginActivity extends Activity
 		ImageView appTitleImageView = (ImageView) findViewById(R.id.app_title);
 		appTitleImageView.setImageResource(R.drawable.app_title);
 
-		GoogleMap mapForLogin = ((MapFragment) getFragmentManager().findFragmentById(
-				R.id.mapForLogin)).getMap();
+		GoogleMap mapForLogin = ((MapFragment) getFragmentManager()
+				.findFragmentById(R.id.mapForLogin)).getMap();
 
 		mapForLogin.getUiSettings().setZoomControlsEnabled(false);
 	}
 
 	public void login(View v)
 	{
-		startActivity(new Intent(this, MainActivity.class));
+		 startActivity(new Intent(this, MainActivity.class));
+
+//		Intent intent = new Intent();
+//		intent.setAction(Intent.ACTION_SEND);
+//		intent.setType("image/*");
+//
+//		intent.putExtra(Intent.EXTRA_TEXT, "eample");
+//		intent.putExtra(Intent.EXTRA_TITLE, "example");
+//		intent.putExtra(Intent.EXTRA_SUBJECT, "example");
+//		// intent.putExtra(Intent.EXTRA_STREAM, R.drawable.avatar_meng_zhang);
+//
+//		Intent openInChooser = new Intent(intent);
+//		openInChooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, intent);
+//		startActivity(openInChooser);
 	}
 
 	@Override
