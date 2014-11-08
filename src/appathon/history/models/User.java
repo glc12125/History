@@ -20,10 +20,6 @@ import appathon.history.models.qa.Question;
 
 public class User implements Comparable<User>
 {
-	protected static ArrayList<String> availableNames = new ArrayList<String>(
-			Arrays.asList("M��rk Z��ckerberg", "J��ck M��", "St��ve J��bs",
-					"D��vid C��meron", "Bar��ck ��bama", "Ang��la M��rkel",
-					"Kam Kat"));
 	protected static Random randomGenerator = new Random();
 
 	private String name;
