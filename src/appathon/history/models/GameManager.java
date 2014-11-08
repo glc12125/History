@@ -176,8 +176,8 @@ public class GameManager implements GameUpdateRunnableMethods
 		{
 			if (cgi.getDefense() == 1)
 			{
-				cgi.setUser(user);
 				cgi.getUser().loseCountry(target_country);
+				cgi.setUser(user);
 				user.gainCountry(target_country);
 			} else
 				cgi.setDefense(cgi.getDefense() - 1);
