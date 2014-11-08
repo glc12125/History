@@ -422,7 +422,9 @@ public class GameManager implements GameUpdateRunnableMethods
 	@Override
 	public void gameOver()
 	{
-		// Need to create Message to showRanking in mainActivity
+		Message msg = new Message();
+		msg.what = MsgHandler.MSG_TYPE_SHOW_RANKING;
+		mHandler.sendMessage(msg);
 	}
 
 	public Bitmap getUserBitmap(int userId)

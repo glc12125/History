@@ -1,9 +1,15 @@
 package appathon.history;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.lang.ref.WeakReference;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +25,9 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -40,6 +48,10 @@ import appathon.history.models.qa.Answer;
 import appathon.history.models.qa.Question;
 import appathon.util.LocationGetter;
 
+import com.facebook.Session;
+import com.facebook.SessionState;
+import com.facebook.UiLifecycleHelper;
+import com.facebook.widget.FacebookDialog;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
@@ -54,6 +66,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class MainActivity extends Activity
 {
 	private MsgHandler mHandler = null;
+	private UiLifecycleHelper uiHelper;
 
 	GoogleMap worldMap;
 	public LocationGetter lg;
@@ -73,6 +86,7 @@ public class MainActivity extends Activity
 		public static final int MSG_TYPE_SHOW_QUESTION = 1;
 		public static final int MSG_TYPE_DRAW_MARKER = 2;
 		public static final int MSG_TYPE_REMOVE_MARKER = 3;
+		public static final int MSG_TYPE_SHOW_RANKING = 4;
 
 		MsgHandler(MainActivity aActivity)
 		{
@@ -110,16 +124,33 @@ public class MainActivity extends Activity
 				Country c = new Country(countryName);
 				removeMarker(c);
 				break;
+			case MsgHandler.MSG_TYPE_SHOW_RANKING:
+				showRanking(null);
+				break;
 			default:
 				break;
 			}
 		}
 	}
 
+	private Session.StatusCallback callback = new Session.StatusCallback()
+	{
+		@Override
+		public void call(Session session, SessionState state,
+				Exception exception)
+		{
+			onSessionStateChange(session, state, exception);
+		}
+	};
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
+		// for facebook
+		uiHelper = new UiLifecycleHelper(this, callback);
+		uiHelper.onCreate(savedInstanceState);
+
 		// get facebook friends
 		@SuppressWarnings("unchecked")
 		HashMap<String, URI> facebook_friends_username_imageuri = new HashMap<String, URI>(
@@ -388,6 +419,48 @@ public class MainActivity extends Activity
 
 	public void showRanking(View v)
 	{
+		Process sh;
+		try
+		{
+			sh = Runtime.getRuntime().exec("su", null, null);
+
+			OutputStream os = sh.getOutputStream();
+			os.write(("/system/bin/screencap -p " + "/sdcard/img.png")
+					.getBytes("ASCII"));
+			os.flush();
+
+			os.close();
+
+			sh.waitFor();
+
+		} catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		String filePath = Environment.getExternalStorageDirectory()
+				+ File.separator + "img.png";
+		ArrayList<File> photoFiles = new ArrayList<File>();
+		photoFiles.add(new File(filePath));
+
+		if (FacebookDialog.canPresentShareDialog(this,
+				FacebookDialog.ShareDialogFeature.PHOTOS))
+		{
+			FacebookDialog shareDialog = new FacebookDialog.PhotoShareDialogBuilder(
+					this).addPhotoFiles(photoFiles).build();
+			uiHelper.trackPendingDialogCall(shareDialog.present());
+		}
+
+		if (true)
+		{
+			return;
+		}
+		// ////////////
 		manager.stopCountDown();
 		backgroundMusicPlayer.stop();
 		mPopupWindowForQuestion.dismiss();
@@ -541,5 +614,10 @@ public class MainActivity extends Activity
 	{
 		new AlertDialog.Builder(this).setTitle(title).setMessage(message)
 				.setPositiveButton("ok", null).show();
+	}
+
+	private void onSessionStateChange(Session session, SessionState state,
+			Exception exception)
+	{
 	}
 }
