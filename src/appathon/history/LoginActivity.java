@@ -13,16 +13,14 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Base64;
 import android.util.Log;
-import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
-import com.facebook.model.GraphUser;
 import com.facebook.widget.FacebookDialog;
-import com.facebook.widget.LoginButton;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 
@@ -46,14 +44,17 @@ public class LoginActivity extends FragmentActivity
 		public void onError(FacebookDialog.PendingCall pendingCall,
 				Exception error, Bundle data)
 		{
-			Log.d("HelloFacebook", String.format("Error: %s", error.toString()));
+			Toast.makeText(getApplicationContext(),
+					String.format("Error: %s", error.toString()),
+					Toast.LENGTH_SHORT).show();
 		}
 
 		@Override
 		public void onComplete(FacebookDialog.PendingCall pendingCall,
 				Bundle data)
 		{
-			Log.d("HelloFacebook", "Success!");
+			Toast.makeText(getApplicationContext(), "Success!",
+					Toast.LENGTH_SHORT).show();
 		}
 	};
 
@@ -61,10 +62,10 @@ public class LoginActivity extends FragmentActivity
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		//for facebook
+		// for facebook
 		uiHelper = new UiLifecycleHelper(this, callback);
-        uiHelper.onCreate(savedInstanceState);
-        
+		uiHelper.onCreate(savedInstanceState);
+
 		// hide action bar
 		getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
 		getActionBar().hide();
@@ -79,6 +80,9 @@ public class LoginActivity extends FragmentActivity
 		GoogleMap mapForLogin = ((MapFragment) getFragmentManager()
 				.findFragmentById(R.id.mapForLogin)).getMap();
 		mapForLogin.getUiSettings().setZoomControlsEnabled(false);
+
+		// for facebook
+		showHashKey(this);
 	}
 
 	public static void showHashKey(Context context)
@@ -106,11 +110,11 @@ public class LoginActivity extends FragmentActivity
 	{
 		super.onActivityResult(requestCode, resultCode, data);
 		uiHelper.onActivityResult(requestCode, resultCode, data, dialogCallback);
+		startActivity(new Intent(this, MainActivity.class));
 	}
 
 	private void onSessionStateChange(Session session, SessionState state,
 			Exception exception)
 	{
-		startActivity(new Intent(this, MainActivity.class));
 	}
 }
