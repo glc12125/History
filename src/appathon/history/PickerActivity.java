@@ -32,6 +32,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.widget.Toast;
+import appathon.history.MainActivity;
 
 import com.facebook.FacebookException;
 import com.facebook.model.GraphUser;
@@ -178,7 +179,7 @@ public class PickerActivity extends FragmentActivity
 
 		intent.putExtra("facebook_friends_username_imageuri",
 				facebook_friends_username_imageuri);
-		
+
 		startActivity(intent);
 		finish();
 	}

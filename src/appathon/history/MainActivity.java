@@ -54,7 +54,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class MainActivity extends Activity
 {
 	private MsgHandler mHandler = null;
-	private int millisRoundTime = 5000;
 
 	GoogleMap worldMap;
 	public LocationGetter lg;

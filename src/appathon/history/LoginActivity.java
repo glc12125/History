@@ -3,10 +3,6 @@ package appathon.history;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
-import java.util.List;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -22,6 +18,8 @@ import android.util.Base64;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
+import appathon.history.PickerActivity;
+import appathon.history.R;
 
 import com.facebook.Session;
 import com.facebook.SessionState;

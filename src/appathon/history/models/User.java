@@ -57,21 +57,21 @@ public class User implements Comparable<User>
 		} else if (name.contains("Liangchuan"))
 
 		{
-			this.small_avatar = R.drawable.avatar_meng_zhang;
-			this.avatar = R.drawable.avatar_meng_zhang;
+			this.small_avatar = R.drawable.liangchuan;
+			this.avatar = R.drawable.liangchuan;
 		} else if (name.contains("Yimai"))
 
 		{
-			this.small_avatar = R.drawable.avatar_meng_zhang;
-			this.avatar = R.drawable.avatar_meng_zhang;
+			this.small_avatar = R.drawable.yimai;
+			this.avatar = R.drawable.yimai;
 		} else if (name.contains("Chao"))
 		{
-			this.small_avatar = R.drawable.avatar_meng_zhang;
-			this.avatar = R.drawable.avatar_meng_zhang;
+			this.small_avatar = R.drawable.chao;
+			this.avatar = R.drawable.chao;
 		} else
 		{
-			this.small_avatar = R.drawable.avatar_meng_zhang;
-			this.avatar = R.drawable.avatar_meng_zhang;
+			this.small_avatar = R.drawable.meng;
+			this.avatar = R.drawable.meng;
 		}
 
 		this.isAI = isAI;
@@ -151,20 +151,24 @@ public class User implements Comparable<User>
 	{
 		this.reactiveMillis = ms;
 	}
-	
-	public void gainCountry(Country country) {
+
+	public void gainCountry(Country country)
+	{
 		this.controlledCountries.add(country);
 	}
-	
-	public void loseCountry(Country country) {
+
+	public void loseCountry(Country country)
+	{
 		this.controlledCountries.remove(country);
 	}
-	
-	public int getNumOfCountries() {
+
+	public int getNumOfCountries()
+	{
 		return this.controlledCountries.size();
 	}
-	
-	public ArrayList<Country> getCountries() {
+
+	public ArrayList<Country> getCountries()
+	{
 		return this.controlledCountries;
 	}
 
