@@ -11,17 +11,11 @@ import appathon.history.models.qa.Question;
 public class User implements Comparable<User>
 {
 	protected static ArrayList<Integer> availableIcons = new ArrayList<Integer>(Arrays.asList(
-			R.drawable.astrologer, R.drawable.baby11, R.drawable.baby126,
-			R.drawable.bicyclist, R.drawable.bookkeeper, R.drawable.business61,
-			R.drawable.cool4, R.drawable.criminal, R.drawable.dude1,
-			R.drawable.electrical, R.drawable.genius1, R.drawable.graduate6,
-			R.drawable.karate2, R.drawable.magician3, R.drawable.motorcyclist1,
-			R.drawable.palace, R.drawable.pilot, R.drawable.scientist,
-			R.drawable.speaker48, R.drawable.spy1, R.drawable.stockbroker));
+			R.drawable.zuck, R.drawable.ma, R.drawable.jobs, R.drawable.cameron,
+			R.drawable.obama, R.drawable.merkel, R.drawable.kat));
 	protected static ArrayList<String> availableNames = new ArrayList<String>(Arrays.asList(
-			"James", "John", "Robert", "Michael", "William", "David", "Richard", "Charles",
-			"Joseph", "Thomas", "Mark", "Mary", "Patricia", "Linda", "Barbara", "Elizabeth",
-			"Jennifer", "Maria", "Susan", "Margaret", "Dorothy", "Lisa", "Helen", "George"));
+			"Mårk Zückerberg", "Jäck Mā", "Stéve Jöbs", "Dävid Cămeron",
+			"Baräck Øbama", "Angēla Mérkel", "Kam Kat"));
 	protected static Random randomGenerator = new Random();
 	
 	private String name;
@@ -42,12 +36,14 @@ public class User implements Comparable<User>
 		this.id = id;
 		if(name != ""){
 			this.name = name;
-			User.availableNames.remove(name);
+			this.small_avatar = R.drawable.player;
 		}
 		else{
 			int nameIndex = User.randomGenerator.nextInt(User.availableNames.size());
 			this.name = User.availableNames.get(nameIndex);
+			this.small_avatar = User.availableIcons.get(nameIndex);
 			User.availableNames.remove(nameIndex);
+			User.availableIcons.remove(nameIndex);
 		}
 		this.isAI = isAI;
 		this.score = 0;
@@ -56,9 +52,6 @@ public class User implements Comparable<User>
 		this.numOfCountries = 0;
 		this.reactiveMillis = -1;
 		this.isChecked = false;
-		int iconIndex = User.randomGenerator.nextInt(User.availableIcons.size());
-		this.small_avatar = User.availableIcons.get(iconIndex);
-		User.availableIcons.remove(iconIndex);
 	}
 
 	public long getReactiveMillis() {
@@ -139,6 +132,10 @@ public class User implements Comparable<User>
 	public int getAvatar()
 	{
 		return avatar;
+	}
+	
+	public int getId(){
+		return id;
 	}
 
 	public boolean isQuestionSubmitted()

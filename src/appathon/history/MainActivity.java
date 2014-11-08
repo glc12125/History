@@ -51,7 +51,7 @@ public class MainActivity extends Activity
 {
 	private MsgHandler mHandler = null;
 	private int millisRoundTime = 5000;
-	public static final String userName = "Player-Chosen Name";
+	public static final String userName = "Meng Zhang";
 	GoogleMap worldMap;
 	public LocationGetter lg;
 	Context context;
@@ -95,9 +95,10 @@ public class MainActivity extends Activity
 				b = msg.getData();
 				int avatar = b.getInt("avatar");
 				int defense = b.getInt("defense");
+				int userId = b.getInt("userId");
 				countryName = b.getString("countryName");
 				Country country = new Country(countryName);
-				drawMarker(country, avatar, defense);
+				drawMarker(country, avatar, userId, defense);
 				break;
 			case MsgHandler.MSG_TYPE_REMOVE_MARKER:
 				b = msg.getData();
@@ -278,7 +279,7 @@ public class MainActivity extends Activity
 		return drawMarker(ll);
 	}
 
-	public Marker drawMarker(Country country, int avatar_id, int defense)
+	public Marker drawMarker(Country country, int avatar_id, int userId, int defense)
 	{
 		LatLng ll = country.getLatLng();
 		if (worldMap == null)
@@ -292,14 +293,14 @@ public class MainActivity extends Activity
 			marker_map.get(country).setIcon(
 					BitmapDescriptorFactory
 							.fromBitmap(generateCustomizedMarkerBitmap(
-									avatar_id, defense)));
+									avatar_id, userId, defense)));
 			temp_marker = marker_map.get(country);
 		} else
 		{
 			MarkerOptions marker = new MarkerOptions().position(ll).icon(
 					BitmapDescriptorFactory
 							.fromBitmap(generateCustomizedMarkerBitmap(
-									avatar_id, defense)));
+									avatar_id, userId, defense)));
 			temp_marker = worldMap.addMarker(marker);
 			marker_map.put(country, temp_marker);
 		}
@@ -307,7 +308,7 @@ public class MainActivity extends Activity
 		return temp_marker;
 	}
 
-	private Bitmap generateCustomizedMarkerBitmap(int avatar_id, int defense)
+	private Bitmap generateCustomizedMarkerBitmap(int avatar_id, int userId, int defense)
 	{
 		Bitmap.Config conf = Bitmap.Config.ARGB_8888;
 		Bitmap bmp = Bitmap.createBitmap(110, 130, conf);
@@ -319,20 +320,20 @@ public class MainActivity extends Activity
 				BitmapFactory.decodeResource(getResources(), avatar_id), 0, 30,
 				paint);
 
-		switch (avatar_id)
+		switch (userId)
 		{
-		// case R.drawable.avatar_chao_gao_small:
-		// paint.setARGB(128, 0, 0, 255);
-		// break;
-		// case R.drawable.avatar_liang_chuan_small:
-		// paint.setARGB(128, 0, 255, 0);
-		// break;
-		// case R.drawable.avatar_meng_zhang_small:
-		// paint.setARGB(128, 255, 0, 0);
-		// break;
-		// case R.drawable.avatar_yi_mai_small:
-		// paint.setARGB(128, 255, 255, 51);
-		// break;
+		 case 1:
+		 paint.setARGB(128, 0, 0, 255);
+		 break;
+		 case 4:
+		 paint.setARGB(128, 0, 255, 0);
+		 break;
+		 case 2:
+		 paint.setARGB(128, 255, 0, 0);
+		 break;
+		 case 3:
+		 paint.setARGB(128, 255, 255, 51);
+		 break;
 
 		default:
 			paint.setARGB(128, 0, 0, 255);

@@ -127,7 +127,7 @@ public class GameManager implements GameUpdateRunnableMethods
 						}
 						
 						drawMarker(currentQuestion.correspondingCountry,
-								user.getSmallAvatar(),countryGameInfoMap
+								user.getSmallAvatar(), user.getId(), countryGameInfoMap
 								.get(currentQuestion.correspondingCountry).getDefense());
 						return true;
 					} catch (Exception e)
@@ -181,7 +181,7 @@ public class GameManager implements GameUpdateRunnableMethods
 	 * @param countryName
 	 * @param avatar
 	 */
-	private void drawMarker(Country country, int avatar,int defense)
+	private void drawMarker(Country country, int avatar, int userId, int defense)
 	{
 		Message msg = new Message();
 		msg.what = MsgHandler.MSG_TYPE_DRAW_MARKER;
@@ -189,6 +189,7 @@ public class GameManager implements GameUpdateRunnableMethods
 		b.putString("countryName", country.getName());
 		b.putInt("avatar", avatar);
 		b.putInt("defense", defense);
+		b.putInt("userId", userId);
 		msg.setData(b);
 		mHandler.sendMessage(msg);
 	}
@@ -316,7 +317,7 @@ public class GameManager implements GameUpdateRunnableMethods
 		users.add(new AIUser(1));
 		users.add(new AIUser(2));
 		users.add(new AIUser(3));
-		users.add(new User(4, "Player-Chosen Name", false));
+		users.add(new User(4, "Meng Zhang", false));
 	}
 
 	private void initailizeCountryToQuestionMap()
