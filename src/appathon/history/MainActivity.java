@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import android.R.integer;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -219,6 +218,9 @@ public class MainActivity extends Activity
 				return infoWindowView;
 			}
 		});
+
+		View content = findViewById(R.id.activity_main);
+		content.setDrawingCacheEnabled(true);
 
 		Bundle bundle = this.getIntent().getExtras();
 		lg = LocationGetter.getLocationGetter(context);
@@ -472,7 +474,7 @@ public class MainActivity extends Activity
 
 	public void test(View v)
 	{
-		mHandler.sendEmptyMessageDelayed(MsgHandler.MSG_TYPE_SHARE_RANKING, 0);
+		saveScreen();
 	}
 
 	public void shareRankingToFacebook(View v)
@@ -542,7 +544,6 @@ public class MainActivity extends Activity
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 	}
 
 	private List<Map<String, Object>> convertUsersToMap(ArrayList<User> users)
