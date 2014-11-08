@@ -1,10 +1,15 @@
 package appathon.history.models;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
+import android.R.integer;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Message;
@@ -33,7 +38,8 @@ public class GameManager implements GameUpdateRunnableMethods
 	private int questionNum;
 	public boolean isFinished;
 
-	public GameManager(Context context, MsgHandler msgH)
+	public GameManager(Context context, MsgHandler msgH, String userName,
+			URI user_avatar_uri, HashMap<String, URI> facebook_username_imageuri)
 	{
 		super();
 		this.context = context;
@@ -41,10 +47,10 @@ public class GameManager implements GameUpdateRunnableMethods
 		isFinished = false;
 		questionNum = 10;
 
-		initailizeUsers();
+		initailizeUsers(userName, user_avatar_uri, facebook_username_imageuri);
 
 		questionGenerator = new QuestionGenerator(this.context);
-		questions = questionGenerator.getQuestions(100);
+		questions = questionGenerator.getQuestions(questionNum);
 		currentQuestionIndex = 0;
 		initailizeCountryToQuestionMap();
 		gameUpdateRunnable = new GameUpdateRunnable(this);
@@ -65,8 +71,9 @@ public class GameManager implements GameUpdateRunnableMethods
 			t.start();
 		}
 	}
-	
-	public void stopCountDown(){
+
+	public void stopCountDown()
+	{
 		if (gameUpdateRunnable != null)
 		{
 			gameUpdateRunnable.stop();
@@ -119,16 +126,19 @@ public class GameManager implements GameUpdateRunnableMethods
 							playSoundCorrect();
 						} else
 						{
-							Toast.makeText(
-									context,
+							Toast.makeText(context,
 									user.getName() + " got this correct ;-(",
 									Toast.LENGTH_SHORT).show();
 							playSoundWrong();
 						}
-						
-						drawMarker(currentQuestion.correspondingCountry,
-								user.getSmallAvatar(), user.getId(), countryGameInfoMap
-								.get(currentQuestion.correspondingCountry).getDefense());
+
+						drawMarker(
+								currentQuestion.correspondingCountry,
+								user.getSmallAvatar(),
+								user.getId(),
+								countryGameInfoMap.get(
+										currentQuestion.correspondingCountry)
+										.getDefense());
 						return true;
 					} catch (Exception e)
 					{
@@ -164,12 +174,17 @@ public class GameManager implements GameUpdateRunnableMethods
 		{
 			cgi.setDefense(1);
 			cgi.setUser(user);
+			user.gainCountry(target_country);
 		} else if (cgi.getUser().equals(user))
 		{
 			cgi.setDefense(cgi.getDefense() + 1);
 		} else
 		{
-			if(cgi.getDefense() == 1) cgi.setUser(user);
+			if(cgi.getDefense() == 1) {
+				cgi.setUser(user);
+				cgi.getUser().loseCountry(target_country);
+				user.gainCountry(target_country);
+			}
 			else cgi.setDefense(cgi.getDefense() - 1);
 		}
 	}
@@ -181,13 +196,12 @@ public class GameManager implements GameUpdateRunnableMethods
 	 * @param countryName
 	 * @param avatar
 	 */
-	private void drawMarker(Country country, int avatar, int userId, int defense)
+	private void drawMarker(Country country, URI avatar, int userId, int defense)
 	{
 		Message msg = new Message();
 		msg.what = MsgHandler.MSG_TYPE_DRAW_MARKER;
 		Bundle b = new Bundle();
 		b.putString("countryName", country.getName());
-		b.putInt("avatar", avatar);
 		b.putInt("defense", defense);
 		b.putInt("userId", userId);
 		msg.setData(b);
@@ -273,14 +287,15 @@ public class GameManager implements GameUpdateRunnableMethods
 	 * @param userName
 	 * @param selectedAnswer
 	 */
-	public void updateUser(String userName, String selectedAnswer)
+	public void updateUser(String selectedAnswer)
 	{
 		for (User user : users)
 		{
-			if (user.getName().equals(userName))
+			if (!user.isAI())
 			{
 				user.setSelectedAnswer(selectedAnswer);
 				user.setQuestionSubmitted(true);
+				break;
 			}
 		}
 	}
@@ -311,13 +326,22 @@ public class GameManager implements GameUpdateRunnableMethods
 		}
 	}
 
-	private void initailizeUsers()
+	private void initailizeUsers(String userName, URI user_avatar_uri,
+			HashMap<String, URI> facebook_username_imageuri)
 	{
 		this.users = new ArrayList<User>();
-		users.add(new AIUser(1));
-		users.add(new AIUser(2));
-		users.add(new AIUser(3));
-		users.add(new User(4, "Meng Zhang", false));
+		int counter = 0;
+		Iterator it = facebook_username_imageuri.entrySet().iterator();
+		while (it.hasNext() && (counter < 3))
+		{
+			counter += 1;
+			Map.Entry pairs = (Map.Entry) it.next();
+			users.add(new AIUser(counter, (String) pairs.getKey(), (URI) pairs
+					.getValue()));
+		}
+
+		// user
+		users.add(new User(4, userName, false, user_avatar_uri));
 	}
 
 	private void initailizeCountryToQuestionMap()
@@ -379,22 +403,31 @@ public class GameManager implements GameUpdateRunnableMethods
 	}
 
 	@Override
-	public boolean gameEnd() {
-		if(questionNum==0){
+	public boolean gameEnd()
+	{
+		if (questionNum == 0)
+		{
 			return true;
 		}
 		return false;
 	}
 
 	@Override
-	public void updateProgressBar(long millisPassed) {
+	public void updateProgressBar(long millisPassed)
+	{
 		// Need to create Message to update progressbar
-		
+
 	}
-	
+
 	@Override
-	public void gameOver(){
+	public void gameOver()
+	{
 		// Need to create Message to showRanking in mainActivity
+	}
+
+	public Bitmap getUserBitmap(int userId)
+	{
+		return users.get(userId).getBitmap();
 	}
 
 }
