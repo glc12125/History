@@ -1,37 +1,35 @@
 package appathon.history;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.List;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.Signature;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
-import android.view.Window;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.facebook.FacebookException;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
 import com.facebook.model.GraphUser;
 import com.facebook.widget.FacebookDialog;
-import com.facebook.widget.FriendPickerFragment;
 import com.facebook.widget.LoginButton;
-import com.facebook.widget.PickerFragment;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 
@@ -95,6 +93,39 @@ public class LoginActivity extends FragmentActivity
 
 		LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
 		loginButton.setReadPermissions("user_friends");
+		loginButton
+				.setUserInfoChangedCallback(new LoginButton.UserInfoChangedCallback()
+				{
+					@Override
+					public void onUserInfoFetched(GraphUser graphUser)
+					{
+						JSONObject jsonUser = graphUser.getInnerJSONObject();
+
+						String user_avatar_uri_string = null;
+						try
+						{
+							user_avatar_uri_string = jsonUser
+									.getJSONObject("picture")
+									.getJSONObject("data").getString("url");
+						} catch (JSONException e)
+						{
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+
+						SharedPreferences facebook_userinfo = getSharedPreferences(
+								"facebook_userinfo", 0);
+						SharedPreferences.Editor facebook_userinfo_editor = facebook_userinfo
+								.edit();
+
+						facebook_userinfo_editor.putString("name",
+								graphUser.getName());
+						facebook_userinfo_editor.putString("user_avatar_uri_string",
+								user_avatar_uri_string);
+						facebook_userinfo_editor.commit();
+					}
+				});
+
 	}
 
 	public static void showHashKey(Context context)

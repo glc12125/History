@@ -146,7 +146,7 @@ public class PickerActivity extends FragmentActivity
 
 	private void finishActivity()
 	{
-		HashMap<String, URI> facebook_username_imageuri = new HashMap<String, URI>();
+		HashMap<String, URI> facebook_friends_username_imageuri = new HashMap<String, URI>();
 
 		List<GraphUser> selectedUsers = friendPickerFragment.getSelection();
 
@@ -170,14 +170,14 @@ public class PickerActivity extends FragmentActivity
 				e.printStackTrace();
 			}
 
-			facebook_username_imageuri
+			facebook_friends_username_imageuri
 					.put(graphUser.getName(), user_avatar_uri);
 		}
 
 		Intent intent = new Intent(this, MainActivity.class);
 
-		intent.putExtra("facebook_username_imageuri",
-				facebook_username_imageuri);
+		intent.putExtra("facebook_friends_username_imageuri",
+				facebook_friends_username_imageuri);
 		startActivity(intent);
 		finish();
 	}

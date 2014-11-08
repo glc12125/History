@@ -2,6 +2,7 @@ package appathon.history;
 
 import java.lang.ref.WeakReference;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.Map;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -53,7 +55,7 @@ public class MainActivity extends Activity
 {
 	private MsgHandler mHandler = null;
 	private int millisRoundTime = 5000;
-	public static final String userName = "Meng Zhang";
+
 	GoogleMap worldMap;
 	public LocationGetter lg;
 	Context context;
@@ -119,14 +121,26 @@ public class MainActivity extends Activity
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-
+		// get facebook friends
 		@SuppressWarnings("unchecked")
-		HashMap<String, URI> facebook_username_imageuri = new HashMap<String, URI>(
+		HashMap<String, URI> facebook_friends_username_imageuri = new HashMap<String, URI>(
 				(Map<String, URI>) getIntent().getExtras().get(
-						"facebook_username_imageuri"));
+						"facebook_friends_username_imageuri"));
+		// get facebook user
+		SharedPreferences facebook_userinfo = getSharedPreferences(
+				"facebook_userinfo", 0);
 
-		showAlert(facebook_username_imageuri.keySet().toString(),
-				facebook_username_imageuri.values().toString());
+		String userName = facebook_userinfo.getString("name", null);
+		URI user_avatar_uri = null;
+		try
+		{
+			user_avatar_uri = new URI(facebook_userinfo.getString(
+					"user_avatar_uri_string", null));
+		} catch (URISyntaxException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		setContentView(R.layout.activity_main);
 
@@ -177,7 +191,8 @@ public class MainActivity extends Activity
 		mPopupWindowForQuestion.setOutsideTouchable(false);
 
 		mHandler = new MsgHandler(this);
-		manager = new GameManager(context, mHandler);
+		manager = new GameManager(context, mHandler, userName, user_avatar_uri,
+				facebook_friends_username_imageuri);
 		// pup up 500ms later
 		mHandler.sendEmptyMessageDelayed(MsgHandler.MSG_TYPE_SHOW_QUESTION, 500);
 		// set popup for ranking
@@ -470,7 +485,7 @@ public class MainActivity extends Activity
 						.getItemAtPosition(position);
 				String yourAnswer = map.get("option_string");
 
-				manager.updateUser(userName, yourAnswer);
+				manager.updateUser(yourAnswer);
 
 				mPopupWindowForQuestion.dismiss();
 			}

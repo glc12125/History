@@ -1,10 +1,12 @@
 package appathon.history.models;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Message;
@@ -33,7 +35,8 @@ public class GameManager implements GameUpdateRunnableMethods
 	private int questionNum;
 	public boolean isFinished;
 
-	public GameManager(Context context, MsgHandler msgH)
+	public GameManager(Context context, MsgHandler msgH, String userName,
+			URI user_avatar_uri, HashMap<String, URI> facebook_username_imageuri)
 	{
 		super();
 		this.context = context;
@@ -41,7 +44,7 @@ public class GameManager implements GameUpdateRunnableMethods
 		isFinished = false;
 		questionNum = 10;
 
-		initailizeUsers();
+		initailizeUsers(userName, user_avatar_uri, facebook_username_imageuri);
 
 		questionGenerator = new QuestionGenerator(this.context);
 		questions = questionGenerator.getQuestions(100);
@@ -65,8 +68,9 @@ public class GameManager implements GameUpdateRunnableMethods
 			t.start();
 		}
 	}
-	
-	public void stopCountDown(){
+
+	public void stopCountDown()
+	{
 		if (gameUpdateRunnable != null)
 		{
 			gameUpdateRunnable.stop();
@@ -119,16 +123,19 @@ public class GameManager implements GameUpdateRunnableMethods
 							playSoundCorrect();
 						} else
 						{
-							Toast.makeText(
-									context,
+							Toast.makeText(context,
 									user.getName() + " got this correct ;-(",
 									Toast.LENGTH_SHORT).show();
 							playSoundWrong();
 						}
-						
-						drawMarker(currentQuestion.correspondingCountry,
-								user.getSmallAvatar(), user.getId(), countryGameInfoMap
-								.get(currentQuestion.correspondingCountry).getDefense());
+
+						drawMarker(
+								currentQuestion.correspondingCountry,
+								user.getSmallAvatar(),
+								user.getId(),
+								countryGameInfoMap.get(
+										currentQuestion.correspondingCountry)
+										.getDefense());
 						return true;
 					} catch (Exception e)
 					{
@@ -169,8 +176,10 @@ public class GameManager implements GameUpdateRunnableMethods
 			cgi.setDefense(cgi.getDefense() + 1);
 		} else
 		{
-			if(cgi.getDefense() == 1) cgi.setUser(user);
-			else cgi.setDefense(cgi.getDefense() - 1);
+			if (cgi.getDefense() == 1)
+				cgi.setUser(user);
+			else
+				cgi.setDefense(cgi.getDefense() - 1);
 		}
 	}
 
@@ -273,14 +282,15 @@ public class GameManager implements GameUpdateRunnableMethods
 	 * @param userName
 	 * @param selectedAnswer
 	 */
-	public void updateUser(String userName, String selectedAnswer)
+	public void updateUser(String selectedAnswer)
 	{
 		for (User user : users)
 		{
-			if (user.getName().equals(userName))
+			if (!user.isAI())
 			{
 				user.setSelectedAnswer(selectedAnswer);
 				user.setQuestionSubmitted(true);
+				break;
 			}
 		}
 	}
@@ -311,9 +321,11 @@ public class GameManager implements GameUpdateRunnableMethods
 		}
 	}
 
-	private void initailizeUsers()
+	private void initailizeUsers(String userName, URI user_avatar_uri,
+			HashMap<String, URI> facebook_username_imageuri)
 	{
 		this.users = new ArrayList<User>();
+		
 		users.add(new AIUser(1));
 		users.add(new AIUser(2));
 		users.add(new AIUser(3));
@@ -379,21 +391,25 @@ public class GameManager implements GameUpdateRunnableMethods
 	}
 
 	@Override
-	public boolean gameEnd() {
-		if(questionNum==0){
+	public boolean gameEnd()
+	{
+		if (questionNum == 0)
+		{
 			return true;
 		}
 		return false;
 	}
 
 	@Override
-	public void updateProgressBar(long millisPassed) {
+	public void updateProgressBar(long millisPassed)
+	{
 		// Need to create Message to update progressbar
-		
+
 	}
-	
+
 	@Override
-	public void gameOver(){
+	public void gameOver()
+	{
 		// Need to create Message to showRanking in mainActivity
 	}
 
