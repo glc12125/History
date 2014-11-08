@@ -504,16 +504,17 @@ public class MainActivity extends Activity
 			e.printStackTrace();
 		}
 		
+		String filePath = Environment.getExternalStorageDirectory()
+				+ File.separator + "img.png";
+		
 		BitmapFactory.Options options = new BitmapFactory.Options();
 		options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-		Bitmap bmp = BitmapFactory.decodeFile(Environment.getExternalStorageDirectory()
-                + File.separator + "/sdcard/img.png", options);
+		Bitmap bmp = BitmapFactory.decodeFile(filePath, options);
 		Bitmap resizedbitmap1=Bitmap.createBitmap(bmp, 0,0, bmp.getWidth(), bmp.getHeight() * 2 / 3);
 		
 		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 		resizedbitmap1.compress(Bitmap.CompressFormat.PNG, 80, bytes);
-		File f = new File(Environment.getExternalStorageDirectory()
-                + File.separator + "/sdcard/img.png");
+		File f = new File(filePath);
 		FileOutputStream fo = null;
 		try {
 			f.createNewFile();
