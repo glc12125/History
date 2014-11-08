@@ -1,74 +1,172 @@
 package appathon.history;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.Window;
-import android.widget.ImageView;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.Signature;
+import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.util.Base64;
+import android.util.Log;
+import android.widget.ImageView;
+import android.widget.Toast;
+
+import com.facebook.Session;
+import com.facebook.SessionState;
+import com.facebook.UiLifecycleHelper;
+import com.facebook.model.GraphUser;
+import com.facebook.widget.FacebookDialog;
+import com.facebook.widget.LoginButton;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 
-public class LoginActivity extends Activity
+public class LoginActivity extends FragmentActivity
 {
+	private UiLifecycleHelper uiHelper;
+
+	private List<GraphUser> selectedUsers;
+
+	private Session.StatusCallback callback = new Session.StatusCallback()
+	{
+		@Override
+		public void call(Session session, SessionState state,
+				Exception exception)
+		{
+			onSessionStateChange(session, state, exception);
+		}
+	};
+
+	private FacebookDialog.Callback dialogCallback = new FacebookDialog.Callback()
+	{
+		@Override
+		public void onError(FacebookDialog.PendingCall pendingCall,
+				Exception error, Bundle data)
+		{
+			Toast.makeText(getApplicationContext(),
+					String.format("Error: %s", error.toString()),
+					Toast.LENGTH_SHORT).show();
+		}
+
+		@Override
+		public void onComplete(FacebookDialog.PendingCall pendingCall,
+				Bundle data)
+		{
+			Toast.makeText(getApplicationContext(), "Success!",
+					Toast.LENGTH_SHORT).show();
+		}
+	};
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
-		getActionBar().hide();
+		// for facebook
+		uiHelper = new UiLifecycleHelper(this, callback);
+		uiHelper.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_login);
 
+		// set title view
 		ImageView appTitleImageView = (ImageView) findViewById(R.id.app_title);
 		appTitleImageView.setImageResource(R.drawable.app_title);
 
+		// hide zoom control
 		GoogleMap mapForLogin = ((MapFragment) getFragmentManager()
 				.findFragmentById(R.id.mapForLogin)).getMap();
-
 		mapForLogin.getUiSettings().setZoomControlsEnabled(false);
+
+		// for facebook
+		showHashKey(this);
+
+		LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
+		loginButton.setReadPermissions("user_friends");
+		loginButton
+				.setUserInfoChangedCallback(new LoginButton.UserInfoChangedCallback()
+				{
+					@Override
+					public void onUserInfoFetched(GraphUser graphUser)
+					{
+						JSONObject jsonUser = graphUser.getInnerJSONObject();
+
+						String user_avatar_uri_string = null;
+						try
+						{
+							user_avatar_uri_string = jsonUser
+									.getJSONObject("picture")
+									.getJSONObject("data").getString("url");
+						} catch (JSONException e)
+						{
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+
+						SharedPreferences facebook_userinfo = getSharedPreferences(
+								"facebook_userinfo", 0);
+						SharedPreferences.Editor facebook_userinfo_editor = facebook_userinfo
+								.edit();
+
+						facebook_userinfo_editor.putString("name",
+								graphUser.getName());
+						facebook_userinfo_editor.putString("user_avatar_uri_string",
+								user_avatar_uri_string);
+						facebook_userinfo_editor.commit();
+					}
+				});
+
 	}
 
-	public void login(View v)
+	public static void showHashKey(Context context)
 	{
-		 startActivity(new Intent(this, MainActivity.class));
-
-//		Intent intent = new Intent();
-//		intent.setAction(Intent.ACTION_SEND);
-//		intent.setType("image/*");
-//
-//		intent.putExtra(Intent.EXTRA_TEXT, "eample");
-//		intent.putExtra(Intent.EXTRA_TITLE, "example");
-//		intent.putExtra(Intent.EXTRA_SUBJECT, "example");
-//		// intent.putExtra(Intent.EXTRA_STREAM, R.drawable.avatar_meng_zhang);
-//
-//		Intent openInChooser = new Intent(intent);
-//		openInChooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, intent);
-//		startActivity(openInChooser);
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu)
-	{
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.login, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item)
-	{
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.action_settings)
+		try
 		{
-			return true;
+			PackageInfo info = context.getPackageManager().getPackageInfo(
+					"appathon.history", PackageManager.GET_SIGNATURES);
+			for (Signature signature : info.signatures)
+			{
+				MessageDigest md = MessageDigest.getInstance("SHA");
+				md.update(signature.toByteArray());
+				Log.i("KeyHash:",
+						Base64.encodeToString(md.digest(), Base64.DEFAULT));
+			}
+		} catch (NameNotFoundException e)
+		{
+		} catch (NoSuchAlgorithmException e)
+		{
 		}
-		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
+		super.onActivityResult(requestCode, resultCode, data);
+
+		uiHelper.onActivityResult(requestCode, resultCode, data, dialogCallback);
+
+		startActivity(new Intent(this, PickerActivity.class));
+		finish();
+	}
+
+	private void showAlert(String title, String message)
+	{
+		new AlertDialog.Builder(this).setTitle(title).setMessage(message)
+				.setPositiveButton("ok", null).show();
+	}
+
+	private void onSessionStateChange(Session session, SessionState state,
+			Exception exception)
+	{
 	}
 }
