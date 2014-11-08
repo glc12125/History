@@ -16,26 +16,28 @@
 
 package appathon.history;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.List;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.location.Criteria;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.facebook.FacebookException;
+import com.facebook.model.GraphUser;
 import com.facebook.widget.FriendPickerFragment;
 import com.facebook.widget.PickerFragment;
-import com.facebook.widget.PlacePickerFragment;
 
 /**
  * The PickerActivity enhances the Friend or Place Picker by adding a title and
@@ -44,25 +46,7 @@ import com.facebook.widget.PlacePickerFragment;
  */
 public class PickerActivity extends FragmentActivity
 {
-	public static final Uri FRIEND_PICKER = Uri.parse("picker://friend");
-	public static final Uri PLACE_PICKER = Uri.parse("picker://place");
-
-	private static final int SEARCH_RADIUS_METERS = 1000;
-	private static final int SEARCH_RESULT_LIMIT = 50;
-	private static final String SEARCH_TEXT = "Restaurant";
-	private static final int LOCATION_CHANGE_THRESHOLD = 50; // meters
-
-	private static final Location SAN_FRANCISCO_LOCATION = new Location("")
-	{
-		{
-			setLatitude(37.7750);
-			setLongitude(-122.4183);
-		}
-	};
-
 	private FriendPickerFragment friendPickerFragment;
-	private PlacePickerFragment placePickerFragment;
-	private LocationListener locationListener;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState)
@@ -131,12 +115,6 @@ public class PickerActivity extends FragmentActivity
 	protected void onStop()
 	{
 		super.onStop();
-		if (locationListener != null)
-		{
-			LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-			locationManager.removeUpdates(locationListener);
-			locationListener = null;
-		}
 	}
 
 	private void onError(Exception error)
@@ -169,22 +147,40 @@ public class PickerActivity extends FragmentActivity
 
 	private void finishActivity()
 	{
-		// ScrumptiousApplication app = (ScrumptiousApplication)
-		// getApplication();
-		// if (FRIEND_PICKER.equals(getIntent().getData()))
-		// {
-		// if (friendPickerFragment != null)
-		// {
-		// app.setSelectedUsers(friendPickerFragment.getSelection());
-		// }
-		// } else if (PLACE_PICKER.equals(getIntent().getData()))
-		// {
-		// if (placePickerFragment != null)
-		// {
-		// app.setSelectedPlace(placePickerFragment.getSelection());
-		// }
-		// }
-		// setResult(RESULT_OK, null);
-		// finish();
+		HashMap<String, URI> facebook_username_uri = new HashMap<String, URI>();
+
+		List<GraphUser> selectedUsers = friendPickerFragment.getSelection();
+
+		for (GraphUser graphUser : selectedUsers)
+		{
+			JSONObject jsonUser = graphUser.getInnerJSONObject();
+
+			URI user_avatar_uri = null;
+
+			try
+			{
+				user_avatar_uri = new URI(jsonUser.getJSONObject("picture")
+						.getJSONObject("data").getString("url"));
+			} catch (URISyntaxException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (JSONException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			facebook_username_uri.put(graphUser.getName(), user_avatar_uri);
+		}
+
+		setResult(RESULT_OK, null);
+		finish();
+	}
+
+	private void showAlert(String title, String message)
+	{
+		new AlertDialog.Builder(this).setTitle(title).setMessage(message)
+				.setPositiveButton("ok", null).show();
 	}
 }

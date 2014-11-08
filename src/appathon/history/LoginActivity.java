@@ -37,8 +37,11 @@ import com.google.android.gms.maps.MapFragment;
 
 public class LoginActivity extends FragmentActivity
 {
+	public static final int REQUEST_CODE_PICKER = 1;
+
 	private UiLifecycleHelper uiHelper;
-	public static final Uri FRIEND_PICKER = Uri.parse("picker://friend");
+
+	private List<GraphUser> selectedUsers;
 
 	private Session.StatusCallback callback = new Session.StatusCallback()
 	{
@@ -77,10 +80,6 @@ public class LoginActivity extends FragmentActivity
 		// for facebook
 		uiHelper = new UiLifecycleHelper(this, callback);
 		uiHelper.onCreate(savedInstanceState);
-
-		// hide action bar
-		getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
-		getActionBar().hide();
 
 		setContentView(R.layout.activity_login);
 
@@ -124,54 +123,18 @@ public class LoginActivity extends FragmentActivity
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
 		super.onActivityResult(requestCode, resultCode, data);
-		uiHelper.onActivityResult(requestCode, resultCode, data, dialogCallback);
-
-		startActivity(new Intent(this, PickerActivity.class));
-		// pickFriends();
-	}
-
-	private void pickFriends()
-	{
-		final FriendPickerFragment fragment = new FriendPickerFragment();
-
-		setFriendPickerListeners(fragment);
-
-		showPickerFragment(fragment);
-	}
-
-	private void showPickerFragment(FriendPickerFragment fragment)
-	{
-		fragment.setOnErrorListener(new PickerFragment.OnErrorListener()
+		
+		if (requestCode != REQUEST_CODE_PICKER)
 		{
-			@Override
-			public void onError(PickerFragment<?> pickerFragment,
-					FacebookException error)
-			{
-				String text = "exception" + error.getMessage();
-				Toast toast = Toast.makeText(LoginActivity.this, text,
-						Toast.LENGTH_SHORT);
-				toast.show();
-			}
-		});
+			uiHelper.onActivityResult(requestCode, resultCode, data,
+					dialogCallback);
 
-		FragmentManager fm = getSupportFragmentManager();
-		fm.beginTransaction().replace(R.id.fragment_container, fragment)
-				.addToBackStack(null).commit();
-		fm.executePendingTransactions();
-
-		fragment.loadData(true);
-	}
-
-	private void setFriendPickerListeners(final FriendPickerFragment fragment)
-	{
-		fragment.setOnDoneButtonClickedListener(new FriendPickerFragment.OnDoneButtonClickedListener()
+			startActivityForResult(new Intent(this, PickerActivity.class),
+					REQUEST_CODE_PICKER);
+		} else
 		{
-			@Override
-			public void onDoneButtonClicked(PickerFragment<?> pickerFragment)
-			{
-				onFriendPickerDone(fragment);
-			}
-		});
+
+		}
 	}
 
 	private void onFriendPickerDone(FriendPickerFragment fragment)

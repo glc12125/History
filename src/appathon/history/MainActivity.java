@@ -118,10 +118,8 @@ public class MainActivity extends Activity
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
-		getActionBar().hide();
-		setContentView(R.layout.activity_main); // be sure you call this AFTER
-		// requestFeature
+
+		setContentView(R.layout.activity_main); 
 
 		context = this.getApplicationContext();
 
@@ -281,7 +279,8 @@ public class MainActivity extends Activity
 		return drawMarker(ll);
 	}
 
-	public Marker drawMarker(Country country, int avatar_id, int userId, int defense)
+	public Marker drawMarker(Country country, int avatar_id, int userId,
+			int defense)
 	{
 		LatLng ll = country.getLatLng();
 		if (worldMap == null)
@@ -310,7 +309,8 @@ public class MainActivity extends Activity
 		return temp_marker;
 	}
 
-	private Bitmap generateCustomizedMarkerBitmap(int avatar_id, int userId, int defense)
+	private Bitmap generateCustomizedMarkerBitmap(int avatar_id, int userId,
+			int defense)
 	{
 		Bitmap.Config conf = Bitmap.Config.ARGB_8888;
 		Bitmap bmp = Bitmap.createBitmap(110, 130, conf);
@@ -324,18 +324,18 @@ public class MainActivity extends Activity
 
 		switch (userId)
 		{
-		 case 1:
-		 paint.setARGB(128, 0, 0, 255);
-		 break;
-		 case 4:
-		 paint.setARGB(128, 0, 255, 0);
-		 break;
-		 case 2:
-		 paint.setARGB(128, 255, 0, 0);
-		 break;
-		 case 3:
-		 paint.setARGB(128, 255, 255, 51);
-		 break;
+		case 1:
+			paint.setARGB(128, 0, 0, 255);
+			break;
+		case 4:
+			paint.setARGB(128, 0, 255, 0);
+			break;
+		case 2:
+			paint.setARGB(128, 255, 0, 0);
+			break;
+		case 3:
+			paint.setARGB(128, 255, 255, 51);
+			break;
 
 		default:
 			paint.setARGB(128, 0, 0, 255);
@@ -490,9 +490,11 @@ public class MainActivity extends Activity
 
 		return optionList;
 	}
-	
-	private void blinkMarker(Marker m) {
-		MarkerAnimationCountDownTimer macdt = new MarkerAnimationCountDownTimer(1000, 100, m, 4);
+
+	private void blinkMarker(Marker m)
+	{
+		MarkerAnimationCountDownTimer macdt = new MarkerAnimationCountDownTimer(
+				1000, 100, m, 4);
 		macdt.start();
 	}
 }
