@@ -29,6 +29,7 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import appathon.animation.MarkerAnimationCountDownTimer;
 import appathon.history.models.Country;
 import appathon.history.models.GameManager;
 import appathon.history.models.User;
@@ -99,6 +100,7 @@ public class MainActivity extends Activity
 				countryName = b.getString("countryName");
 				Country country = new Country(countryName);
 				drawMarker(country, avatar, userId, defense);
+				blinkMarker(marker_map.get(country));
 				break;
 			case MsgHandler.MSG_TYPE_REMOVE_MARKER:
 				b = msg.getData();
@@ -487,5 +489,10 @@ public class MainActivity extends Activity
 		}
 
 		return optionList;
+	}
+	
+	private void blinkMarker(Marker m) {
+		MarkerAnimationCountDownTimer macdt = new MarkerAnimationCountDownTimer(1000, 100, m, 4);
+		macdt.start();
 	}
 }
