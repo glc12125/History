@@ -12,7 +12,7 @@ public class AIUser extends User {
 
 	
 	public AIUser(int id) {
-		this(id, 0.85, 3000, 1000);
+		this(id, 0.85, 30000, 1000);
 	}
 	
 	public AIUser(int id, double correctPercentage, long millis_mean, double millis_std) {
