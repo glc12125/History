@@ -7,14 +7,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import android.R.integer;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Message;
-import android.util.Log;
 import android.widget.Toast;
 import appathon.history.MainActivity.MsgHandler;
 import appathon.history.R;
@@ -182,12 +179,13 @@ public class GameManager implements GameUpdateRunnableMethods
 			cgi.setDefense(cgi.getDefense() + 1);
 		} else
 		{
-			if(cgi.getDefense() == 1) {
+			if (cgi.getDefense() == 1)
+			{
 				cgi.setUser(user);
 				cgi.getUser().loseCountry(target_country);
 				user.gainCountry(target_country);
-			}
-			else cgi.setDefense(cgi.getDefense() - 1);
+			} else
+				cgi.setDefense(cgi.getDefense() - 1);
 		}
 	}
 
