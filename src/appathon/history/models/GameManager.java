@@ -2,13 +2,14 @@ package appathon.history.models;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Message;
@@ -89,10 +90,15 @@ public class GameManager implements GameUpdateRunnableMethods
 	{
 		int count = 0;
 		Question currentQuestion = getCurrentQuestion();
-
+		List<Integer> orderList = new ArrayList<Integer>();
+		for(int i = 0; i < users.size(); i++) {
+			orderList.add(i);
+		}
+		Collections.shuffle(orderList);
 		for (int i = 0; i < users.size(); i++)
 		{
-			User user = users.get(i);
+			int index = orderList.get(i);
+			User user = users.get(index);
 
 			if (user.isChecked())
 			{
