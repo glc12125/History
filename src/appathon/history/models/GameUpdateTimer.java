@@ -22,7 +22,7 @@ public class GameUpdateTimer extends MyCountDownTimer {
     
 	private static int MILLIS_ROUNDTIME = 5000;
 	
-	private static int MILLIS_INTERVAL = 1000;
+	private static int MILLIS_INTERVAL = 20;
     
     // Sets the log tag
     private static final String LOG_TAG = "GameUpdateRunnable";
